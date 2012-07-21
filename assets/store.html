@@ -3,9 +3,22 @@
 <html>
 <head>
     <title>Soomla Store</title>
+    <link rel="stylesheet" href="store.css">
 </head>
 <body>
-    <a href="#"></a>
+<script type="text/javascript">
+    function clicked(){
+        Soomla.purchased("This is a message sent from JS to native code !!");
+        return false;
+    }
+</script>
+
+    <a href="#" onclick="clicked();">I'm a link</a>
     <p>Testing the store now.</p>
+
+    <button onclick="clicked();">Click me!</button>
+
+</script>
+
 </body>
 </html>
