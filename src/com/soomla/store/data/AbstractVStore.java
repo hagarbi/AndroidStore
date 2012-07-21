@@ -1,13 +1,8 @@
 package com.soomla.store.data;
 
-import android.content.Context;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import com.soomla.store.Settings;
 import com.soomla.store.Utils;
 
 import java.io.*;
-import java.util.HashMap;
 
 /**
  * Created with IntelliJ IDEA.
