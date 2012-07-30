@@ -16,24 +16,55 @@
 
 package com.soomla.store.data;
 
-import com.soomla.store.Utils;
+import android.content.Context;
 
 import java.io.*;
 
 public abstract class AbstractVStore {
 
-    protected abstract String storeFilePath();
+    /* Public functions */
 
+    /**
+     * This function loads the store's data from the given persistence strategy.
+     * @throws IOException
+     */
+    public void load() throws IOException {
+        storeFromJson(mPersistenceStrategy.fetch());
+    }
+
+    /**
+     * This function saves the store's data from the given persistence strategy.
+     * @throws IOException
+     */
+    public void save() throws IOException {
+        mPersistenceStrategy.persist(storeToJson());
+    }
+
+    /**
+     * Abstract class constructor
+     * @param mPersistenceStrategy is the strategy used for persistence
+     * @param mContext is the current application's context
+     */
+    protected AbstractVStore(IPersistenceStrategy mPersistenceStrategy, Context mContext) {
+        this.mPersistenceStrategy = mPersistenceStrategy;
+        this.mContext =             mContext;
+    }
+
+    /* Abstract protected functions */
     protected abstract void storeFromJson(String storeJson);
-
     protected abstract String storeToJson();
 
-    public void load() throws IOException {
-        String storeJson = Utils.readFromFile(storeFilePath());
-        storeFromJson(storeJson);
+    protected Context getContext(){
+        return mContext;
     }
 
-    public void save() throws IOException {
-        Utils.saveToFile(storeToJson(), storeFilePath());
-    }
+    /**
+     * The strategy used for persistence
+     */
+    protected IPersistenceStrategy mPersistenceStrategy;
+    /**
+     * The current application's context
+     */
+    private Context mContext;
+
 }

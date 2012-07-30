@@ -18,6 +18,7 @@ package com.soomla.store.data;
 
 import java.util.HashMap;
 
+import android.content.Context;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.soomla.store.domain.VGood;
@@ -25,7 +26,8 @@ import com.soomla.store.domain.VGood;
 public class VGoodsStore extends AbstractVStore {
 	private HashMap<String, Integer> mStore;
 
-    public VGoodsStore() {
+    public VGoodsStore(Context context) {
+        super(new FilePersistenceStrategy("soomla.vgoods", context), context);
         this.mStore = new HashMap<String, Integer>();
     }
 
@@ -49,11 +51,6 @@ public class VGoodsStore extends AbstractVStore {
 		int balance = mStore.get(vgood.getSoomlaId()) - amount;
 		mStore.put(vgood.getSoomlaId(), balance > 0 ? balance : 0);
 	}
-
-    @Override
-    protected String storeFilePath() {
-        return "soomla.store";
-    }
 
     @Override
     protected void storeFromJson(String storeJson) {

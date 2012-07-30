@@ -16,6 +16,7 @@
 
 package com.soomla.store.data;
 
+import android.content.Context;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -25,9 +26,8 @@ public class VCoinsStore extends AbstractVStore {
 	private int     mBalance;
     private String  mImageFilePath;
 
-    @Override
-    protected String storeFilePath() {
-        return "soomla.coins";
+    public VCoinsStore(Context context) {
+        super(new FilePersistenceStrategy("soomla.coins", context), context);
     }
 
     @Override
