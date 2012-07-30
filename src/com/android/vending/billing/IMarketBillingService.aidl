@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012 Soomla Inc.
+ * Copyright (C) 2010 The Android Open Source Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,26 +14,11 @@
  * limitations under the License.
  */
 
-package com.soomla.store.data;
+package com.android.vending.billing;
 
-import com.soomla.store.Utils;
+import android.os.Bundle;
 
-import java.io.*;
-
-public abstract class AbstractVStore {
-
-    protected abstract String storeFilePath();
-
-    protected abstract void storeFromJson(String storeJson);
-
-    protected abstract String storeToJson();
-
-    public void load() throws IOException {
-        String storeJson = Utils.readFromFile(storeFilePath());
-        storeFromJson(storeJson);
-    }
-
-    public void save() throws IOException {
-        Utils.saveToFile(storeToJson(), storeFilePath());
-    }
+interface IMarketBillingService {
+    /** Given the arguments in bundle form, returns a bundle for results. */
+    Bundle sendBillingRequest(in Bundle bundle);
 }

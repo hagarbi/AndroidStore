@@ -14,26 +14,17 @@
  * limitations under the License.
  */
 
-package com.soomla.store.data;
+package com.soomla.store.domain;
 
-import com.soomla.store.Utils;
+public class VGood extends VItem{
+    private int mVCurrencyValue;
 
-import java.io.*;
-
-public abstract class AbstractVStore {
-
-    protected abstract String storeFilePath();
-
-    protected abstract void storeFromJson(String storeJson);
-
-    protected abstract String storeToJson();
-
-    public void load() throws IOException {
-        String storeJson = Utils.readFromFile(storeFilePath());
-        storeFromJson(storeJson);
+    public VGood(int mNameId, int mDescriptionId, String mImgFilePath, int mVCurrencyValue) {
+        super(mNameId, mDescriptionId, mImgFilePath);
+        this.mVCurrencyValue = mVCurrencyValue;
     }
 
-    public void save() throws IOException {
-        Utils.saveToFile(storeToJson(), storeFilePath());
+    public int getmVCurrencyValue(){
+        return mVCurrencyValue;
     }
 }
