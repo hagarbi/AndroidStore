@@ -33,6 +33,7 @@ import com.soomla.billing.BillingService;
 import com.soomla.billing.Consts;
 import com.soomla.billing.PurchaseObserver;
 import com.soomla.billing.ResponseHandler;
+import com.soomla.store.data.VCoinsStore;
 import com.soomla.store.data.VGoodsStore;
 import com.soomla.billing.Consts.PurchaseState;
 import com.soomla.billing.Consts.ResponseCode;
@@ -52,12 +53,14 @@ public class SoomlaStoreActivity extends Activity {
     private Context     mContext;
     private SoomlaJS    mSoomlaJS;
     private VGoodsStore mVGoodsStore;
+    private VCoinsStore mVCoinsStore;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mContext = getApplicationContext();
 
-        // Billing
+        /* Billing */
         mHandler = new Handler();
         mSoomlaPurchaseObserver = new SoomlaPurchaseObserver(mHandler);
         mBillingService = new BillingService();
@@ -67,11 +70,9 @@ public class SoomlaStoreActivity extends Activity {
             // TODO: handle what happens when in-app billing isn't supported
         }
 
-        mContext = getApplicationContext();
-        mSoomlaJS = new SoomlaJS();
-        mVGoodsStore = new VGoodsStore();
-
-        Settings.APPLICATION_CONTEXT = getApplicationContext();
+        mSoomlaJS =    new SoomlaJS();         // The Native<->JS implementation
+        mVGoodsStore = new VGoodsStore(getApplicationContext());
+        mVCoinsStore = new VCoinsStore(getApplicationContext());
 
         Bundle bundle = getIntent().getExtras();
         String layout = bundle.getString("layout");

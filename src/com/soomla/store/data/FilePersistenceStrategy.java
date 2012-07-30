@@ -1,7 +1,6 @@
 package com.soomla.store.data;
 
 import android.content.Context;
-import com.soomla.store.Settings;
 
 import java.io.*;
 
