@@ -14,6 +14,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import com.soomla.store.data.FilePersistenceStrategy;
+import com.soomla.store.data.VStoreManager;
 
 /**
  * USED FOR TESTING !!!
@@ -21,6 +23,7 @@ import android.widget.Button;
 public class SoomlaActivity extends Activity {
 
     private Context mContext;
+    private VStoreManager mVStoreManager;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -28,6 +31,9 @@ public class SoomlaActivity extends Activity {
         setContentView(R.layout.main);
 
         mContext = getApplicationContext();
+        VStoreManager.getInstance().initialize(getApplicationContext(),
+                new FilePersistenceStrategy("soomla.vcoins", getApplicationContext()),
+                new FilePersistenceStrategy("soomla.vgoods", getApplicationContext()));
 
         Button btn = (Button) findViewById(R.id.main_btn);
         btn.setOnClickListener(new View.OnClickListener() {

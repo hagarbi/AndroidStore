@@ -26,8 +26,8 @@ public class VCoinsStore extends AbstractVStore {
 	private int     mBalance;
     private String  mImageFilePath;
 
-    public VCoinsStore(Context context) {
-        super(new FilePersistenceStrategy("soomla.coins", context), context);
+    public VCoinsStore(Context context, IPersistenceStrategy strategy) {
+        super(strategy, context);
     }
 
     @Override

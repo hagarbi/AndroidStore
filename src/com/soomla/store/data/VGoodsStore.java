@@ -26,8 +26,8 @@ import com.soomla.store.domain.VGood;
 public class VGoodsStore extends AbstractVStore {
 	private HashMap<String, Integer> mStore;
 
-    public VGoodsStore(Context context) {
-        super(new FilePersistenceStrategy("soomla.vgoods", context), context);
+    public VGoodsStore(Context context, IPersistenceStrategy strategy) {
+        super(strategy, context);
         this.mStore = new HashMap<String, Integer>();
     }
 

@@ -25,7 +25,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.widget.Toast;
@@ -33,8 +32,6 @@ import com.soomla.billing.BillingService;
 import com.soomla.billing.Consts;
 import com.soomla.billing.PurchaseObserver;
 import com.soomla.billing.ResponseHandler;
-import com.soomla.store.data.VCoinsStore;
-import com.soomla.store.data.VGoodsStore;
 import com.soomla.billing.Consts.PurchaseState;
 import com.soomla.billing.Consts.ResponseCode;
 import com.soomla.billing.BillingService.RestoreTransactions;
@@ -52,8 +49,6 @@ public class SoomlaStoreActivity extends Activity {
     private WebView     mWebView;
     private Context     mContext;
     private SoomlaJS    mSoomlaJS;
-    private VGoodsStore mVGoodsStore;
-    private VCoinsStore mVCoinsStore;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -71,8 +66,6 @@ public class SoomlaStoreActivity extends Activity {
         }
 
         mSoomlaJS =    new SoomlaJS();         // The Native<->JS implementation
-        mVGoodsStore = new VGoodsStore(getApplicationContext());
-        mVCoinsStore = new VCoinsStore(getApplicationContext());
 
         Bundle bundle = getIntent().getExtras();
         String layout = bundle.getString("layout");
@@ -94,6 +87,9 @@ public class SoomlaStoreActivity extends Activity {
         mWebView.loadUrl("file:///android_asset/" + layout + ".html");
 
         setContentView(mWebView);
+
+        //TODO: call initialization script here
+//        mWebView.loadUrl("javascript:[init_fucntion_name]");
     }
 
     class SoomlaJS {
@@ -103,6 +99,10 @@ public class SoomlaStoreActivity extends Activity {
         }
 
         public void back(){
+
+        }
+
+        public void storeInitialized(){
 
         }
 
@@ -154,6 +154,7 @@ public class SoomlaStoreActivity extends Activity {
                 } else {
                     // TODO: see if needs a change. Maybe close the store when billing is not supported ?!
                     //       and maybe not b/c the user may still buy goods with coins.
+                    //       best solution is to just tell webview to disable "buy more coins" button
                     showDialog(SoomlaConsts.DIALOG_BILLING_NOT_SUPPORTED_ID);
                 }
             } else if (type.equals(Consts.ITEM_TYPE_SUBSCRIPTION)) {
@@ -181,8 +182,10 @@ public class SoomlaStoreActivity extends Activity {
                 // purchase was sent to server
             } else if (responseCode == Consts.ResponseCode.RESULT_USER_CANCELED) {
                 // purchase canceled by user
+                // TODO: tell webview
             } else {
                 // purchase failed !
+                // TODO: tell webview
             }
         }
 
