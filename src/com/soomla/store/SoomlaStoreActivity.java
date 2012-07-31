@@ -62,7 +62,7 @@ public class SoomlaStoreActivity extends Activity {
         mBillingService.setContext(this);
         ResponseHandler.register(mSoomlaPurchaseObserver);
         if (!mBillingService.checkBillingSupported(Consts.ITEM_TYPE_INAPP)){
-            // TODO: handle what happens when in-app billing isn't supported
+            // TODO: handle no connectivity
         }
 
         mSoomlaJS =    new SoomlaJS();         // The Native<->JS implementation
@@ -96,14 +96,16 @@ public class SoomlaStoreActivity extends Activity {
         public void purchased(String itemData){
             Toast toast = Toast.makeText(mContext, itemData, Toast.LENGTH_LONG);
             toast.show();
+
+            // TODO: ALERT
         }
 
         public void back(){
-
+            // TODO: ALERT
         }
 
         public void storeInitialized(){
-
+            // TODO: ALERT
         }
 
     }

@@ -19,8 +19,8 @@ package com.soomla.store.domain;
 public class VGood extends VItem{
     private int mVCurrencyValue;
 
-    public VGood(int mNameId, int mDescriptionId, String mImgFilePath, int mVCurrencyValue) {
-        super(mNameId, mDescriptionId, mImgFilePath);
+    public VGood(int mNameId, int mDescriptionId, String mImgFilePath, int mVCurrencyValue, String soomlaId) {
+        super(mNameId, mDescriptionId, mImgFilePath, soomlaId);
         this.mVCurrencyValue = mVCurrencyValue;
     }
 

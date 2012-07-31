@@ -8,7 +8,7 @@ package com.soomla.store.domain;
  * To change this template use File | Settings | File Templates.
  */
 public class VCurrency extends VItem{
-    public VCurrency(int mNameId, int mDescriptionId, String mImgFilePath) {
-        super(mNameId, mDescriptionId, mImgFilePath);
+    public VCurrency(int mNameId, int mDescriptionId, String mImgFilePath, String soomlaId) {
+        super(mNameId, mDescriptionId, mImgFilePath, soomlaId);
     }
 }
