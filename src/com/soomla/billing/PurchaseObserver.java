@@ -1,5 +1,20 @@
-// Copyright 2010 Google Inc. All Rights Reserved.
-
+/*
+ * Partially Copyright (C) 2012 Soomla, Inc.
+ *
+ * This code was originally written by Google Inc. as a part of the in-app purchases sample.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.soomla.billing;
 
 import android.app.Activity;
@@ -19,13 +34,10 @@ import java.lang.reflect.Method;
 /**
  * An interface for observing changes related to purchases. The main application
  * extends this class and registers an instance of that derived class with
- * {@link ResponseHandler}. The main application imp
+ * {@link ResponseHandler}.
  *
+ * Soomla implements this class in order to make UI changes according to the various purchase events.
  *
- *  salements the callbacks
- * {@link #onBillingSupported(boolean)} and
- * {@link #onPurchaseStateChange(PurchaseState, String, int, long)}.  These methods
- * are used to update the UI.
  */
 public abstract class PurchaseObserver {
     private static final String TAG = "PurchaseObserver";
@@ -45,7 +57,7 @@ public abstract class PurchaseObserver {
 
     /**
      * This is the callback that is invoked when Android Market responds to the
-     * {@link BillingService#checkBillingSupported()} request.
+     * {@link BillingService#checkBillingSupported(String)} request.
      * @param supported true if in-app billing is supported.
      */
     public abstract void onBillingSupported(boolean supported, String type);
@@ -53,29 +65,26 @@ public abstract class PurchaseObserver {
     /**
      * This is the callback that is invoked when an item is purchased,
      * refunded, or canceled.  It is the callback invoked in response to
-     * calling {@link BillingService#requestPurchase(String)}.  It may also
+     * calling {@link BillingService#requestPurchase(String, String, String)}. It may also
      * be invoked asynchronously when a purchase is made on another device
      * (if the purchase was for a Market-managed item), or if the purchase
-     * was refunded, or the charge was canceled.  This handles the UI
-     * update.  The database update is handled in
-     * {@link ResponseHandler#purchaseResponse(android.content.Context, PurchaseState,
-     * String, String, long)}.
+     * was refunded, or the charge was canceled. This handles the UI
+     * update.
      * @param purchaseState the purchase state of the item
      * @param itemId a string identifying the item (the "SKU")
-     * @param quantity the current quantity of this item after the purchase
      * @param purchaseTime the time the product was purchased, in
      * milliseconds since the epoch (Jan 1, 1970)
      */
     public abstract void onPurchaseStateChange(PurchaseState purchaseState,
-            String itemId, int quantity, long purchaseTime, String developerPayload);
+            String itemId, long purchaseTime, String developerPayload);
 
     /**
      * This is called when we receive a response code from Market for a
      * RequestPurchase request that we made.  This is NOT used for any
      * purchase state changes.  All purchase state changes are received in
-     * {@link #onPurchaseStateChange(PurchaseState, String, int, long)}.
+     * {@link #onPurchaseStateChange(Consts.PurchaseState, String, long, String)}.
      * This is used for reporting various errors, or if the user backed out
-     * and didn't purchase the item.  The possible response codes are:
+     * and didn't purchase the item. The possible response codes are:
      *   RESULT_OK means that the order was sent successfully to the server.
      *       The onPurchaseStateChange() will be invoked later (with a
      *       purchase state of PURCHASED or CANCELED) when the order is
@@ -140,24 +149,5 @@ public abstract class PurchaseObserver {
                 Log.e(TAG, "error starting activity", e);
             }
         }
-    }
-
-    /**
-     * Updates the UI after the database has been updated.  This method runs
-     * in a background thread so it has to post a Runnable to run on the UI
-     * thread.
-     * @param purchaseState the purchase state of the item
-     * @param itemId a string identifying the item
-     * @param quantity the quantity of items in this purchase
-     */
-    void postPurchaseStateChange(final PurchaseState purchaseState, final String itemId,
-            final int quantity, final long purchaseTime, final String developerPayload) {
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                onPurchaseStateChange(
-                        purchaseState, itemId, quantity, purchaseTime, developerPayload);
-            }
-        });
     }
 }

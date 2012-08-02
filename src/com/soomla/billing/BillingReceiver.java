@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2010 The Android Open Source Project
+ * Portions Copyright (C) 2012 Soomla, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,8 +30,6 @@ import android.util.Log;
  * network I/O, database updates, or any tasks that might take a long time to complete.
  * It also must not start a background thread because that may be killed as soon as
  * {@link #onReceive(android.content.Context, android.content.Intent)} returns.
- *
- * You should modify and obfuscate this code before using it.
  */
 public class BillingReceiver extends BroadcastReceiver {
     private static final String TAG = "BillingReceiver";

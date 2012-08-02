@@ -1,4 +1,20 @@
-// Copyright 2010 Google Inc. All Rights Reserved.
+/*
+ * Partially Copyright (C) 2012 Soomla, Inc.
+ *
+ * This code was originally written by Google Inc. as a part of the in-app purchases sample.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package com.soomla.billing;
 
@@ -12,15 +28,8 @@ import com.soomla.billing.Consts.PurchaseState;
 import com.soomla.billing.Consts.ResponseCode;
 
 /**
- * This class contains the methods that handle responses from Android Market.  The
- * implementation of these methods is specific to a particular application.
- * The methods in this example update the database and, if the main application
- * has registered a {@llink PurchaseObserver}, will also update the UI.  An
- * application might also want to forward some responses on to its own server,
- * and that could be done here (in a background thread) but this example does
- * not do that.
- *
- * You should modify and obfuscate this code before using it.
+ * This class contains the methods that handle responses from Android Market.
+ * This class updates the UI through the registered PurchaseObserver.
  */
 public class ResponseHandler {
     private static final String TAG = "ResponseHandler";
@@ -51,7 +60,7 @@ public class ResponseHandler {
     /**
      * Notifies the application of the availability of the MarketBillingService.
      * This method is called in response to the application calling
-     * {@link BillingService#checkBillingSupported()}.
+     * {@link BillingService#checkBillingSupported(String)}.
      * @param supported true if in-app billing is supported.
      */
     public static void checkBillingSupportedResponse(boolean supported, String type) {
@@ -83,7 +92,7 @@ public class ResponseHandler {
     /**
      * Notifies the application of purchase state changes. The application
      * can offer an item for sale to the user via
-     * {@link BillingService#requestPurchase(String)}. The BillingService
+     * {@link BillingService#requestPurchase(String, String, String)}. The BillingService
      * calls this method after it gets the response. Another way this method
      * can be called is if the user bought something on another device running
      * this same app. Then Android Market notifies the other devices that
@@ -103,29 +112,10 @@ public class ResponseHandler {
             final Context context, final PurchaseState purchaseState, final String productId,
             final String orderId, final long purchaseTime, final String developerPayload) {
 
-        // Update the database with the purchase state. We shouldn't do that
-        // from the main thread so we do the work in a background thread.
-        // We don't update the UI here. We will update the UI after we update
-        // the database because we need to read and update the current quantity
-        // first.
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                PurchaseDatabase db = new PurchaseDatabase(context);
-                int quantity = db.updatePurchase(
-                        orderId, productId, purchaseState, purchaseTime, developerPayload);
-                db.close();
-
-                // This needs to be synchronized because the UI thread can change the
-                // value of sPurchaseObserver.
-                synchronized(ResponseHandler.class) {
-                    if (sPurchaseObserver != null) {
-                        sPurchaseObserver.postPurchaseStateChange(
-                                purchaseState, productId, quantity, purchaseTime, developerPayload);
-                    }
-                }
+            if (sPurchaseObserver != null) {
+                sPurchaseObserver.onPurchaseStateChange(
+                        purchaseState, productId, purchaseTime, developerPayload);
             }
-        }).start();
     }
 
     /**

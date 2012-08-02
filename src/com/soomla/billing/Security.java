@@ -1,4 +1,20 @@
-// Copyright 2010 Google Inc. All Rights Reserved.
+/*
+ * Partially Copyright (C) 2012 Soomla, Inc.
+ *
+ * This code was originally written by Google Inc. as a part of the in-app purchases sample.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 package com.soomla.billing;
 
@@ -20,8 +36,7 @@ import java.util.HashSet;
 /**
  * Security-related methods. For a secure implementation, all of this code
  * should be implemented on a server that communicates with the
- * application on the device. For the sake of simplicity and clarity of this
- * example, this code is included here and is executed on the device. If you
+ * application on the device. If you
  * must verify the purchases on the phone, you should obfuscate this code to
  * make it harder for an attacker to replace the code with stubs that treat all
  * purchases as verified.

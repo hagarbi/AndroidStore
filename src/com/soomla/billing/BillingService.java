@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2010 The Android Open Source Project
+ * Portions Copyright (C) 2012 Soomla, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,7 +42,6 @@ import java.util.LinkedList;
  * The {@link BillingReceiver} class starts this service to process commands
  * that it receives from Android Market.
  *
- * You should modify and obfuscate this code before using it.
  */
 public class BillingService extends Service implements ServiceConnection {
     private static final String TAG = "BillingService";
@@ -171,20 +171,11 @@ public class BillingService extends Service implements ServiceConnection {
 
     /**
      * Wrapper class that checks if in-app billing is supported.
-     *
-     * Note: Support for subscriptions implies support for one-time purchases. However, the opposite
-     * is not true.
-     *
-     * Developers may want to perform two checks if both one-time and subscription products are
-     * available.
      */
     class CheckBillingSupported extends BillingRequest {
         public String mProductType = null;
 
         /** Legacy contrustor
-         *
-         * This constructor is provided for legacy purposes. Assumes the calling application will
-         * not be using any features not present in API v1, such as subscriptions.
          */
         @Deprecated
         public CheckBillingSupported() {
@@ -195,12 +186,6 @@ public class BillingService extends Service implements ServiceConnection {
         }
 
         /** Constructor
-         *
-         * Note: Support for subscriptions implies support for one-time purchases. However, the
-         * opposite is not true.
-         *
-         * Developers may want to perform two checks if both one-time and subscription products are
-         * available.
          *
          * @pram itemType Either Consts.ITEM_TYPE_INAPP or Consts.ITEM_TYPE_SUBSCRIPTION, indicating
          * the type of item support is being checked for.
@@ -389,12 +374,16 @@ public class BillingService extends Service implements ServiceConnection {
             Security.removeNonce(mNonce);
         }
 
+
         @Override
         protected void responseCodeReceived(Consts.ResponseCode responseCode) {
             ResponseHandler.responseCodeReceived(BillingService.this, this, responseCode);
         }
     }
 
+    /** Constructor
+     *
+     */
     public BillingService() {
         super();
     }
@@ -412,8 +401,10 @@ public class BillingService extends Service implements ServiceConnection {
     }
 
     @Override
-    public void onStart(Intent intent, int startId) {
+    public int onStartCommand(Intent intent, int flags, int startId) {
         handleCommand(intent, startId);
+
+        return START_STICKY;
     }
 
     /**
@@ -470,16 +461,6 @@ public class BillingService extends Service implements ServiceConnection {
             Log.e(TAG, "Security exception: " + e);
         }
         return false;
-    }
-
-    /**
-     * Checks if in-app billing is supported. Assumes this is a one-time purchase.
-     *
-     * @return true if supported; false otherwise
-     */
-    @Deprecated
-    public boolean checkBillingSupported() {
-        return new CheckBillingSupported().runRequest();
     }
 
     /**
@@ -552,7 +533,7 @@ public class BillingService extends Service implements ServiceConnection {
 
     /**
      * Verifies that the data was signed with the given signature, and calls
-     * {@link ResponseHandler#purchaseResponse(android.content.Context, com.soomla.dungeons.Consts.PurchaseState, String, String, long)}
+     * {@link ResponseHandler#purchaseResponse(Context, Consts.PurchaseState, String, String, long, String)}
      * for each verified purchase.
      * @param startId an identifier for the invocation instance of this service
      * @param signedData the signed JSON string (signed, not encrypted)
