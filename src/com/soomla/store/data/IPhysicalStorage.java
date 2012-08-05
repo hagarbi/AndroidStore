@@ -13,18 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.soomla.store.data;
 
-package com.soomla.store.domain;
-
-public class VGood extends VItem{
-    private int mVCurrencyValue;
-
-    public VGood(int mNameId, int mDescriptionId, String mImgFilePath, int mVCurrencyValue, String soomlaId) {
-        super(mNameId, mDescriptionId, mImgFilePath, soomlaId);
-        this.mVCurrencyValue = mVCurrencyValue;
-    }
-
-    public int getmVCurrencyValue(){
-        return mVCurrencyValue;
-    }
+/**
+ * This interface defines the functions used to access the physical storage (files, DB, ...)
+ */
+public interface IPhysicalStorage {
+    /**
+     * This function loads the store's data from the given persistence strategy.
+     */
+    String load();
+    /**
+     * This function saves the store's data from the given persistence strategy.
+     */
+    void save(String data);
 }
