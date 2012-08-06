@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="com.soomla.store"
+          android:versionCode="1"
+          android:versionName="1.0">
+    <uses-sdk android:minSdkVersion="4" android:targetSdkVersion="13"/>
+
+    <!-- Add this user-permission to your AndroidManifest.xml -->
+    <uses-permission android:name="com.android.vending.BILLING" />
+
+    <application>
+
+        <!-- Add this service to your AndroidManifest.xml -->
+        <service android:name="com.soomla.billing.BillingService" />
+
+        <!-- Add this receiver to your AndroidManifest.xml -->
+        <receiver android:name="com.soomla.billing.BillingReceiver">
+            <intent-filter>
+                <action android:name="com.android.vending.billing.IN_APP_NOTIFY" />
+                <action android:name="com.android.vending.billing.RESPONSE_CODE" />
+                <action android:name="com.android.vending.billing.PURCHASE_STATE_CHANGED" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Add this activity to your AndroidManifest.xml -->
+        <activity
+                android:name="com.soomla.store.SoomlaStoreActivity" />
+
+    </application>
+</manifest>
