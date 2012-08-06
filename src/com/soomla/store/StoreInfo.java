@@ -12,11 +12,11 @@ import java.util.HashMap;
 public class StoreInfo {
 
     public static StoreInfo getInstance(){
-        if (mInstance == null){
-            mInstance = new StoreInfo();
+        if (sInstance == null){
+            sInstance = new StoreInfo();
         }
 
-        return mInstance;
+        return sInstance;
     }
 
     public void initialize(VirtualCurrency mVirtualCurrency, HashMap<String, VirtualCurrencyPack> mPacksOptions){
@@ -34,7 +34,7 @@ public class StoreInfo {
 
     private StoreInfo() { }
 
-    private static StoreInfo                        mInstance = null;
+    private static StoreInfo                        sInstance = null;
     private VirtualCurrency                         mVirtualCurrency;
     private HashMap<String, VirtualCurrencyPack>    mPacksOptions;
 }

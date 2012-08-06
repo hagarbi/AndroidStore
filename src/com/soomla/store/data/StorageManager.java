@@ -24,17 +24,19 @@ package com.soomla.store.data;
 public class StorageManager {
 
     public static StorageManager getInstance(){
-        if (mInstance == null){
-            mInstance = new StorageManager();
+        if (sInstance == null){
+            sInstance = new StorageManager();
         }
 
-        return mInstance;
+        return sInstance;
     }
 
     public void initialize(IPhysicalStorage virtualCurrencyPhysicalStorage,
-                           IPhysicalStorage virtualGoodsPhysicalStorage){
-        mVirtualCurrencyStorage = new VirtualCurrencyStorage(virtualCurrencyPhysicalStorage);
-        mVirtualGoodsStorage = new VirtualGoodsStorage(virtualGoodsPhysicalStorage);
+                           IPhysicalStorage virtualGoodsPhysicalStorage,
+                           IPhysicalStorage marketPurchasePhysicalStorage){
+        mVirtualCurrencyStorage =   new VirtualCurrencyStorage(virtualCurrencyPhysicalStorage);
+        mVirtualGoodsStorage =      new VirtualGoodsStorage(virtualGoodsPhysicalStorage);
+        mMarketPurchaseStorage =    new MarketPurchaseStorage(marketPurchasePhysicalStorage);
     }
 
     public VirtualCurrencyStorage getVirtualCurrencyStorage(){
@@ -54,5 +56,5 @@ public class StorageManager {
     private VirtualGoodsStorage     mVirtualGoodsStorage;
     private VirtualCurrencyStorage  mVirtualCurrencyStorage;
     private MarketPurchaseStorage   mMarketPurchaseStorage;
-    private static StorageManager   mInstance;
+    private static StorageManager   sInstance;
 }
