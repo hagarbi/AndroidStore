@@ -15,15 +15,11 @@
  */
 package com.soomla.store.data;
 
-import com.soomla.store.domain.VirtualCurrency;
-
 /**
  * This is the place where all the relevant storage classes are created.
  * This is a singleton class and you can call it from your application in order
  * to get he instances of the Virtual goods/currency storage. You will usually
- * needs the storage in order to get/set the amounts of virtual goods/currency.
- * This class also holds and serves the pointer to the single {@link VirtualCurrency}
- * in the entire application.
+ * need the storage in order to get/set the amounts of virtual goods/currency.
  */
 public class StorageManager {
 
@@ -36,11 +32,9 @@ public class StorageManager {
     }
 
     public void initialize(IPhysicalStorage virtualCurrencyPhysicalStorage,
-                           IPhysicalStorage virtualGoodsPhysicalStorage,
-                           VirtualCurrency mVirtualCurrency){
+                           IPhysicalStorage virtualGoodsPhysicalStorage){
         mVirtualCurrencyStorage = new VirtualCurrencyStorage(virtualCurrencyPhysicalStorage);
         mVirtualGoodsStorage = new VirtualGoodsStorage(virtualGoodsPhysicalStorage);
-        this.mVirtualCurrency = mVirtualCurrency;
     }
 
     public VirtualCurrencyStorage getVirtualCurrencyStorage(){
@@ -51,14 +45,14 @@ public class StorageManager {
         return mVirtualGoodsStorage;
     }
 
-    public VirtualCurrency getVirtualCurrency(){
-        return mVirtualCurrency;
+    public MarketPurchaseStorage getMarketPurchaseStorage() {
+        return mMarketPurchaseStorage;
     }
 
     private StorageManager(){ }
 
     private VirtualGoodsStorage     mVirtualGoodsStorage;
     private VirtualCurrencyStorage  mVirtualCurrencyStorage;
-    private VirtualCurrency         mVirtualCurrency;
+    private MarketPurchaseStorage   mMarketPurchaseStorage;
     private static StorageManager   mInstance;
 }

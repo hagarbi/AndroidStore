@@ -26,6 +26,9 @@ import com.soomla.billing.BillingService.RequestPurchase;
 import com.soomla.billing.BillingService.RestoreTransactions;
 import com.soomla.billing.Consts.PurchaseState;
 import com.soomla.billing.Consts.ResponseCode;
+import com.soomla.store.StoreInfo;
+import com.soomla.store.data.StorageManager;
+import com.soomla.store.domain.VirtualCurrencyPack;
 
 /**
  * This class contains the methods that handle responses from Android Market.
@@ -112,10 +115,36 @@ public class ResponseHandler {
             final Context context, final PurchaseState purchaseState, final String productId,
             final String orderId, final long purchaseTime, final String developerPayload) {
 
-            if (sPurchaseObserver != null) {
-                sPurchaseObserver.onPurchaseStateChange(
-                        purchaseState, productId, purchaseTime, developerPayload);
+        // Update the storage with the new purchase. We shouldn't do that
+        // from the main thread so we do the work in a background thread.
+        // We don't update the UI here. We will update the UI after we update
+        // the database because we need to read and update the current quantity
+        // first.
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                // adding a record to history
+                StorageManager.getInstance().getMarketPurchaseStorage().add(
+                        purchaseState, productId, orderId, purchaseTime, developerPayload);
+
+                // updating the currency balance
+                // note that a refunded purchase is treated as a purchase.
+                // a friendly refund policy is nice for the user.
+                if (purchaseState == PurchaseState.PURCHASED || purchaseState == PurchaseState.REFUNDED) {
+                    VirtualCurrencyPack pack = StoreInfo.getInstance().getPackByGoogleProductId(productId);
+                    StorageManager.getInstance().getVirtualCurrencyStorage().add(pack.getmCurrencyAmout());
+                }
+
+                // This needs to be synchronized because the UI thread can change the
+                // value of sPurchaseObserver.
+                synchronized(ResponseHandler.class) {
+                    if (sPurchaseObserver != null) {
+                        sPurchaseObserver.postPurchaseStateChange(
+                                purchaseState, productId, purchaseTime, developerPayload);
+                    }
+                }
             }
+        }).start();
     }
 
     /**

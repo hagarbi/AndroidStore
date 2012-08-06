@@ -150,4 +150,22 @@ public abstract class PurchaseObserver {
             }
         }
     }
+
+    /**
+     * Updates the UI after the database has been updated.  This method runs
+     * in a background thread so it has to post a Runnable to run on the UI
+     * thread.
+     * @param purchaseState the purchase state of the item
+     * @param itemId a string identifying the item
+     */
+    void postPurchaseStateChange(final PurchaseState purchaseState, final String itemId,
+                                 final long purchaseTime, final String developerPayload) {
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                onPurchaseStateChange(
+                        purchaseState, itemId, purchaseTime, developerPayload);
+            }
+        });
+    }
 }
