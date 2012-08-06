@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.soomla.store;
 
 import android.app.Activity;
@@ -25,8 +24,11 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
+import android.webkit.ConsoleMessage;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.Toast;
 import com.soomla.billing.BillingService;
 import com.soomla.billing.Consts;
@@ -43,7 +45,6 @@ public class SoomlaStoreActivity extends Activity {
 
     // Billing
     private SoomlaPurchaseObserver  mSoomlaPurchaseObserver;
-    private Handler                 mHandler;
     private BillingService          mBillingService;
 
     private WebView     mWebView;
@@ -56,8 +57,8 @@ public class SoomlaStoreActivity extends Activity {
         mContext = getApplicationContext();
 
         /* Billing */
-        mHandler = new Handler();
-        mSoomlaPurchaseObserver = new SoomlaPurchaseObserver(mHandler);
+        Handler handler = new Handler();
+        mSoomlaPurchaseObserver = new SoomlaPurchaseObserver(handler);
         mBillingService = new BillingService();
         mBillingService.setContext(this);
         ResponseHandler.register(mSoomlaPurchaseObserver);
@@ -75,27 +76,38 @@ public class SoomlaStoreActivity extends Activity {
         mWebView.getSettings().setJavaScriptEnabled(true);
         mWebView.addJavascriptInterface(mSoomlaJS, "Soomla");
 
+        mWebView.setWebViewClient(new WebViewClient() {
+
+            public void onPageFinished(WebView view, String url) {
+                if (url.equals("file:///android_asset/preview.html"))
+                {
+                    //TODO: call initialization script here
+                }
+            }
+        });
+
         mWebView.setWebChromeClient(new WebChromeClient() {
-//            public boolean onConsoleMessage(ConsoleMessage cm) {
-//                Log.d("MyApplication", cm.message() + " -- From line "
-//                        + cm.lineNumber() + " of "
-//                        + cm.sourceId() );
-//                return true;
-//            }
+            public boolean onConsoleMessage(ConsoleMessage cm) {
+                Log.d("Soomla Android", cm.message() + " -- From line "
+                        + cm.lineNumber() + " of "
+                        + cm.sourceId());
+                return true;
+            }
         });
 
         mWebView.loadUrl("file:///android_asset/" + layout + ".html");
 
         setContentView(mWebView);
 
-        //TODO: call initialization script here
-//        mWebView.loadUrl("javascript:[init_fucntion_name]");
+
     }
 
     class SoomlaJS {
         public void purchased(String itemData){
             Toast toast = Toast.makeText(mContext, itemData, Toast.LENGTH_LONG);
             toast.show();
+
+            mBillingService.requestPurchase("android.test.purchased", Consts.ITEM_TYPE_INAPP, "");
 
             // TODO: ALERT
         }
@@ -106,6 +118,54 @@ public class SoomlaStoreActivity extends Activity {
 
         public void storeInitialized(){
             // TODO: ALERT
+        }
+
+        public void initialized(String sad){
+            Toast toast = Toast.makeText(mContext, sad, Toast.LENGTH_LONG);
+            toast.show();
+
+            mWebView.loadUrl("javascript:Soomla.newStoreFromJSON({" +
+                    "    template : {" +
+                    "        name : \"basic\"," +
+                    "        elements : {" +
+                    "            title : {" +
+                    "                text : \"The surfboard store\"" +
+                    "            }" +
+                    "        }" +
+                    "    }})");
+
+                    String s = "javascript:SoomlaJS.newStoreFromJSON('{" +
+                    "    template : {" +
+                    "        name : \"basic\"," +
+                    "        elements : {" +
+                    "            title : {" +
+                    "                text : \"The surfboard store\"" +
+                    "            }" +
+                    "        }" +
+                    "    }," +
+                    "    background : \"img/backgrounds/green-bubbles.jpg\"," +
+                    "    currency : {" +
+                    "        name : \"clams\"," +
+                    "        image : \"http://example.com/img/clam.jpg\"" +
+                    "    }," +
+                    "    virtualGoods : [" +
+                    "        {" +
+                    "            name : \"Rip Curl Shortboard\"," +
+                    "            description : \"Shred the small waves with this super-fast board\"," +
+                    "            src : \"img/boards/rip-curl.jpg\"," +
+                    "            price : 100," +
+                    "            productId : 2988822" +
+                    "        }," +
+                    "        {" +
+                    "            name : \"Billanbog Vintage Longboard\"," +
+                    "            description : \"Slowly glide through low power surf and hang five\"," +
+                    "            src : \"http://example.com/img/boards/billabong-logboard.jpg\"," +
+                    "            price : 150," +
+                    "            productId : 2988823" +
+                    "        }" +
+                    "    ]" +
+                    "}')";
+
         }
 
     }
@@ -168,10 +228,11 @@ public class SoomlaStoreActivity extends Activity {
 
         @Override
         public void onPurchaseStateChange(PurchaseState purchaseState, String itemId,
-                                          int quantity, long purchaseTime, String developerPayload) {
+                                          long purchaseTime, String developerPayload) {
 
             if (purchaseState == PurchaseState.PURCHASED) {
                 // TODO: the item was purchased, add it to the store according to itemId
+                mWebView.loadUrl("javascript:vCoinPurchased('...')");
             }
 
             // TODO: refresh UI here
