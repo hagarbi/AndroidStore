@@ -89,6 +89,10 @@ public class MarketPurchaseStorage {
         Gson gson = new Gson();
         mPurchaseHistories = gson.fromJson(storageJson,
                 new TypeToken<HashMap<String, MarketPurchaseHistory>>() {}.getType());
+
+        if (mPurchaseHistories == null){
+            mPurchaseHistories = new HashMap<String, MarketPurchaseHistory>();
+        }
     }
 
     private String storageToJson() {
