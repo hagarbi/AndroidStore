@@ -38,6 +38,7 @@ import com.soomla.billing.Consts.PurchaseState;
 import com.soomla.billing.Consts.ResponseCode;
 import com.soomla.billing.BillingService.RestoreTransactions;
 import com.soomla.billing.BillingService.RequestPurchase;
+import com.soomla.store.test.R;
 
 import java.util.Locale;
 

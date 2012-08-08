@@ -58,6 +58,8 @@ public class VirtualCurrencyStorage {
      */
     public void remove(int amount){
         mBalance -= amount;
+        if (mBalance < 0) mBalance = 0; // you can't have negative amount of currency
+
         mPhysicalStorage.save(storageToJson());
     }
 

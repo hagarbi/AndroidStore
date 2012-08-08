@@ -32,14 +32,17 @@ public class VirtualGoodsStorage {
      */
     public VirtualGoodsStorage(IPhysicalStorage mPhysicalStorage) {
         this.mPhysicalStorage = mPhysicalStorage;
-        this.mStore = new HashMap<String, Integer>();
+        this.mStorage = new HashMap<String, Integer>();
     }
 
     /** Getters **/
 
     public int getBalance(VirtualGood vgood){
         storageFromJson(mPhysicalStorage.load());
-		return mStore.get(vgood.getItemId());
+        if (!mStorage.containsKey(vgood.getItemId())){
+            return 0;
+        }
+		return mStorage.get(vgood.getItemId());
 	}
 
     /** Public functions **/
@@ -49,11 +52,11 @@ public class VirtualGoodsStorage {
     * @param amount is the amount of currency to add.
     */
     public void add(VirtualGood vgood, int amount){
-		if (!mStore.containsKey(vgood.getItemId())){
-			mStore.put(vgood.getItemId(), 0);
+		if (!mStorage.containsKey(vgood.getItemId())){
+			mStorage.put(vgood.getItemId(), 0);
 		}
 		
-		mStore.put(vgood.getItemId(), mStore.get(vgood.getItemId()) + amount);
+		mStorage.put(vgood.getItemId(), mStorage.get(vgood.getItemId()) + amount);
         mPhysicalStorage.save(storageToJson());
 	}
 
@@ -63,12 +66,12 @@ public class VirtualGoodsStorage {
      * @param amount is the amount to remove.
      */
     public void remove(VirtualGood virtualGood, int amount){
-		if (!mStore.containsKey(virtualGood.getItemId())){
+		if (!mStorage.containsKey(virtualGood.getItemId())){
 			return;
 		}
 		
-		int balance = mStore.get(virtualGood.getItemId()) - amount;
-		mStore.put(virtualGood.getItemId(), balance > 0 ? balance : 0);
+		int balance = mStorage.get(virtualGood.getItemId()) - amount;
+		mStorage.put(virtualGood.getItemId(), balance > 0 ? balance : 0);
         mPhysicalStorage.save(storageToJson());
 	}
 
@@ -76,17 +79,20 @@ public class VirtualGoodsStorage {
 
     private void storageFromJson(String storageJson) {
         Gson gson = new Gson();
-        mStore = gson.fromJson(storageJson, new TypeToken<HashMap<String, Integer>>() {}.getType());
+        mStorage = gson.fromJson(storageJson, new TypeToken<HashMap<String, Integer>>() {}.getType());
+        if (mStorage == null){
+            mStorage = new HashMap<String, Integer>();
+        }
     }
 
     private String storageToJson() {
         Gson gson = new Gson();
-        return gson.toJson(mStore);
+        return gson.toJson(mStorage);
     }
 
     /** Private members **/
 
-    private HashMap<String, Integer> mStore;
+    private HashMap<String, Integer> mStorage;
     private IPhysicalStorage mPhysicalStorage;
 
 }
