@@ -18,7 +18,6 @@ package com.soomla.store.data;
 
 import com.xtremelabs.robolectric.Robolectric;
 import org.junit.Before;
-import org.junit.Test;
 
 public class StorageManagerTest {
 
