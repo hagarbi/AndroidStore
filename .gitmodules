@@ -1,0 +1,3 @@
+[submodule "SoomlaAndroidStore/assets"]
+	path = SoomlaAndroidStore/assets
+	url = git@github.com:gurdotan/Soomla-Generator.git
