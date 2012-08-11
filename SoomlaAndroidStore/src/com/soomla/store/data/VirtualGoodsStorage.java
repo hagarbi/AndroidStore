@@ -51,13 +51,15 @@ public class VirtualGoodsStorage {
     * Adds the given amount of currency to the storage.
     * @param amount is the amount of currency to add.
     */
-    public void add(VirtualGood vgood, int amount){
+    public int add(VirtualGood vgood, int amount){
 		if (!mStorage.containsKey(vgood.getItemId())){
 			mStorage.put(vgood.getItemId(), 0);
 		}
 		
 		mStorage.put(vgood.getItemId(), mStorage.get(vgood.getItemId()) + amount);
         mPhysicalStorage.save(storageToJson());
+
+        return mStorage.get(vgood);
 	}
 
     /**

@@ -38,7 +38,9 @@ import com.soomla.billing.Consts.PurchaseState;
 import com.soomla.billing.Consts.ResponseCode;
 import com.soomla.billing.BillingService.RestoreTransactions;
 import com.soomla.billing.BillingService.RequestPurchase;
-import com.soomla.store.test.R;
+import com.soomla.store.data.StorageManager;
+import com.soomla.store.domain.VirtualCurrencyPack;
+import com.soomla.store.domain.VirtualGood;
 
 import java.util.Locale;
 
@@ -75,17 +77,7 @@ public class SoomlaStoreActivity extends Activity {
         /* Setting up the store WebView */
         mWebView = new WebView(this);
         mWebView.getSettings().setJavaScriptEnabled(true);
-        mWebView.addJavascriptInterface(mSoomlaJS, "Soomla");
-
-        mWebView.setWebViewClient(new WebViewClient() {
-
-            public void onPageFinished(WebView view, String url) {
-                if (url.equals("file:///android_asset/preview.html"))
-                {
-                    //TODO: call initialization script here
-                }
-            }
-        });
+        mWebView.addJavascriptInterface(mSoomlaJS, "SoomlaNative");
 
         mWebView.setWebChromeClient(new WebChromeClient() {
             public boolean onConsoleMessage(ConsoleMessage cm) {
@@ -104,69 +96,108 @@ public class SoomlaStoreActivity extends Activity {
     }
 
     class SoomlaJS {
-        public void purchased(String itemData){
-            Toast toast = Toast.makeText(mContext, itemData, Toast.LENGTH_LONG);
+
+        public void wantsToBuyCurrencyPacks(String soomlaId){
+            Toast toast = Toast.makeText(mContext, soomlaId, Toast.LENGTH_LONG);
             toast.show();
 
             mBillingService.requestPurchase("android.test.purchased", Consts.ITEM_TYPE_INAPP, "");
 
-            // TODO: ALERT
+            // TODO: implement
         }
 
-        public void back(){
-            // TODO: ALERT
+        public void wantsToBuyVirtualGoods(String soomlaId){
+            VirtualGood good = StoreInfo.getInstance().getVirtualGoodBySoomlaId(soomlaId);
+
+            int balance = StorageManager.getInstance().getVirtualGoodsStorage().add(good, 1);
+            StorageManager.getInstance().getVirtualCurrencyStorage().remove(good.getmCurrencyValue());
+
+            sendSoomlaJS("vGoodsPurchaseEnded", "true," + soomlaId + "," + balance + ",''");
         }
 
-        public void storeInitialized(){
-            // TODO: ALERT
+        public void wantsToLeaveStore(){
+            Log.v("Soomla Android", "wantsToLeaveStore");
         }
 
-        public void initialized(String sad){
-            Toast toast = Toast.makeText(mContext, sad, Toast.LENGTH_LONG);
-            toast.show();
+        public void pageInitialized(){
 
-            mWebView.loadUrl("javascript:Soomla.newStoreFromJSON({" +
-                    "    template : {" +
-                    "        name : \"basic\"," +
-                    "        elements : {" +
-                    "            title : {" +
-                    "                text : \"The surfboard store\"" +
-                    "            }" +
-                    "        }" +
-                    "    }})");
-
-                    String s = "javascript:SoomlaJS.newStoreFromJSON('{" +
-                    "    template : {" +
-                    "        name : \"basic\"," +
-                    "        elements : {" +
-                    "            title : {" +
-                    "                text : \"The surfboard store\"" +
+            String json = "{" +
+                    " template :  {" +
+                    "     name :  \"basic\"," +
+                    "     elements :  {" +
+                    "         title :  {" +
+                    "             name :  \"The Surf Store\"" +
+                    "            }," +
+                    "         buyMore :  {" +
+                    "             text :  \"Buy more clams\"," +
+                    "             image :  \"img/examples/surf/clam.png\"" +
                     "            }" +
                     "        }" +
                     "    }," +
-                    "    background : \"img/backgrounds/green-bubbles.jpg\"," +
-                    "    currency : {" +
-                    "        name : \"clams\"," +
-                    "        image : \"http://example.com/img/clam.jpg\"" +
+                    " background :  \"img/theme-lime-bubbles.jpg\"," +
+                    " currency :  {" +
+                    "     name :  \"clams\"," +
+                    "     image :  \"img/examples/surf/clam.png\"," +
+                    "     balance\": \"0\"" +
                     "    }," +
-                    "    virtualGoods : [" +
+                    " virtualGoods :  [" +
                     "        {" +
-                    "            name : \"Rip Curl Shortboard\"," +
-                    "            description : \"Shred the small waves with this super-fast board\"," +
-                    "            src : \"img/boards/rip-curl.jpg\"," +
-                    "            price : 100," +
-                    "            productId : 2988822" +
+                    "         name :  \"Rip Curl Shortboard\"," +
+                    "         description :  \"Shred the small waves with this super-fast board\"," +
+                    "         src :  \"img/examples/surf/blue-surfboard.png\"," +
+                    "         price :  \"100\"," +
+                    "         productId :  \"2988822\"" +
                     "        }," +
                     "        {" +
-                    "            name : \"Billanbog Vintage Longboard\"," +
-                    "            description : \"Slowly glide through low power surf and hang five\"," +
-                    "            src : \"http://example.com/img/boards/billabong-logboard.jpg\"," +
-                    "            price : 150," +
-                    "            productId : 2988823" +
+                    "         name :  \"Billanbog Vintage Longboard\"," +
+                    "         description :  \"Slowly glide through low power surf and hang five\"," +
+                    "         src :  \"img/examples/surf/girl-surfboard-th.png\"," +
+                    "         price :  \"150\"," +
+                    "         productId :  \"2988823\"" +
+                    "        }" +
+                    "    ]," +
+                    " currencyPacks :  [" +
+                    "        {" +
+                    "         name :  \"Super Saver Pack\"," +
+                    "         description :  \"For you cheap skates...\"," +
+                    "         image :  \"coin.jpg\"," +
+                    "         itemId :  \"super_saver_pack\"," +
+                    "         marketItem :  \"super_saver_pack\"," +
+                    "         price :  \"0.99\"," +
+                    "         amount :  \"200\"" +
+                    "        }," +
+                    "        {" +
+                    "         name :  \"Malibu Medium Pack\"," +
+                    "         description :  \"For you cheap skates...\"," +
+                    "         image :  \"coin.jpg\"," +
+                    "         itemId :  \"super_saver_pack\"," +
+                    "         marketItem :  \"super_saver_pack\"," +
+                    "         price :  \"1.99\"," +
+                    "         amount :  \"500\"" +
+                    "        }," +
+                    "        {" +
+                    "         name :  \"Pipeline Pumpin\\' Pack\"," +
+                    "         description :  \"The holy grail for ya spendin\\' surfers\"," +
+                    "         image :  \"coin.jpg\"," +
+                    "         itemId :  \"pipeline_pumpin_pack\"," +
+                    "         marketItem :  \"pipeline_pumpin_pack\"," +
+                    "         price :  \"5.99\"," +
+                    "         amount :  \"1500\"" +
                     "        }" +
                     "    ]" +
-                    "}')";
+                    "}";
+            Log.v("Soomla Android", json);
+            sendSoomlaJS("initialize", "'" + json + "'");
 
+//            ("javascript:Soomla.newStoreFromJSON({" +
+//                    "    template : {" +
+//                    "        name : \"basic\"," +
+//                    "        elements : {" +
+//                    "            title : {" +
+//                    "                text : \"The surfboard store\"" +
+//                    "            }" +
+//                    "        }" +
+//                    "    }})");
         }
 
     }
@@ -219,6 +250,8 @@ public class SoomlaStoreActivity extends Activity {
                     //       and maybe not b/c the user may still buy goods with coins.
                     //       best solution is to just tell webview to disable "buy more coins" button
                     showDialog(SoomlaConsts.DIALOG_BILLING_NOT_SUPPORTED_ID);
+
+                    sendSoomlaJS("disableCoinsStore", "");
                 }
             } else if (type.equals(Consts.ITEM_TYPE_SUBSCRIPTION)) {
                 // TODO: subscription is supported. Do we want to notify someone ?
@@ -231,9 +264,17 @@ public class SoomlaStoreActivity extends Activity {
         public void onPurchaseStateChange(PurchaseState purchaseState, String itemId,
                                           long purchaseTime, String developerPayload) {
 
+            VirtualCurrencyPack pack = StoreInfo.getInstance().getPackByGoogleProductId(itemId);
+            int balance = StorageManager.getInstance().getVirtualCurrencyStorage().getBalance();
+
+            // TODO: check if we need to handle PurchaseState.REFUNDED here
+
             if (purchaseState == PurchaseState.PURCHASED) {
                 // TODO: the item was purchased, add it to the store according to itemId
-                mWebView.loadUrl("javascript:vCoinPurchased('...')");
+                sendSoomlaJS("vGoodsPurchaseEnded", "true," + pack.getItemId() + "," + balance + ",''");
+            }
+            else if(purchaseState == PurchaseState.CANCELED){
+                sendSoomlaJS("vGoodsPurchaseEnded", "false," + pack.getItemId() + "," + balance + ",'You canceled the purchase'");
             }
 
             // TODO: refresh UI here
@@ -242,14 +283,20 @@ public class SoomlaStoreActivity extends Activity {
         @Override
         public void onRequestPurchaseResponse(RequestPurchase request,
                                               Consts.ResponseCode responseCode) {
+            VirtualCurrencyPack pack = StoreInfo.getInstance().getPackByGoogleProductId(request.mProductId);
+            int balance = StorageManager.getInstance().getVirtualCurrencyStorage().getBalance();
+
             if (responseCode == Consts.ResponseCode.RESULT_OK) {
                 // purchase was sent to server
             } else if (responseCode == Consts.ResponseCode.RESULT_USER_CANCELED) {
                 // purchase canceled by user
                 // TODO: tell webview
+
+                sendSoomlaJS("vGoodsPurchaseEnded", "false," + pack.getItemId() + "," + balance + ",'You canceled the purchase.'");
             } else {
                 // purchase failed !
                 // TODO: tell webview
+                sendSoomlaJS("vGoodsPurchaseEnded", "false," + pack.getItemId() + "," + balance + ",'Unexpected error occured! Your purchase is canceled.'");
             }
         }
 
@@ -321,4 +368,7 @@ public class SoomlaStoreActivity extends Activity {
         return str;
     }
 
+    private void sendSoomlaJS(String action, String data){
+        mWebView.loadUrl("javascript:SoomlaJS." + action + "(" + data + ")");
+    }
 }
