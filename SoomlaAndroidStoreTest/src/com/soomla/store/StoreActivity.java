@@ -2,7 +2,6 @@ package com.soomla.store;
 
 import android.app.Activity;
 import android.os.Bundle;
-import com.soomla.store.test.R;
 
 public class StoreActivity extends Activity {
     /**
