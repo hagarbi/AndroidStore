@@ -16,9 +16,10 @@
 
 package com.soomla.store.data;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.io.IOException;
 import java.util.HashMap;
 
 /**
@@ -66,20 +67,34 @@ public class VirtualCurrencyStorage {
     /** Private functions **/
 
     private void storageFromJson(String storageJson) {
-        Gson gson = new Gson();
-        HashMap<String, Object> json = gson.fromJson(storageJson, new TypeToken<HashMap<String, Integer>>() {}.getType());
-        mBalance =       (Integer)json.get("balance");
-        mImageFilePath = (String)json.get("image");
+        mBalance =       0;
+        mImageFilePath = "";
+
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            HashMap<String, Object> json = mapper.readValue(storageJson,
+                    new TypeReference<HashMap<String,Object>>() {});
+            mBalance =       (Integer)json.get("balance");
+            mImageFilePath = (String)json.get("image");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private String storageToJson() {
-        Gson gson = new Gson();
+        ObjectMapper mapper = new ObjectMapper();
 
         HashMap<String, Object> json = new HashMap<String, Object>();
         json.put("balance", mBalance);
         json.put("image", mImageFilePath);
 
-        return gson.toJson(json);
+        try {
+            return mapper.writeValueAsString(json);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return "";
     }
 
     /** Private members **/

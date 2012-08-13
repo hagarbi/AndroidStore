@@ -15,10 +15,11 @@
  */
 package com.soomla.store.data;
 
+import java.io.IOException;
 import java.util.HashMap;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.soomla.store.domain.VirtualGood;
 
 /**
@@ -59,7 +60,7 @@ public class VirtualGoodsStorage {
 		mStorage.put(vgood.getItemId(), mStorage.get(vgood.getItemId()) + amount);
         mPhysicalStorage.save(storageToJson());
 
-        return mStorage.get(vgood);
+        return mStorage.get(vgood.getItemId());
 	}
 
     /**
@@ -80,16 +81,30 @@ public class VirtualGoodsStorage {
     /** Private functions **/
 
     private void storageFromJson(String storageJson) {
-        Gson gson = new Gson();
-        mStorage = gson.fromJson(storageJson, new TypeToken<HashMap<String, Integer>>() {}.getType());
-        if (mStorage == null){
+        ObjectMapper mapper = new ObjectMapper();
+
+        if (storageJson.isEmpty()){
             mStorage = new HashMap<String, Integer>();
+        }
+        else {
+            try {
+                mStorage = mapper.readValue(storageJson,
+                        new TypeReference<HashMap<String,Integer>>() {});
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
     private String storageToJson() {
-        Gson gson = new Gson();
-        return gson.toJson(mStorage);
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            return mapper.writeValueAsString(mStorage);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return "";
     }
 
     /** Private members **/

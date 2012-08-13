@@ -15,11 +15,13 @@
  */
 package com.soomla.store.data;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.soomla.billing.Consts;
 
+import java.io.IOException;
 import java.util.HashMap;
+
 
 /**
  * This class holds the virtual currency packs purchase history.
@@ -86,18 +88,29 @@ public class MarketPurchaseStorage {
     /** Private functions **/
 
     private void storageFromJson(String storageJson) {
-        Gson gson = new Gson();
-        mPurchaseHistories = gson.fromJson(storageJson,
-                new TypeToken<HashMap<String, MarketPurchaseHistory>>() {}.getType());
-
-        if (mPurchaseHistories == null){
+        ObjectMapper mapper = new ObjectMapper();
+        if (storageJson.isEmpty()){
             mPurchaseHistories = new HashMap<String, MarketPurchaseHistory>();
+        }
+        else{
+            try {
+                mPurchaseHistories = mapper.readValue(storageJson,
+                        new TypeReference<HashMap<String,MarketPurchaseHistory>>() {});
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
     private String storageToJson() {
-        Gson gson = new Gson();
-        return gson.toJson(mPurchaseHistories);
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            return mapper.writeValueAsString(mPurchaseHistories);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return "";
     }
 
     /** Private members **/
