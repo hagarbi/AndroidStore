@@ -88,17 +88,15 @@ public class BillingService extends Service implements ServiceConnection {
          * @return true if the request was executed or queued; false if there
          * was an error starting the connection
          */
-        public boolean runRequest() {
-            if (runIfConnected()) {
-                return true;
-            }
+        public boolean runOrWaitRequest() {
+            mPendingRequests.add(this);
 
-            if (bindToMarketBillingService()) {
-                // Add a pending request to run when the service is connected.
-                mPendingRequests.add(this);
+            if (mService != null) {
+                runPendingRequests();
                 return true;
+            } else {
+                return bindToMarketBillingService();
             }
-            return false;
         }
 
         /**
@@ -470,7 +468,7 @@ public class BillingService extends Service implements ServiceConnection {
      * @return true if supported; false otherwise
      */
     public boolean checkBillingSupported(String itemType) {
-        return new CheckBillingSupported(itemType).runRequest();
+        return new CheckBillingSupported(itemType).runOrWaitRequest();
     }
 
     /**
@@ -486,7 +484,7 @@ public class BillingService extends Service implements ServiceConnection {
      * @return false if there was an error connecting to Android Market
      */
     public boolean requestPurchase(String productId, String itemType, String developerPayload) {
-        return new RequestPurchase(productId, itemType, developerPayload).runRequest();
+        return new RequestPurchase(productId, itemType, developerPayload).runOrWaitRequest();
     }
 
     /**
@@ -496,7 +494,7 @@ public class BillingService extends Service implements ServiceConnection {
      * @return false if there was an error connecting to Android Market
      */
     public boolean restoreTransactions() {
-        return new RestoreTransactions().runRequest();
+        return new RestoreTransactions().runOrWaitRequest();
     }
 
     /**
@@ -511,7 +509,7 @@ public class BillingService extends Service implements ServiceConnection {
      * @return false if there was an error connecting to Market
      */
     private boolean confirmNotifications(int startId, String[] notifyIds) {
-        return new ConfirmNotifications(startId, notifyIds).runRequest();
+        return new ConfirmNotifications(startId, notifyIds).runOrWaitRequest();
     }
 
     /**
@@ -528,7 +526,7 @@ public class BillingService extends Service implements ServiceConnection {
      * @return false if there was an error connecting to Android Market
      */
     private boolean getPurchaseInformation(int startId, String[] notifyIds) {
-        return new GetPurchaseInformation(startId, notifyIds).runRequest();
+        return new GetPurchaseInformation(startId, notifyIds).runOrWaitRequest();
     }
 
     /**
@@ -629,7 +627,12 @@ public class BillingService extends Service implements ServiceConnection {
             Log.d(TAG, "Billing service connected");
         }
         mService = IMarketBillingService.Stub.asInterface(service);
-        runPendingRequests();
+        if (mService != null){
+            runPendingRequests();
+        }
+        else{
+            Log.e(TAG, "Failed to bind MarketBillingService.");
+        }
     }
 
     /**
