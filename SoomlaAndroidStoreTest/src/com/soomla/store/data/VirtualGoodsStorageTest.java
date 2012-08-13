@@ -16,7 +16,7 @@
 package com.soomla.store.data;
 
 import com.soomla.store.domain.VirtualGood;
-import com.soomla.store.test.R;
+import com.soomla.store.R;
 import com.xtremelabs.robolectric.Robolectric;
 import com.xtremelabs.robolectric.RobolectricTestRunner;
 import org.junit.Assert;
