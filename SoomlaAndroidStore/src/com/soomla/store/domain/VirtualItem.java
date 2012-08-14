@@ -22,30 +22,30 @@ public abstract class VirtualItem {
 
     /** Constructor
      *
-     * @param mNameId is the name of the virtual item.
-     * @param mDescriptionId is the description of the virtual item. This will show up
+     * @param mName is the name of the virtual item.
+     * @param mDescription is the description of the virtual item. This will show up
      *                       in the store in the description section.
      * @param mImgFilePath is the path to the image that corresponds to the item.
      * @param mItemId is the id of the virtual item.
      */
-    public VirtualItem(int mNameId, int mDescriptionId, String mImgFilePath, String mItemId) {
-        this.mNameId = mNameId;
-        this.mDescriptionId = mDescriptionId;
+    public VirtualItem(String mName, String mDescription, String mImgFilePath, String mItemId) {
+        this.mName = mName;
+        this.mDescription = mDescription;
         this.mImgFilePath = mImgFilePath;
         this.mItemId = mItemId;
     }
 
     /** Getters **/
 
-    public int getmNameId() {
-        return mNameId;
+    public String getName() {
+        return mName;
     }
 
-    public int getmDescriptionId() {
-        return mDescriptionId;
+    public String getDescription() {
+        return mDescription;
     }
 
-    public String getmImgFilePath() {
+    public String getImgFilePath() {
         return mImgFilePath;
     }
 
@@ -55,8 +55,8 @@ public abstract class VirtualItem {
 
     /** Private members **/
 
-    private int mNameId;
-    private int mDescriptionId;
+    private String mName;
+    private String mDescription;
     private String mImgFilePath;
     private String mItemId;
 }

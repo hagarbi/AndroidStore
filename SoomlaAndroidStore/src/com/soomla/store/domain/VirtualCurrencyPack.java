@@ -26,8 +26,8 @@ public class VirtualCurrencyPack extends VirtualItem {
 
     /** Constructor
      *
-     * @param mNameId is the name of the virtual currency pack.
-     * @param mDescriptionId is the description of the virtual currency pack. This will show up
+     * @param mName is the name of the virtual currency pack.
+     * @param mDescription is the description of the virtual currency pack. This will show up
      *                       in the store in the description section.
      * @param mImgFilePath is the path to the image that corresponds to the currency pack.
      * @param mItemId is the id of the virtual currency pack.
@@ -35,9 +35,9 @@ public class VirtualCurrencyPack extends VirtualItem {
      * @param mCost is the actual $$ cost of the virtual currency pack.
      * @param mCurrencyAmout is the amount of currency in the pack.
      */
-    public VirtualCurrencyPack(int mNameId, int mDescriptionId, String mImgFilePath, String mItemId,
+    public VirtualCurrencyPack(String mName, String mDescription, String mImgFilePath, String mItemId,
                                GoogleMarketItem mGoogleItem, int mCost, int mCurrencyAmout) {
-        super(mNameId, mDescriptionId, mImgFilePath, mItemId);
+        super(mName, mDescription, mImgFilePath, mItemId);
         this.mGoogleItem = mGoogleItem;
         this.mCost = mCost;
         this.mCurrencyAmout = mCurrencyAmout;

@@ -23,13 +23,13 @@ public class VirtualCurrency extends VirtualItem {
 
     /** Constructor
      *
-     * @param mNameId is the name of the virtual currency. For example: "Coin", "Clam", "Gem" ...
-     * @param mDescriptionId is the description of the virtual currency. This will show up
+     * @param mName is the name of the virtual currency. For example: "Coin", "Clam", "Gem" ...
+     * @param mDescription is the description of the virtual currency. This will show up
      *                       in the store in the description section.
      * @param mImgFilePath is the path to the image that corresponds to the currency.
      * @param itemId is the id of the virtual currency.
      */
-    public VirtualCurrency(int mNameId, int mDescriptionId, String mImgFilePath, String itemId) {
-        super(mNameId, mDescriptionId, mImgFilePath, itemId);
+    public VirtualCurrency(String mName, String mDescription, String mImgFilePath, String itemId) {
+        super(mName, mDescription, mImgFilePath, itemId);
     }
 }

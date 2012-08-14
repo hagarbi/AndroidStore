@@ -23,15 +23,15 @@ public class VirtualGood extends VirtualItem {
 
     /** Constructor
      *
-     * @param mNameId is the name of the virtual good.
-     * @param mDescriptionId is the description of the virtual good. This will show up
+     * @param mName is the name of the virtual good.
+     * @param mDescription is the description of the virtual good. This will show up
      *                       in the store in the description section.
      * @param mImgFilePath is the path to the image that corresponds to the virtual good.
      * @param mItemId is the id of the virtual good.
      * @param mCurrencyValue is the number of currencies needed to buy the current virtual good.
      */
-    public VirtualGood(int mNameId, int mDescriptionId, String mImgFilePath, int mCurrencyValue, String mItemId) {
-        super(mNameId, mDescriptionId, mImgFilePath, mItemId);
+    public VirtualGood(String mName, String mDescription, String mImgFilePath, int mCurrencyValue, String mItemId) {
+        super(mName, mDescription, mImgFilePath, mItemId);
         this.mCurrencyValue = mCurrencyValue;
     }
 
