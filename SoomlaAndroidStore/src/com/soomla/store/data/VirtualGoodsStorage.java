@@ -18,8 +18,10 @@ package com.soomla.store.data;
 import java.io.IOException;
 import java.util.HashMap;
 
+import android.util.Log;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.soomla.store.SoomlaConsts;
 import com.soomla.store.domain.VirtualGood;
 
 /**
@@ -52,15 +54,19 @@ public class VirtualGoodsStorage {
     * Adds the given amount of currency to the storage.
     * @param amount is the amount of currency to add.
     */
-    public int add(VirtualGood vgood, int amount){
-		if (!mStorage.containsKey(vgood.getItemId())){
-			mStorage.put(vgood.getItemId(), 0);
+    public int add(VirtualGood virtualGood, int amount){
+        if (SoomlaConsts.DEBUG){
+            Log.d(TAG, "adding " + amount + " " + virtualGood.getName() + ".");
+        }
+
+		if (!mStorage.containsKey(virtualGood.getItemId())){
+			mStorage.put(virtualGood.getItemId(), 0);
 		}
 		
-		mStorage.put(vgood.getItemId(), mStorage.get(vgood.getItemId()) + amount);
+		mStorage.put(virtualGood.getItemId(), mStorage.get(virtualGood.getItemId()) + amount);
         mPhysicalStorage.save(storageToJson());
 
-        return mStorage.get(vgood.getItemId());
+        return mStorage.get(virtualGood.getItemId());
 	}
 
     /**
@@ -69,6 +75,10 @@ public class VirtualGoodsStorage {
      * @param amount is the amount to remove.
      */
     public void remove(VirtualGood virtualGood, int amount){
+        if (SoomlaConsts.DEBUG){
+            Log.d(TAG, "removing " + amount + " " + virtualGood.getName() + ".");
+        }
+
 		if (!mStorage.containsKey(virtualGood.getItemId())){
 			return;
 		}
@@ -108,6 +118,7 @@ public class VirtualGoodsStorage {
     }
 
     /** Private members **/
+    private static final String TAG = "VirtualGoodsStorage";
 
     private HashMap<String, Integer> mStorage;
     private IPhysicalStorage mPhysicalStorage;

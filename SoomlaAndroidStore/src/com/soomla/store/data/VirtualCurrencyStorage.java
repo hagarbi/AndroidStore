@@ -16,8 +16,10 @@
 
 package com.soomla.store.data;
 
+import android.util.Log;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.soomla.store.SoomlaConsts;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -49,6 +51,10 @@ public class VirtualCurrencyStorage {
      * @param amount is the amount of currency to add.
      */
     public void add(int amount){
+        if (SoomlaConsts.DEBUG){
+            Log.d(TAG, "adding " + amount + " currencies.");
+        }
+
         mBalance += amount;
         mPhysicalStorage.save(storageToJson());
     }
@@ -58,6 +64,10 @@ public class VirtualCurrencyStorage {
      * @param amount is the amount of currency to remove.
      */
     public void remove(int amount){
+        if (SoomlaConsts.DEBUG){
+            Log.d(TAG, "removing " + amount + " currencies.");
+        }
+
         mBalance -= amount;
         if (mBalance < 0) mBalance = 0; // you can't have negative amount of currency
 
@@ -67,15 +77,13 @@ public class VirtualCurrencyStorage {
     /** Private functions **/
 
     private void storageFromJson(String storageJson) {
-        mBalance =       0;
-        mImageFilePath = "";
+        mBalance = 0;
 
         ObjectMapper mapper = new ObjectMapper();
         try {
             HashMap<String, Object> json = mapper.readValue(storageJson,
                     new TypeReference<HashMap<String,Object>>() {});
             mBalance =       (Integer)json.get("balance");
-            mImageFilePath = (String)json.get("image");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -86,7 +94,6 @@ public class VirtualCurrencyStorage {
 
         HashMap<String, Object> json = new HashMap<String, Object>();
         json.put("balance", mBalance);
-        json.put("image", mImageFilePath);
 
         try {
             return mapper.writeValueAsString(json);
@@ -98,8 +105,8 @@ public class VirtualCurrencyStorage {
     }
 
     /** Private members **/
+    private static final String TAG = "VirtualCurrencyStorage";
 
     private int     mBalance;
-    private String  mImageFilePath;
     private IPhysicalStorage mPhysicalStorage;
 }
