@@ -40,14 +40,6 @@ import java.lang.reflect.Method;
  *
  */
 public abstract class PurchaseObserver {
-    private static final String TAG = "PurchaseObserver";
-    private final Activity mActivity;
-    private final Handler mHandler;
-    private Method mStartIntentSender;
-    private Object[] mStartIntentSenderArgs = new Object[5];
-    private static final Class[] START_INTENT_SENDER_SIG = new Class[] {
-        IntentSender.class, Intent.class, int.class, int.class, int.class
-    };
 
     public PurchaseObserver(Activity activity, Handler handler) {
         mActivity = activity;
@@ -111,18 +103,11 @@ public abstract class PurchaseObserver {
     public abstract void onRestoreTransactionsResponse(RestoreTransactions request,
             ResponseCode responseCode);
 
-    private void initCompatibilityLayer() {
-        try {
-            mStartIntentSender = mActivity.getClass().getMethod("startIntentSender",
-                    START_INTENT_SENDER_SIG);
-        } catch (SecurityException e) {
-            mStartIntentSender = null;
-        } catch (NoSuchMethodException e) {
-            mStartIntentSender = null;
-        }
-    }
 
-    void startBuyPageActivity(PendingIntent pendingIntent, Intent intent) {
+
+    /** -----------------------    PURCHASE INTENT FUNCTIONS    --------------------------- **/
+
+    public void startBuyPageActivity(PendingIntent pendingIntent, Intent intent) {
         if (mStartIntentSender != null) {
             // This is on Android 2.0 and beyond.  The in-app buy page activity
             // must be on the activity stack of the application.
@@ -158,7 +143,7 @@ public abstract class PurchaseObserver {
      * @param purchaseState the purchase state of the item
      * @param itemId a string identifying the item
      */
-    void postPurchaseStateChange(final PurchaseState purchaseState, final String itemId,
+    public void postPurchaseStateChange(final PurchaseState purchaseState, final String itemId,
                                  final long purchaseTime, final String developerPayload) {
         mHandler.post(new Runnable() {
             @Override
@@ -168,4 +153,33 @@ public abstract class PurchaseObserver {
             }
         });
     }
+
+
+    /** Private functions **/
+
+    private void initCompatibilityLayer() {
+        try {
+            mStartIntentSender = mActivity.getClass().getMethod("startIntentSender",
+                    START_INTENT_SENDER_SIG);
+        } catch (SecurityException e) {
+            mStartIntentSender = null;
+        } catch (NoSuchMethodException e) {
+            mStartIntentSender = null;
+        }
+    }
+
+    private static final Class[] START_INTENT_SENDER_SIG = new Class[] {
+            IntentSender.class, Intent.class, int.class, int.class, int.class
+    };
+
+    /** -------------------------------------------------- **/
+
+
+    /** Private members **/
+
+    private static final String TAG = "PurchaseObserver";
+    private final Activity mActivity;
+    private final Handler mHandler;
+    private Method mStartIntentSender;
+    private Object[] mStartIntentSenderArgs = new Object[5];
 }
