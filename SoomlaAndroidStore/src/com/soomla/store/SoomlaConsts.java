@@ -22,4 +22,6 @@ public class SoomlaConsts {
     public static final int DIALOG_CANNOT_CONNECT_ID = 1;
     public static final int DIALOG_BILLING_NOT_SUPPORTED_ID = 2;
     public static final int DIALOG_SUBSCRIPTIONS_NOT_SUPPORTED_ID = 3;
+
+    public static final boolean DEBUG = true;
 }

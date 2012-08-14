@@ -23,6 +23,7 @@ import android.util.Log;
 import com.soomla.billing.Consts.PurchaseState;
 import com.soomla.billing.util.Base64;
 import com.soomla.billing.util.Base64DecoderException;
+import com.soomla.store.SoomlaConsts;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -113,7 +114,7 @@ public class Security {
             Log.e(TAG, "data is null");
             return null;
         }
-        if (Consts.DEBUG) {
+        if (SoomlaConsts.DEBUG) {
             Log.i(TAG, "signedData: " + signedData);
         }
         boolean verified = false;
@@ -227,7 +228,7 @@ public class Security {
      * @return true if the data and signature match
      */
     public static boolean verify(PublicKey publicKey, String signedData, String signature) {
-        if (Consts.DEBUG) {
+        if (SoomlaConsts.DEBUG) {
             Log.i(TAG, "signature: " + signature);
         }
         Signature sig;

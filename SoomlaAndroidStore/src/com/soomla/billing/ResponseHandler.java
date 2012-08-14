@@ -26,9 +26,11 @@ import com.soomla.billing.BillingService.RequestPurchase;
 import com.soomla.billing.BillingService.RestoreTransactions;
 import com.soomla.billing.Consts.PurchaseState;
 import com.soomla.billing.Consts.ResponseCode;
+import com.soomla.store.SoomlaConsts;
 import com.soomla.store.StoreInfo;
 import com.soomla.store.data.StorageManager;
 import com.soomla.store.domain.VirtualCurrencyPack;
+import com.soomla.store.exceptions.VirtualItemNotFoundException;
 
 /**
  * This class contains the methods that handle responses from Android Market.
@@ -84,7 +86,7 @@ public class ResponseHandler {
      */
     public static void buyPageIntentResponse(PendingIntent pendingIntent, Intent intent) {
         if (sPurchaseObserver == null) {
-            if (Consts.DEBUG) {
+            if (SoomlaConsts.DEBUG) {
                 Log.d(TAG, "UI is not running");
             }
             return;
@@ -131,8 +133,12 @@ public class ResponseHandler {
                 // note that a refunded purchase is treated as a purchase.
                 // a friendly refund policy is nice for the user.
                 if (purchaseState == PurchaseState.PURCHASED || purchaseState == PurchaseState.REFUNDED) {
-                    VirtualCurrencyPack pack = StoreInfo.getInstance().getPackByGoogleProductId(productId);
-                    StorageManager.getInstance().getVirtualCurrencyStorage().add(pack.getmCurrencyAmout());
+                    try {
+                        VirtualCurrencyPack pack = StoreInfo.getInstance().getPackByGoogleProductId(productId);
+                        StorageManager.getInstance().getVirtualCurrencyStorage().add(pack.getmCurrencyAmout());
+                    } catch (VirtualItemNotFoundException e) {
+                        e.printStackTrace();
+                    }
                 }
 
                 // This needs to be synchronized because the UI thread can change the

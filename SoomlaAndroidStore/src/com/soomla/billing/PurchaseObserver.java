@@ -71,12 +71,12 @@ public abstract class PurchaseObserver {
      * was refunded, or the charge was canceled. This handles the UI
      * update.
      * @param purchaseState the purchase state of the item
-     * @param itemId a string identifying the item (the "SKU")
+     * @param productId a string identifying the item (the "SKU")
      * @param purchaseTime the time the product was purchased, in
      * milliseconds since the epoch (Jan 1, 1970)
      */
     public abstract void onPurchaseStateChange(PurchaseState purchaseState,
-            String itemId, long purchaseTime, String developerPayload);
+            String productId, long purchaseTime, String developerPayload);
 
     /**
      * This is called when we receive a response code from Market for a

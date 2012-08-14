@@ -106,6 +106,5 @@ public class Consts {
     // These are the types supported in the IAB v2
     public static final String ITEM_TYPE_INAPP = "inapp";
     public static final String ITEM_TYPE_SUBSCRIPTION = "subs";
-    
-    public static final boolean DEBUG = false;
+
 }
