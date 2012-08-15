@@ -3,7 +3,6 @@ package com.soomla.store;
 import android.content.Context;
 import android.os.Handler;
 import android.util.Log;
-import android.widget.Toast;
 import com.soomla.billing.BillingService;
 import com.soomla.billing.Consts;
 import com.soomla.store.data.StorageManager;
@@ -23,12 +22,9 @@ public class SoomlaJS {
     public void wantsToBuyCurrencyPacks(String productId){
         Log.v(TAG, "wantsToBuyCurrencyPacks " + productId);
 
-        Toast toast = Toast.makeText(mContext, productId, Toast.LENGTH_LONG);
-        toast.show();
-
         mBillingService.requestPurchase("android.test.purchased", Consts.ITEM_TYPE_INAPP, "");
 
-        // TODO: implement
+        // TODO: implement according to productId
     }
 
     public void wantsToBuyVirtualGoods(String itemId) {
@@ -39,7 +35,7 @@ public class SoomlaJS {
             int balance = StorageManager.getInstance().getVirtualGoodsStorage().add(good, 1);
             StorageManager.getInstance().getVirtualCurrencyStorage().remove(good.getmCurrencyValue());
 
-            mActivity.sendSoomlaJS("vGoodsPurchaseEnded", "true," + itemId + "," + balance + ",''");
+            mActivity.sendSoomlaJS("goodsPurchase", "true," + itemId + "," + balance + ",''");
         } catch (VirtualItemNotFoundException e) {
             e.printStackTrace();
         }
@@ -57,6 +53,7 @@ public class SoomlaJS {
 
     public void pageInitialized(){
         Log.v(TAG, "pageInitialized");
+        mActivity.storeJSInitialized();
         mActivity.sendSoomlaJS("initialize", StoreInfo.getInstance().getJsonString());
     }
 
