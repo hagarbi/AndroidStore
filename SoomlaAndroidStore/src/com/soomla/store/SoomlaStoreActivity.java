@@ -16,7 +16,6 @@
 package com.soomla.store;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
@@ -29,7 +28,6 @@ import com.soomla.billing.Consts;
 import com.soomla.billing.ResponseHandler;
 import com.soomla.store.data.FileStorage;
 import com.soomla.store.data.StorageManager;
-import com.soomla.store.utils.Utils;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -146,11 +144,6 @@ public class SoomlaStoreActivity extends Activity {
         super.onDestroy();
         mBillingService.unbind();
     }
-
-//    @Override
-//    protected Dialog onCreateDialog(int id) {
-//        return Utils.createDialog(this, id);
-//    }
 
     /** Private members **/
     private static String TAG = "SOOMLA Soomla Android";
