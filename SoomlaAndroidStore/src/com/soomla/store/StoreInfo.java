@@ -90,7 +90,7 @@ public class StoreInfo {
                         jsonNode.path("image").textValue(),
                         jsonNode.path("itemId").textValue(),
                         gItem,
-                        jsonNode.path("price").intValue(),
+                        jsonNode.path("price").doubleValue(),
                         jsonNode.path("amount").intValue());
 
                 mPacksOptions.put(jsonNode.path("productId").textValue(), pack);
