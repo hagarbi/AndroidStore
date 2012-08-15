@@ -41,7 +41,7 @@ public class SoomlaPurchaseObserver extends PurchaseObserver {
         if (type == null || type.equals(Consts.ITEM_TYPE_INAPP)) {
             if (supported) {
                 if (SoomlaConsts.DEBUG){
-                    Log.v(TAG, "billing is supported !");
+                    Log.d(TAG, "billing is supported !");
                 }
             } else {
                 // purchase is not supported. just send a message to JS to disable the "get more ..." button.
@@ -118,7 +118,7 @@ public class SoomlaPurchaseObserver extends PurchaseObserver {
         }
     }
 
-    private static final String TAG = "SoomlaPurchaseObserver";
+    private static final String TAG = "SOOMLA SoomlaPurchaseObserver";
 
     private SoomlaStoreActivity mActivity;
 }

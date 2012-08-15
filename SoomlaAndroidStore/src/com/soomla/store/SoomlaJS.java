@@ -20,7 +20,7 @@ public class SoomlaJS {
     }
 
     public void wantsToBuyCurrencyPacks(String productId){
-        Log.v(TAG, "wantsToBuyCurrencyPacks " + productId);
+        Log.d(TAG, "wantsToBuyCurrencyPacks " + productId);
 
         mBillingService.requestPurchase("android.test.purchased", Consts.ITEM_TYPE_INAPP, "");
 
@@ -28,7 +28,7 @@ public class SoomlaJS {
     }
 
     public void wantsToBuyVirtualGoods(String itemId) {
-        Log.v(TAG, "wantsToBuyVirtualGoods " + itemId);
+        Log.d(TAG, "wantsToBuyVirtualGoods " + itemId);
         try {
             VirtualGood good = StoreInfo.getInstance().getVirtualGoodBySoomlaId(itemId);
 
@@ -42,7 +42,7 @@ public class SoomlaJS {
     }
 
     public void wantsToLeaveStore(){
-        Log.v(TAG, "wantsToLeaveStore");
+        Log.d(TAG, "wantsToLeaveStore");
         mHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -52,12 +52,12 @@ public class SoomlaJS {
     }
 
     public void pageInitialized(){
-        Log.v(TAG, "pageInitialized");
+        Log.d(TAG, "pageInitialized");
         mActivity.storeJSInitialized();
         mActivity.sendSoomlaJS("initialize", StoreInfo.getInstance().getJsonString());
     }
 
-    private static final String TAG = "SoomlaJS";
+    private static final String TAG = "SOOMLA SoomlaJS";
 
     private Context mContext;
     private BillingService mBillingService;

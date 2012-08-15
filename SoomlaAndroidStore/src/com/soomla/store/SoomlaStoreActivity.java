@@ -141,13 +141,13 @@ public class SoomlaStoreActivity extends Activity {
         mBillingService.unbind();
     }
 
-    @Override
-    protected Dialog onCreateDialog(int id) {
-        return Utils.createDialog(this, id);
-    }
+//    @Override
+//    protected Dialog onCreateDialog(int id) {
+//        return Utils.createDialog(this, id);
+//    }
 
     /** Private members **/
-    private static String TAG = "Soomla Android";
+    private static String TAG = "SOOMLA Soomla Android";
 
     private SoomlaPurchaseObserver  mSoomlaPurchaseObserver;
     private BillingService          mBillingService;
