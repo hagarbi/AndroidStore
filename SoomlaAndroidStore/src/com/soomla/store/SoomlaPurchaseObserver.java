@@ -40,20 +40,24 @@ public class SoomlaPurchaseObserver extends PurchaseObserver {
     public void onBillingSupported(boolean supported, String type) {
         if (type == null || type.equals(Consts.ITEM_TYPE_INAPP)) {
             if (supported) {
-                // TODO: handle purchase enabled. Initialize view and datastore (FIle Or Database).
-                Log.v(TAG, "billing is supported !");
+                if (SoomlaConsts.DEBUG){
+                    Log.v(TAG, "billing is supported !");
+                }
             } else {
-                // TODO: see if needs a change. Maybe close the store when billing is not supported ?!
-                //       and maybe not b/c the user may still buy goods with coins.
-                //       best solution is to just tell webview to disable "buy more coins" button
-                mActivity.showDialog(SoomlaConsts.DIALOG_BILLING_NOT_SUPPORTED_ID);
+                // purchase is not supported. just send a message to JS to disable the "get more ..." button.
 
-                mActivity.sendSoomlaJS("disableCoinsStore", "");
+                if (SoomlaConsts.DEBUG){
+                    Log.d(TAG, "billing is not supported !");
+                }
+
+                mActivity.sendSoomlaJS("disableCurrencyStore", "");
             }
         } else if (type.equals(Consts.ITEM_TYPE_SUBSCRIPTION)) {
-            // TODO: subscription is supported. Do we want to notify someone ?
+            // subscription is supported
+            // Soomla doesn't support subscriptions yet. doing nothing here ...
         } else {
-            mActivity.showDialog(SoomlaConsts.DIALOG_SUBSCRIPTIONS_NOT_SUPPORTED_ID);
+            // subscription is not supported
+            // Soomla doesn't support subscriptions yet. doing nothing here ...
         }
     }
 
@@ -66,17 +70,14 @@ public class SoomlaPurchaseObserver extends PurchaseObserver {
 
             int balance = StorageManager.getInstance().getVirtualCurrencyStorage().getBalance();
 
-            // TODO: check if we need to handle PurchaseState.REFUNDED here
+            if (purchaseState == Consts.PurchaseState.PURCHASED ||
+                    purchaseState == Consts.PurchaseState.REFUNDED) {
 
-            if (purchaseState == Consts.PurchaseState.PURCHASED) {
-                // TODO: the item was purchased, add it to the store according to itemId
-                mActivity.sendSoomlaJS("vGoodsPurchaseEnded", "true," + pack.getItemId() + "," + balance + ",''");
-            }
-            else if(purchaseState == Consts.PurchaseState.CANCELED){
-                mActivity.sendSoomlaJS("vGoodsPurchaseEnded", "false," + pack.getItemId() + "," + balance + ",'You canceled the purchase'");
+                // we're throwing this event when on PURCHASE or REFUND !
+
+                mActivity.sendSoomlaJS("currencyPurchase", "true," + pack.getItemId() + "," + balance + ",''");
             }
 
-            // TODO: refresh UI here
         } catch (VirtualItemNotFoundException e) {
             e.printStackTrace();
         }
@@ -93,14 +94,14 @@ public class SoomlaPurchaseObserver extends PurchaseObserver {
             if (responseCode == Consts.ResponseCode.RESULT_OK) {
                 // purchase was sent to server
             } else if (responseCode == Consts.ResponseCode.RESULT_USER_CANCELED) {
-                // purchase canceled by user
-                // TODO: tell webview
 
-                mActivity.sendSoomlaJS("vGoodsPurchaseEnded", "false," + pack.getItemId() + "," + balance + ",'You canceled the purchase.'");
+                // purchase canceled by user
+
+                mActivity.sendSoomlaJS("currencyPurchase", "false," + pack.getItemId() + "," + balance + ",'You canceled the purchase'");
             } else {
                 // purchase failed !
-                // TODO: tell webview
-                mActivity.sendSoomlaJS("vGoodsPurchaseEnded", "false," + pack.getItemId() + "," + balance + ",'Unexpected error occured! Your purchase is canceled.'");
+
+                mActivity.sendSoomlaJS("currencyPurchase", "false," + pack.getItemId() + "," + balance + ",'Unexpected error occured! Your purchase is canceled.'");
             }
         } catch (VirtualItemNotFoundException e) {
             e.printStackTrace();
