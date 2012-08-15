@@ -32,10 +32,17 @@ public class SoomlaJS {
         try {
             VirtualGood good = StoreInfo.getInstance().getVirtualGoodBySoomlaId(itemId);
 
-            int balance = StorageManager.getInstance().getVirtualGoodsStorage().add(good, 1);
-            StorageManager.getInstance().getVirtualCurrencyStorage().remove(good.getmCurrencyValue());
+            if (StorageManager.getInstance().getVirtualCurrencyStorage().getBalance() >= good.getmCurrencyValue()){
+                int balance = StorageManager.getInstance().getVirtualGoodsStorage().add(good, 1);
+                StorageManager.getInstance().getVirtualCurrencyStorage().remove(good.getmCurrencyValue());
 
-            mActivity.sendSoomlaJS("goodsPurchase", "true," + itemId + "," + balance + ",''");
+                mActivity.sendSoomlaJS("goodsPurchase", "true," + itemId + "," + balance + ",''");
+            }
+            else {
+                int balance = StorageManager.getInstance().getVirtualGoodsStorage().getBalance(good);
+                String failureMsg = "You don\'t have enough " + StoreInfo.getInstance().getVirtualCurrency().getName() + " to buy a " + good.getName() + ".";
+                mActivity.sendSoomlaJS("goodsPurchase", "false," + itemId + "," + balance + ",'" + failureMsg + "'");
+            }
         } catch (VirtualItemNotFoundException e) {
             e.printStackTrace();
         }
