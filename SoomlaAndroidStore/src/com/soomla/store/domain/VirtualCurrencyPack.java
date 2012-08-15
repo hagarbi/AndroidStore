@@ -36,7 +36,7 @@ public class VirtualCurrencyPack extends VirtualItem {
      * @param mCurrencyAmout is the amount of currency in the pack.
      */
     public VirtualCurrencyPack(String mName, String mDescription, String mImgFilePath, String mItemId,
-                               GoogleMarketItem mGoogleItem, int mCost, int mCurrencyAmout) {
+                               GoogleMarketItem mGoogleItem, double mCost, int mCurrencyAmout) {
         super(mName, mDescription, mImgFilePath, mItemId);
         this.mGoogleItem = mGoogleItem;
         this.mCost = mCost;
@@ -49,7 +49,7 @@ public class VirtualCurrencyPack extends VirtualItem {
         return mGoogleItem;
     }
 
-    public int getmCost() {
+    public double getmCost() {
         return mCost;
     }
 
@@ -61,6 +61,6 @@ public class VirtualCurrencyPack extends VirtualItem {
     /** Private members **/
 
     private GoogleMarketItem mGoogleItem;
-    private int mCost;
-    private int mCurrencyAmout;
+    private double           mCost;
+    private int              mCurrencyAmout;
 }
