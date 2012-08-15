@@ -27,6 +27,8 @@ import android.webkit.WebView;
 import com.soomla.billing.BillingService;
 import com.soomla.billing.Consts;
 import com.soomla.billing.ResponseHandler;
+import com.soomla.store.data.FileStorage;
+import com.soomla.store.data.StorageManager;
 import com.soomla.store.utils.Utils;
 
 import java.util.LinkedList;
@@ -59,6 +61,10 @@ public class SoomlaStoreActivity extends Activity {
         Bundle bundle = getIntent().getExtras();
 
         StoreInfo.getInstance().initialize(getApplicationContext());
+        StorageManager.getInstance().initialize(
+                new FileStorage(getApplicationContext(), "soomla.virtualcurrency"),
+                new FileStorage(getApplicationContext(), "soomla.virtualgoods"),
+                new FileStorage(getApplicationContext(), "soomla.marketpurchase"));
 
         /* Setting up the store WebView */
         mWebView = new WebView(this);
