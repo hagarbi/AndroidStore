@@ -118,7 +118,7 @@ public class VirtualGoodsStorage {
     }
 
     /** Private members **/
-    private static final String TAG = "VirtualGoodsStorage";
+    private static final String TAG = "SOOMLA VirtualGoodsStorage";
 
     private HashMap<String, Integer> mStorage;
     private IPhysicalStorage mPhysicalStorage;

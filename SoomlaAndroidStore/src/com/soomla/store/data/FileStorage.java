@@ -63,7 +63,7 @@ public class FileStorage implements IPhysicalStorage {
         this.mFilePath = mFilePath;
     }
 
-    private static final String TAG = "FileStorage";
+    private static final String TAG = "SOOMLA FileStorage";
     /**
      * The current application's context.
      */

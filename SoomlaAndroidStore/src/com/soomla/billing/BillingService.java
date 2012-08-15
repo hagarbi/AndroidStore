@@ -45,7 +45,7 @@ import java.util.LinkedList;
  *
  */
 public class BillingService extends Service implements ServiceConnection {
-    private static final String TAG = "BillingService";
+    private static final String TAG = "SOOMLA BillingService";
 
     /** The service connection to the remote MarketBillingService. */
     private static IMarketBillingService mService;

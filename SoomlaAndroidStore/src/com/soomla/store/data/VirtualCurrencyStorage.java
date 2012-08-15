@@ -105,7 +105,7 @@ public class VirtualCurrencyStorage {
     }
 
     /** Private members **/
-    private static final String TAG = "VirtualCurrencyStorage";
+    private static final String TAG = "SOOMLA VirtualCurrencyStorage";
 
     private int     mBalance;
     private IPhysicalStorage mPhysicalStorage;

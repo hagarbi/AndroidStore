@@ -60,7 +60,7 @@ public class StorageManager {
     private StorageManager(){ }
 
     /** Private members **/
-    private static final String TAG = "StorageManager";
+    private static final String TAG = "SOOMLA StorageManager";
 
     private VirtualGoodsStorage     mVirtualGoodsStorage;
     private VirtualCurrencyStorage  mVirtualCurrencyStorage;

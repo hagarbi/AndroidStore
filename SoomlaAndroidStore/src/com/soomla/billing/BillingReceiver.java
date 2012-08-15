@@ -33,7 +33,7 @@ import com.soomla.store.SoomlaConsts;
  * {@link #onReceive(android.content.Context, android.content.Intent)} returns.
  */
 public class BillingReceiver extends BroadcastReceiver {
-    private static final String TAG = "BillingReceiver";
+    private static final String TAG = "SOOMLA BillingReceiver";
 
     /**
      * This is the entry point for all asynchronous messages sent from Android Market to

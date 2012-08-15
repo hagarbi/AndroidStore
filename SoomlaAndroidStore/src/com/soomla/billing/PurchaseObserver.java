@@ -177,7 +177,7 @@ public abstract class PurchaseObserver {
 
     /** Private members **/
 
-    private static final String TAG = "PurchaseObserver";
+    private static final String TAG = "SOOMLA PurchaseObserver";
     private final Activity mActivity;
     private final Handler mHandler;
     private Method mStartIntentSender;

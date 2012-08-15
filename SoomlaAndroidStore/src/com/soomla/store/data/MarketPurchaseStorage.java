@@ -119,7 +119,7 @@ public class MarketPurchaseStorage {
     }
 
     /** Private members **/
-    private static final String TAG = "MarketPurchaseStorage";
+    private static final String TAG = "SOOMLA MarketPurchaseStorage";
 
     private IPhysicalStorage mPhysicalStorage;
     private HashMap<String, MarketPurchaseHistory> mPurchaseHistories;

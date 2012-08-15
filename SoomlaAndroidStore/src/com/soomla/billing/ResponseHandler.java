@@ -37,7 +37,7 @@ import com.soomla.store.exceptions.VirtualItemNotFoundException;
  * This class updates the UI through the registered PurchaseObserver.
  */
 public class ResponseHandler {
-    private static final String TAG = "ResponseHandler";
+    private static final String TAG = "SOOMLA ResponseHandler";
 
     /**
      * This is a static instance of {@link PurchaseObserver} that the

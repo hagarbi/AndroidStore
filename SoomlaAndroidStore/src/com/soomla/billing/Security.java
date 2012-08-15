@@ -43,7 +43,7 @@ import java.util.HashSet;
  * purchases as verified.
  */
 public class Security {
-    private static final String TAG = "Security";
+    private static final String TAG = "SOOMLA Security";
 
     private static final String KEY_FACTORY_ALGORITHM = "RSA";
     private static final String SIGNATURE_ALGORITHM = "SHA1withRSA";
