@@ -16,34 +16,21 @@
 package com.soomla.store;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.webkit.ConsoleMessage;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
-import android.widget.Toast;
 import com.soomla.billing.BillingService;
 import com.soomla.billing.Consts;
-import com.soomla.billing.PurchaseObserver;
 import com.soomla.billing.ResponseHandler;
-import com.soomla.billing.Consts.PurchaseState;
-import com.soomla.billing.Consts.ResponseCode;
-import com.soomla.billing.BillingService.RestoreTransactions;
-import com.soomla.billing.BillingService.RequestPurchase;
-import com.soomla.store.data.StorageManager;
-import com.soomla.store.domain.VirtualCurrencyPack;
-import com.soomla.store.domain.VirtualGood;
-import com.soomla.store.exceptions.VirtualItemNotFoundException;
 import com.soomla.store.utils.Utils;
 
-import java.util.Locale;
+import java.util.LinkedList;
+import java.util.Queue;
 
 public class SoomlaStoreActivity extends Activity {
 
@@ -51,6 +38,8 @@ public class SoomlaStoreActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext = getApplicationContext();
+        mPendingJSMessages = new LinkedList<String>();
+        mStoreJSInitialized = false;
 
         /* Billing */
         mHandler = new Handler();
@@ -88,11 +77,39 @@ public class SoomlaStoreActivity extends Activity {
         mWebView.loadUrl("file:///android_asset/store.html");
 
         setContentView(mWebView);
-
-
     }
 
-    /** Protected overridden functions**/
+    public void sendSoomlaJS(String action, String data){
+        final String urlToLoad = "javascript:SoomlaJS." + action + "(" + data + ")";
+
+        if (!mStoreJSInitialized){
+            mPendingJSMessages.add(urlToLoad);
+        }
+        else{
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    mWebView.loadUrl(urlToLoad);
+                }
+            });
+
+            while(!mPendingJSMessages.isEmpty()){
+                final String tmpPendingUrl = mPendingJSMessages.remove();
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mWebView.loadUrl(tmpPendingUrl);
+                    }
+                });
+            }
+        }
+    }
+
+    public void storeJSInitialized(){
+        mStoreJSInitialized = true;
+    }
+
+    /** Protected overridden functions **/
 
     /**
      * Called when this activity becomes visible.
@@ -101,8 +118,6 @@ public class SoomlaStoreActivity extends Activity {
     protected void onStart() {
         super.onStart();
         ResponseHandler.register(mSoomlaPurchaseObserver);
-
-        // TODO: initialize store balance (from File or DB)
     }
 
     /**
@@ -114,32 +129,21 @@ public class SoomlaStoreActivity extends Activity {
         ResponseHandler.unregister(mSoomlaPurchaseObserver);
     }
 
+    /**
+     * Called when this activity is destroyed.
+     */
     @Override
     protected void onDestroy() {
         mWebView.destroy();
         mWebView = null;
 
         super.onDestroy();
-        // TODO: think what to do with persistence mechanism (Server / File)
         mBillingService.unbind();
     }
 
     @Override
     protected Dialog onCreateDialog(int id) {
         return Utils.createDialog(this, id);
-    }
-
-    /** Private functions **/
-
-    public void sendSoomlaJS(String action, String data){
-        final String tmpAction = action;
-        final String tmpData   = data;
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                mWebView.loadUrl("javascript:SoomlaJS." + tmpAction + "(" + tmpData + ")");
-            }
-        });
     }
 
     /** Private members **/
@@ -152,5 +156,6 @@ public class SoomlaStoreActivity extends Activity {
     private Context     mContext;
     private SoomlaJS    mSoomlaJS;
     private Handler     mHandler;
-
+    private Queue<String> mPendingJSMessages;
+    private boolean     mStoreJSInitialized;
 }
