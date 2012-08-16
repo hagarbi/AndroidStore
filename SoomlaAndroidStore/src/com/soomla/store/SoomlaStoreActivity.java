@@ -54,7 +54,7 @@ public class SoomlaStoreActivity extends Activity {
         }
 
         // The Native<->JS implementation
-        mSoomlaJS = new SoomlaJS(getApplicationContext(), mBillingService, mHandler, this);
+        mSoomlaStore = new SoomlaStore(getApplicationContext(), mBillingService, mHandler, this);
 
         Bundle bundle = getIntent().getExtras();
 
@@ -67,7 +67,7 @@ public class SoomlaStoreActivity extends Activity {
         /* Setting up the store WebView */
         mWebView = new WebView(this);
         mWebView.getSettings().setJavaScriptEnabled(true);
-        mWebView.addJavascriptInterface(mSoomlaJS, "SoomlaNative");
+        mWebView.addJavascriptInterface(mSoomlaStore, "SoomlaNative");
 
         mWebView.setWebChromeClient(new WebChromeClient() {
             public boolean onConsoleMessage(ConsoleMessage cm) {
@@ -90,6 +90,9 @@ public class SoomlaStoreActivity extends Activity {
             mPendingJSMessages.add(urlToLoad);
         }
         else{
+            if (SoomlaConsts.DEBUG){
+                Log.d(TAG, "sending message to JS: " + urlToLoad);
+            }
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
@@ -99,6 +102,9 @@ public class SoomlaStoreActivity extends Activity {
 
             while(!mPendingJSMessages.isEmpty()){
                 final String tmpPendingUrl = mPendingJSMessages.remove();
+                if (SoomlaConsts.DEBUG){
+                    Log.d(TAG, "sending message to JS: " + tmpPendingUrl);
+                }
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
@@ -153,7 +159,7 @@ public class SoomlaStoreActivity extends Activity {
 
     private WebView     mWebView;
     private Context     mContext;
-    private SoomlaJS    mSoomlaJS;
+    private SoomlaStore mSoomlaStore;
     private Handler     mHandler;
     private Queue<String> mPendingJSMessages;
     private boolean     mStoreJSInitialized;

@@ -22,9 +22,7 @@ public class SoomlaStore {
     public void wantsToBuyCurrencyPacks(String productId){
         Log.d(TAG, "wantsToBuyCurrencyPacks " + productId);
 
-        mBillingService.requestPurchase("android.test.purchased", Consts.ITEM_TYPE_INAPP, "");
-
-        // TODO: implement according to productId
+        mBillingService.requestPurchase(productId, Consts.ITEM_TYPE_INAPP, "");
     }
 
     public void wantsToBuyVirtualGoods(String itemId) {
@@ -36,15 +34,15 @@ public class SoomlaStore {
                 int balance = StorageManager.getInstance().getVirtualGoodsStorage().add(good, 1);
                 StorageManager.getInstance().getVirtualCurrencyStorage().remove(good.getmCurrencyValue());
 
-                mActivity.sendSoomlaJS("goodsPurchase", "true," + itemId + "," + balance + ",''");
+                mActivity.sendSoomlaJS("goodsPurchased", "true,'" + itemId + "'," + balance + ",''");
             }
             else {
                 int balance = StorageManager.getInstance().getVirtualGoodsStorage().getBalance(good);
                 String failureMsg = "You don\'t have enough " + StoreInfo.getInstance().getVirtualCurrency().getName() + " to buy a " + good.getName() + ".";
-                mActivity.sendSoomlaJS("goodsPurchase", "false," + itemId + "," + balance + ",'" + failureMsg + "'");
+                mActivity.sendSoomlaJS("goodsPurchased", "false,'" + itemId + "'," + balance + ",'" + failureMsg + "'");
             }
         } catch (VirtualItemNotFoundException e) {
-            mActivity.sendSoomlaJS("goodsPurchase", "false," + itemId + "," + -1 + ",'Unexpected error occurred. Purchase is cancelled.'");
+            mActivity.sendSoomlaJS("goodsPurchased", "false,'" + itemId + "'," + -1 + ",'Unexpected error occurred. Purchase is cancelled.'");
             Log.e(TAG, "Couldn't find a VirtualGood with itemId: " + itemId + ". Purchase is cancelled.");
         }
     }
