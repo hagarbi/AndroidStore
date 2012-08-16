@@ -75,11 +75,11 @@ public class SoomlaPurchaseObserver extends PurchaseObserver {
 
                 // we're throwing this event when on PURCHASE or REFUND !
 
-                mActivity.sendSoomlaJS("currencyPurchase", "true," + productId + "," + balance + ",''");
+                mActivity.sendSoomlaJS("currencyPurchased", "true,'" + productId + "'," + balance + ",''");
             }
 
         } catch (VirtualItemNotFoundException e) {
-            mActivity.sendSoomlaJS("currencyPurchase", "false," + productId + "," + balance + ",''");
+            mActivity.sendSoomlaJS("currencyPurchased", "false,'" + productId + "'," + balance + ",''");
             Log.e(TAG, "ERROR : Couldn't find VirtualCurrencyPack with productId: " + productId);
         }
     }
@@ -95,17 +95,20 @@ public class SoomlaPurchaseObserver extends PurchaseObserver {
 
             // purchase canceled by user
 
-            mActivity.sendSoomlaJS("currencyPurchase", "false," + request.mProductId + "," + balance + ",'You canceled the purchase'");
+            mActivity.sendSoomlaJS("currencyPurchased", "false,'" + request.mProductId + "'," + balance + ",'You canceled the purchase'");
         } else {
            // purchase failed !
 
-           mActivity.sendSoomlaJS("currencyPurchase", "false," + request.mProductId + "," + balance + ",'Unexpected error occured! Your purchase is canceled.'");
+           mActivity.sendSoomlaJS("currencyPurchased", "false,'" + request.mProductId + "'," + balance + ",'Unexpected error occured! Your purchase is canceled.'");
         }
     }
 
     @Override
     public void onRestoreTransactionsResponse(BillingService.RestoreTransactions request,
                                               Consts.ResponseCode responseCode) {
+
+        // THIS IS FOR MANAGED ITEMS. SOOMLA DOESN'T SUPPORT MANAGED ITEMS.
+
         if (responseCode == Consts.ResponseCode.RESULT_OK) {
             // RestoreTransaction succeeded !
         } else {
