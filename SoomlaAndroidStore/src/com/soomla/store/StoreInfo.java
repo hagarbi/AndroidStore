@@ -116,7 +116,7 @@ public class StoreInfo {
      * @throws VirtualItemNotFoundException
      */
     public VirtualCurrencyPack getPackByGoogleProductId(String productId) throws VirtualItemNotFoundException {{
-        if (!mVirtualGoodOptions.containsKey(productId)){
+        if (!mPacksOptions.containsKey(productId)){
             throw new VirtualItemNotFoundException("productId", productId);
         }
     }
