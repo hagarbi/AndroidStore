@@ -20,6 +20,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.soomla.billing.Consts;
 import com.soomla.store.SoomlaConsts;
+import com.soomla.store.domain.MarketPurchaseHistory;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -47,46 +48,6 @@ public class MarketPurchaseStorage {
         if (!mPurchaseHistories.containsKey(orderId)){
             mPurchaseHistories.put(orderId, new MarketPurchaseHistory(purchaseState, productId, orderId, purchaseTime, developerPayload));
             mPhysicalStorage.save(storageToJson());
-        }
-    }
-
-    /**
-     * This class is a representation of a purchase history.
-     * We use it to save/load a single history.
-     */
-    private class MarketPurchaseHistory{
-        private Consts.PurchaseState mState;
-        private String               mProductId;
-        private String               mOrderId;
-        private long                 mPurchaseTime;
-        private String               mDevPayload;
-
-        private MarketPurchaseHistory(Consts.PurchaseState mState, String mProductId, String mOrderId, long mPurchaseTime, String mDevPayload) {
-            this.mState = mState;
-            this.mProductId = mProductId;
-            this.mOrderId = mOrderId;
-            this.mPurchaseTime = mPurchaseTime;
-            this.mDevPayload = mDevPayload;
-        }
-
-        public Consts.PurchaseState getmState() {
-            return mState;
-        }
-
-        public String getmProductId() {
-            return mProductId;
-        }
-
-        public String getmOrderId() {
-            return mOrderId;
-        }
-
-        public long getmPurchaseTime() {
-            return mPurchaseTime;
-        }
-
-        public String getmDevPayload() {
-            return mDevPayload;
         }
     }
 
