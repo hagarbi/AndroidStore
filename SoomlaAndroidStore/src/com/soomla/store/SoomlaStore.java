@@ -12,11 +12,16 @@ import com.soomla.store.exceptions.VirtualItemNotFoundException;
 
 public class SoomlaStore {
 
-    public SoomlaStore(Context mContext, BillingService mBillingService, Handler mHandler, SoomlaStoreActivity mActivity) {
+    public SoomlaStore(Context mContext,
+                       BillingService mBillingService,
+                       Handler mHandler,
+                       SoomlaStoreActivity mActivity,
+                       ISoomlaStoreEventHandler eventHandler) {
         this.mContext = mContext;
         this.mBillingService = mBillingService;
         this.mHandler = mHandler;
         this.mActivity = mActivity;
+        this.mEventHanlder = eventHandler;
     }
 
     public void wantsToBuyCurrencyPacks(String productId){
@@ -35,6 +40,7 @@ public class SoomlaStore {
                 StorageManager.getInstance().getVirtualCurrencyStorage().remove(good.getmCurrencyValue());
 
                 mActivity.sendSoomlaJS("goodsPurchased", "true,'" + itemId + "'," + balance + ",''");
+                mEventHanlder.onVirtualGoodPurchased(good);
             }
             else {
                 int balance = StorageManager.getInstance().getVirtualGoodsStorage().getBalance(good);
@@ -69,4 +75,5 @@ public class SoomlaStore {
     private BillingService mBillingService;
     private Handler mHandler;
     private SoomlaStoreActivity mActivity;
+    private ISoomlaStoreEventHandler mEventHanlder;
 }

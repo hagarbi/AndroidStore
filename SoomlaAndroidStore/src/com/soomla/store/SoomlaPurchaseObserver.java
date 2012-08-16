@@ -30,10 +30,11 @@ import com.soomla.store.exceptions.VirtualItemNotFoundException;
  */
 public class SoomlaPurchaseObserver extends PurchaseObserver {
 
-    public SoomlaPurchaseObserver(Handler handler, SoomlaStoreActivity activity) {
+    public SoomlaPurchaseObserver(Handler handler, SoomlaStoreActivity activity, ISoomlaStoreEventHandler eventHandler) {
         super(activity, handler);
 
         mActivity = activity;
+        mEventHandler = eventHandler;
     }
 
     @Override
@@ -76,6 +77,7 @@ public class SoomlaPurchaseObserver extends PurchaseObserver {
                 // we're throwing this event when on PURCHASE or REFUND !
 
                 mActivity.sendSoomlaJS("currencyPurchased", "true,'" + productId + "'," + balance + ",''");
+                mEventHandler.onVirtualCurrencyPackPurchased(pack);
             }
 
         } catch (VirtualItemNotFoundException e) {
@@ -118,5 +120,6 @@ public class SoomlaPurchaseObserver extends PurchaseObserver {
 
     private static final String TAG = "SOOMLA SoomlaPurchaseObserver";
 
-    private SoomlaStoreActivity mActivity;
+    private SoomlaStoreActivity      mActivity;
+    private ISoomlaStoreEventHandler mEventHandler;
 }
