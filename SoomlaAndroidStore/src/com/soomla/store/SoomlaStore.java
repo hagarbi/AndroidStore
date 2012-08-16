@@ -10,9 +10,9 @@ import com.soomla.store.domain.VirtualGood;
 import com.soomla.store.exceptions.VirtualItemNotFoundException;
 
 
-public class SoomlaJS {
+public class SoomlaStore {
 
-    public SoomlaJS(Context mContext, BillingService mBillingService, Handler mHandler, SoomlaStoreActivity mActivity) {
+    public SoomlaStore(Context mContext, BillingService mBillingService, Handler mHandler, SoomlaStoreActivity mActivity) {
         this.mContext = mContext;
         this.mBillingService = mBillingService;
         this.mHandler = mHandler;
@@ -44,7 +44,8 @@ public class SoomlaJS {
                 mActivity.sendSoomlaJS("goodsPurchase", "false," + itemId + "," + balance + ",'" + failureMsg + "'");
             }
         } catch (VirtualItemNotFoundException e) {
-            e.printStackTrace();
+            mActivity.sendSoomlaJS("goodsPurchase", "false," + itemId + "," + -1 + ",'Unexpected error occurred. Purchase is cancelled.'");
+            Log.e(TAG, "Couldn't find a VirtualGood with itemId: " + itemId + ". Purchase is cancelled.");
         }
     }
 
@@ -64,7 +65,7 @@ public class SoomlaJS {
         mActivity.sendSoomlaJS("initialize", StoreInfo.getInstance().getJsonString());
     }
 
-    private static final String TAG = "SOOMLA SoomlaJS";
+    private static final String TAG = "SOOMLA SoomlaStore";
 
     private Context mContext;
     private BillingService mBillingService;

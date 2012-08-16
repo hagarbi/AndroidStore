@@ -65,46 +65,41 @@ public class SoomlaPurchaseObserver extends PurchaseObserver {
     public void onPurchaseStateChange(Consts.PurchaseState purchaseState, String productId,
                                       long purchaseTime, String developerPayload) {
 
+        int balance = StorageManager.getInstance().getVirtualCurrencyStorage().getBalance();
+
         try {
             VirtualCurrencyPack pack = StoreInfo.getInstance().getPackByGoogleProductId(productId);
-
-            int balance = StorageManager.getInstance().getVirtualCurrencyStorage().getBalance();
 
             if (purchaseState == Consts.PurchaseState.PURCHASED ||
                     purchaseState == Consts.PurchaseState.REFUNDED) {
 
                 // we're throwing this event when on PURCHASE or REFUND !
 
-                mActivity.sendSoomlaJS("currencyPurchase", "true," + pack.getItemId() + "," + balance + ",''");
+                mActivity.sendSoomlaJS("currencyPurchase", "true," + productId + "," + balance + ",''");
             }
 
         } catch (VirtualItemNotFoundException e) {
-            e.printStackTrace();
+            mActivity.sendSoomlaJS("currencyPurchase", "false," + productId + "," + balance + ",''");
+            Log.e(TAG, "ERROR : Couldn't find VirtualCurrencyPack with productId: " + productId);
         }
     }
 
     @Override
     public void onRequestPurchaseResponse(BillingService.RequestPurchase request,
                                           Consts.ResponseCode responseCode) {
-        VirtualCurrencyPack pack = null;
-        try {
-            pack = StoreInfo.getInstance().getPackByGoogleProductId(request.mProductId);
-            int balance = StorageManager.getInstance().getVirtualCurrencyStorage().getBalance();
+        int balance = StorageManager.getInstance().getVirtualCurrencyStorage().getBalance();
 
-            if (responseCode == Consts.ResponseCode.RESULT_OK) {
-                // purchase was sent to server
-            } else if (responseCode == Consts.ResponseCode.RESULT_USER_CANCELED) {
+        if (responseCode == Consts.ResponseCode.RESULT_OK) {
+            // purchase was sent to server
+        } else if (responseCode == Consts.ResponseCode.RESULT_USER_CANCELED) {
 
-                // purchase canceled by user
+            // purchase canceled by user
 
-                mActivity.sendSoomlaJS("currencyPurchase", "false," + pack.getItemId() + "," + balance + ",'You canceled the purchase'");
-            } else {
-                // purchase failed !
+            mActivity.sendSoomlaJS("currencyPurchase", "false," + request.mProductId + "," + balance + ",'You canceled the purchase'");
+        } else {
+           // purchase failed !
 
-                mActivity.sendSoomlaJS("currencyPurchase", "false," + pack.getItemId() + "," + balance + ",'Unexpected error occured! Your purchase is canceled.'");
-            }
-        } catch (VirtualItemNotFoundException e) {
-            e.printStackTrace();
+           mActivity.sendSoomlaJS("currencyPurchase", "false," + request.mProductId + "," + balance + ",'Unexpected error occured! Your purchase is canceled.'");
         }
     }
 
