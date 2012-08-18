@@ -23,5 +23,5 @@ public class SoomlaPrefs {
     public static final int DIALOG_BILLING_NOT_SUPPORTED_ID = 2;
     public static final int DIALOG_SUBSCRIPTIONS_NOT_SUPPORTED_ID = 3;
 
-    public static boolean DEBUG = false;
+    public static boolean debug = false;
 }
