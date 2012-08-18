@@ -18,12 +18,16 @@
 
 package com.soomla.billing;
 
+import android.content.Context;
+import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 import com.soomla.billing.Consts.PurchaseState;
+import com.soomla.billing.util.AESObfuscator;
 import com.soomla.billing.util.Base64;
 import com.soomla.billing.util.Base64DecoderException;
-import com.soomla.store.SoomlaConsts;
+import com.soomla.store.SoomlaPrefs;
+import com.soomla.store.SoomlaPrefs;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -48,6 +52,8 @@ public class Security {
     private static final String KEY_FACTORY_ALGORITHM = "RSA";
     private static final String SIGNATURE_ALGORITHM = "SHA1withRSA";
     private static final SecureRandom RANDOM = new SecureRandom();
+
+    private static AESObfuscator mAesObfuscator = null;
 
     /**
      * This keeps track of the nonces that we generated and sent to the
@@ -114,26 +120,12 @@ public class Security {
             Log.e(TAG, "data is null");
             return null;
         }
-        if (SoomlaConsts.DEBUG) {
+        if (SoomlaPrefs.debug) {
             Log.i(TAG, "signedData: " + signedData);
         }
         boolean verified = false;
         if (!TextUtils.isEmpty(signature)) {
-            /**
-             * Compute your public key (that you got from the Android Market publisher site).
-             *
-             * Instead of just storing the entire literal string here embedded in the
-             * program,  construct the key at runtime from pieces or
-             * use bit manipulation (for example, XOR with some other string) to hide
-             * the actual key.  The key itself is not secret information, but we don't
-             * want to make it easy for an adversary to replace the public key with one
-             * of their own and then fake messages from the server.
-             *
-             * Generally, encryption keys / passwords should only be kept in memory
-             * long enough to perform the operation they need to perform.
-             */
-            String base64EncodedPublicKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAndHbBVrbynZ9LOQhRCA/+dzYyQeT7qcbo6BD16O+7ltau6JLy78emOo4615+N3dl5RJ3FBlRw14aS+KhNAf0gMlrk3RBQA5d+sY/8oD22kC8Gn7blwsmk3LWYqOiGGXFtRxUyBxdibjFo0+qBz+BXJzfKYV+Y3wSDz0RBUoY9+akbF3EHuB6d02fXLeeIAswB28OlAM4PUuHSbj9lDNFefJwawQ7kgUALETJ98ImKlPUzG0jVh1t9vUOarsIZdzWmVu69+Au3mniqzcGY9gZyfYf0n7cNR3isSDfNOjeisDpfNpY/ljf71/6ns3/WjDwtXB2eDal5fz7fbsLEWRkSwIDAQAB";
-            PublicKey key = Security.generatePublicKey(base64EncodedPublicKey);
+            PublicKey key = Security.generatePublicKey(SoomlaPrefs.publicKey);
             verified = Security.verify(key, signedData, signature);
             if (!verified) {
                 Log.w(TAG, "signature does not match data.");
@@ -228,7 +220,7 @@ public class Security {
      * @return true if the data and signature match
      */
     public static boolean verify(PublicKey publicKey, String signedData, String signature) {
-        if (SoomlaConsts.DEBUG) {
+        if (SoomlaPrefs.debug) {
             Log.i(TAG, "signature: " + signature);
         }
         Signature sig;
@@ -251,5 +243,30 @@ public class Security {
             Log.e(TAG, "Base64 decoding failed.");
         }
         return false;
+    }
+
+
+    /** Dealing with obfuscation of values - used before saving to DB and when retrieving from DB. **/
+
+    private static AESObfuscator getAesObfuscator(Context context) {
+        if (mAesObfuscator == null) {
+            String deviceId = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+            mAesObfuscator = new AESObfuscator(SoomlaPrefs.obfuscationSalt, context.getPackageName(), deviceId);
+
+        }
+        return mAesObfuscator;
+    }
+
+    public static String obfuscate(Context context, String data, String key){
+        return getAesObfuscator(context).obfuscate(data, key);
+    }
+
+    public static String unobfuscate(Context context, String key, String obfuscated) {
+        try {
+            return getAesObfuscator(context).unobfuscate(obfuscated, key);
+        } catch (AESObfuscator.ValidationException e) {
+            Log.w(TAG, "Validation error while reading: " + key);
+        }
+        return null;
     }
 }
