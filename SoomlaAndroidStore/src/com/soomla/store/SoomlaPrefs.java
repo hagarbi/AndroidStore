@@ -18,13 +18,12 @@ package com.soomla.store;
 
 public class SoomlaPrefs {
 
-    /* Dialog types Consts */
-    public static final int DIALOG_CANNOT_CONNECT_ID = 1;
-    public static final int DIALOG_BILLING_NOT_SUPPORTED_ID = 2;
-    public static final int DIALOG_SUBSCRIPTIONS_NOT_SUPPORTED_ID = 3;
-
     // do you want to print out debug messages?
     public static boolean debug = false;
 
+    // the obfuscated salt. randomly generated numbers.
     public static byte[] obfuscationSalt = new byte[] { 64, -54, -113, -47, 98, -52, 87, -102, -65, -127, 89, 51, -11, -35, 30, 77, -45, 75, -26, 3 };
+
+    // the Google Market public key
+    public static String publicKey = "WILL BE CHANGED WHEN SoomlaStoreActivity COMES TO PLAY !";
 }
