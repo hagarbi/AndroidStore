@@ -23,5 +23,8 @@ public class SoomlaPrefs {
     public static final int DIALOG_BILLING_NOT_SUPPORTED_ID = 2;
     public static final int DIALOG_SUBSCRIPTIONS_NOT_SUPPORTED_ID = 3;
 
+    // do you want to print out debug messages?
     public static boolean debug = false;
+
+    public static byte[] obfuscationSalt = new byte[] { 64, -54, -113, -47, 98, -52, 87, -102, -65, -127, 89, 51, -11, -35, 30, 77, -45, 75, -26, 3 };
 }
