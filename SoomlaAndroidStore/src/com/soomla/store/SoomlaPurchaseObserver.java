@@ -41,13 +41,13 @@ public class SoomlaPurchaseObserver extends PurchaseObserver {
     public void onBillingSupported(boolean supported, String type) {
         if (type == null || type.equals(Consts.ITEM_TYPE_INAPP)) {
             if (supported) {
-                if (SoomlaConsts.DEBUG){
+                if (SoomlaPrefs.debug){
                     Log.d(TAG, "billing is supported !");
                 }
             } else {
                 // purchase is not supported. just send a message to JS to disable the "get more ..." button.
 
-                if (SoomlaConsts.DEBUG){
+                if (SoomlaPrefs.debug){
                     Log.d(TAG, "billing is not supported !");
                 }
 
