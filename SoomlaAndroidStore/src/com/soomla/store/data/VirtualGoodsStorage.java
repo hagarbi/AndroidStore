@@ -21,7 +21,8 @@ import java.util.HashMap;
 import android.util.Log;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.soomla.store.SoomlaConsts;
+import com.soomla.store.SoomlaPrefs;
+import com.soomla.store.SoomlaPrefs;
 import com.soomla.store.domain.VirtualGood;
 
 /**
@@ -55,7 +56,7 @@ public class VirtualGoodsStorage {
     * @param amount is the amount of currency to add.
     */
     public int add(VirtualGood virtualGood, int amount){
-        if (SoomlaConsts.DEBUG){
+        if (SoomlaPrefs.debug){
             Log.d(TAG, "adding " + amount + " " + virtualGood.getName() + ".");
         }
 
@@ -75,7 +76,7 @@ public class VirtualGoodsStorage {
      * @param amount is the amount to remove.
      */
     public void remove(VirtualGood virtualGood, int amount){
-        if (SoomlaConsts.DEBUG){
+        if (SoomlaPrefs.debug){
             Log.d(TAG, "removing " + amount + " " + virtualGood.getName() + ".");
         }
 

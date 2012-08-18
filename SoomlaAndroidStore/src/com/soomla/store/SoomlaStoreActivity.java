@@ -41,22 +41,24 @@ public class SoomlaStoreActivity extends Activity {
         mPendingJSMessages = new LinkedList<String>();
         mStoreJSInitialized = false;
 
+        Bundle bundle = getIntent().getExtras();
+        SoomlaPrefs.debug =     bundle.getBoolean("debug");
+        SoomlaPrefs.publicKey = bundle.getString("publicKey");
+
         /* Billing */
         mHandler = new Handler();
-        mSoomlaPurchaseObserver = new SoomlaPurchaseObserver(mHandler, this);
+        mSoomlaPurchaseObserver = new SoomlaPurchaseObserver(mHandler, this, null);
         mBillingService = new BillingService();
         mBillingService.setContext(this);
         ResponseHandler.register(mSoomlaPurchaseObserver);
         if (!mBillingService.checkBillingSupported(Consts.ITEM_TYPE_INAPP)){
-            if (SoomlaConsts.DEBUG){
+            if (SoomlaPrefs.debug){
                 Log.d(TAG, "There's no connectivity with the billing service.");
             }
         }
 
         // The Native<->JS implementation
-        mSoomlaStore = new SoomlaStore(getApplicationContext(), mBillingService, mHandler, this);
-
-        Bundle bundle = getIntent().getExtras();
+        mSoomlaStore = new SoomlaStore(getApplicationContext(), mBillingService, mHandler, this, null);
 
         StoreInfo.getInstance().initialize(getApplicationContext());
         StorageManager.getInstance().initialize(
@@ -90,7 +92,7 @@ public class SoomlaStoreActivity extends Activity {
             mPendingJSMessages.add(urlToLoad);
         }
         else{
-            if (SoomlaConsts.DEBUG){
+            if (SoomlaPrefs.debug){
                 Log.d(TAG, "sending message to JS: " + urlToLoad);
             }
             mHandler.post(new Runnable() {
@@ -102,7 +104,7 @@ public class SoomlaStoreActivity extends Activity {
 
             while(!mPendingJSMessages.isEmpty()){
                 final String tmpPendingUrl = mPendingJSMessages.remove();
-                if (SoomlaConsts.DEBUG){
+                if (SoomlaPrefs.debug){
                     Log.d(TAG, "sending message to JS: " + tmpPendingUrl);
                 }
                 mHandler.post(new Runnable() {

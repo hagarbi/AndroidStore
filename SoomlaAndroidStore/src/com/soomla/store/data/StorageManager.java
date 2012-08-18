@@ -16,7 +16,8 @@
 package com.soomla.store.data;
 
 import android.util.Log;
-import com.soomla.store.SoomlaConsts;
+import com.soomla.store.SoomlaPrefs;
+import com.soomla.store.SoomlaPrefs;
 
 /**
  * This is the place where all the relevant storage classes are created.
@@ -37,7 +38,7 @@ public class StorageManager {
     public void initialize(IPhysicalStorage virtualCurrencyPhysicalStorage,
                            IPhysicalStorage virtualGoodsPhysicalStorage,
                            IPhysicalStorage marketPurchasePhysicalStorage){
-        if (SoomlaConsts.DEBUG){
+        if (SoomlaPrefs.debug){
             Log.d(TAG, "initializing StorageManager");
         }
         mVirtualCurrencyStorage =   new VirtualCurrencyStorage(virtualCurrencyPhysicalStorage);

@@ -19,7 +19,8 @@ import android.util.Log;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.soomla.billing.Consts;
-import com.soomla.store.SoomlaConsts;
+import com.soomla.store.SoomlaPrefs;
+import com.soomla.store.SoomlaPrefs;
 import com.soomla.store.domain.MarketPurchaseHistory;
 
 import java.io.IOException;
@@ -41,7 +42,7 @@ public class MarketPurchaseStorage {
 
     public void add(final Consts.PurchaseState purchaseState, final String productId,
                    final String orderId, final long purchaseTime, final String developerPayload){
-        if (SoomlaConsts.DEBUG){
+        if (SoomlaPrefs.debug){
             Log.d(TAG, "adding market purchase data for orderId " + orderId + " and productId " + productId);
         }
         storageFromJson(mPhysicalStorage.load());

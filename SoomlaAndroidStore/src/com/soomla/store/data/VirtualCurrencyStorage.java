@@ -19,7 +19,8 @@ package com.soomla.store.data;
 import android.util.Log;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.soomla.store.SoomlaConsts;
+import com.soomla.store.SoomlaPrefs;
+import com.soomla.store.SoomlaPrefs;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -51,7 +52,7 @@ public class VirtualCurrencyStorage {
      * @param amount is the amount of currency to add.
      */
     public void add(int amount){
-        if (SoomlaConsts.DEBUG){
+        if (SoomlaPrefs.debug){
             Log.d(TAG, "adding " + amount + " currencies.");
         }
 
@@ -64,7 +65,7 @@ public class VirtualCurrencyStorage {
      * @param amount is the amount of currency to remove.
      */
     public void remove(int amount){
-        if (SoomlaConsts.DEBUG){
+        if (SoomlaPrefs.debug){
             Log.d(TAG, "removing " + amount + " currencies.");
         }
 

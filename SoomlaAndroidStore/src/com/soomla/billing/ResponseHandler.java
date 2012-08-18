@@ -26,7 +26,8 @@ import com.soomla.billing.BillingService.RequestPurchase;
 import com.soomla.billing.BillingService.RestoreTransactions;
 import com.soomla.billing.Consts.PurchaseState;
 import com.soomla.billing.Consts.ResponseCode;
-import com.soomla.store.SoomlaConsts;
+import com.soomla.store.SoomlaPrefs;
+import com.soomla.store.SoomlaPrefs;
 import com.soomla.store.StoreInfo;
 import com.soomla.store.data.StorageManager;
 import com.soomla.store.domain.VirtualCurrencyPack;
@@ -86,7 +87,7 @@ public class ResponseHandler {
      */
     public static void buyPageIntentResponse(PendingIntent pendingIntent, Intent intent) {
         if (sPurchaseObserver == null) {
-            if (SoomlaConsts.DEBUG) {
+            if (SoomlaPrefs.debug) {
                 Log.d(TAG, "UI is not running");
             }
             return;
