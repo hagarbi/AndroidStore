@@ -77,7 +77,9 @@ public class SoomlaPurchaseObserver extends PurchaseObserver {
                 // we're throwing this event when on PURCHASE or REFUND !
 
                 mActivity.sendSoomlaJS("currencyPurchased", "true,'" + productId + "'," + balance + ",''");
-                mEventHandler.onVirtualCurrencyPackPurchased(pack);
+                if (mEventHandler != null){
+                    mEventHandler.onVirtualCurrencyPackPurchased(pack);
+                }
             }
 
         } catch (VirtualItemNotFoundException e) {

@@ -21,7 +21,7 @@ public class SoomlaStore {
         this.mBillingService = mBillingService;
         this.mHandler = mHandler;
         this.mActivity = mActivity;
-        this.mEventHanlder = eventHandler;
+        this.mEventHandler = eventHandler;
     }
 
     public void wantsToBuyCurrencyPacks(String productId){
@@ -40,7 +40,9 @@ public class SoomlaStore {
                 StorageManager.getInstance().getVirtualCurrencyStorage().remove(good.getmCurrencyValue());
 
                 mActivity.sendSoomlaJS("goodsPurchased", "true,'" + itemId + "'," + balance + ",''");
-                mEventHanlder.onVirtualGoodPurchased(good);
+                if (mEventHandler != null){
+                    mEventHandler.onVirtualGoodPurchased(good);
+                }
             }
             else {
                 int balance = StorageManager.getInstance().getVirtualGoodsStorage().getBalance(good);
@@ -75,5 +77,5 @@ public class SoomlaStore {
     private BillingService mBillingService;
     private Handler mHandler;
     private SoomlaStoreActivity mActivity;
-    private ISoomlaStoreEventHandler mEventHanlder;
+    private ISoomlaStoreEventHandler mEventHandler;
 }
