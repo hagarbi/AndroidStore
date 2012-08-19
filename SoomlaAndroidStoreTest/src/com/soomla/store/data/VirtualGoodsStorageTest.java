@@ -29,12 +29,15 @@ public class VirtualGoodsStorageTest {
     private VirtualGoodsStorage mStorage;
     private VirtualGood         mYellowHat;
 
+    private final String YELLOW_HAT_NAME = "Yellow Hat";
+    private final String YELLOW_HAT_DESC = "Just a hat to test with";
+
     @Before
     public void setUp() {
         mStorage = new VirtualGoodsStorage(new FileStorage(Robolectric.application.getApplicationContext(),
                 "soomla.virtualgoods.test"));
 
-        mYellowHat = new VirtualGood(R.string.yellow_hat_name, R.string.yellow_hat_description, "image", 3, "yellow_hat");
+        mYellowHat = new VirtualGood(YELLOW_HAT_NAME, YELLOW_HAT_DESC, "image", 3, "yellow_hat");
     }
 
     @Test
