@@ -15,13 +15,8 @@
  */
 package com.soomla.store.data;
 
-import java.io.IOException;
-import java.util.HashMap;
-
+import android.database.Cursor;
 import android.util.Log;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.soomla.store.SoomlaPrefs;
 import com.soomla.store.SoomlaPrefs;
 import com.soomla.store.domain.VirtualGood;
 
@@ -32,21 +27,39 @@ public class VirtualGoodsStorage {
 
     /** Constructor
      *
-     * @param mPhysicalStorage is the class responsible to persist the data for this storage.
+     * @param storeDatabase is the SQLite database.
      */
-    public VirtualGoodsStorage(IPhysicalStorage mPhysicalStorage) {
-        this.mPhysicalStorage = mPhysicalStorage;
-        this.mStorage = new HashMap<String, Integer>();
+    public VirtualGoodsStorage(StoreDatabase storeDatabase) {
+        this.mStoreDatabase = storeDatabase;
     }
 
     /** Getters **/
 
-    public int getBalance(VirtualGood vgood){
-        storageFromJson(mPhysicalStorage.load());
-        if (!mStorage.containsKey(vgood.getItemId())){
+    public int getBalance(VirtualGood virtualGood){
+        if (SoomlaPrefs.debug){
+            Log.d(TAG, "trying to fetch balance for virtual good with itemId: " + virtualGood.getItemId());
+        }
+        Cursor cursor = mStoreDatabase.getVirtualGood(virtualGood.getItemId());
+
+        if (cursor == null) {
             return 0;
         }
-		return mStorage.get(vgood.getItemId());
+
+        try {
+            int balanceCol = cursor.getColumnIndexOrThrow(
+                    StoreDatabase.VIRTUAL_GOODS_COLUMN_BALANCE);
+            if (cursor.moveToNext()) {
+                int balance = cursor.getInt(balanceCol);
+                if (SoomlaPrefs.debug){
+                    Log.d(TAG, "the balance for " + virtualGood.getItemId() + " is " + balance);
+                }
+                return balance;
+            }
+        } finally {
+            cursor.close();
+        }
+
+        return 0;
 	}
 
     /** Public functions **/
@@ -60,14 +73,10 @@ public class VirtualGoodsStorage {
             Log.d(TAG, "adding " + amount + " " + virtualGood.getName() + ".");
         }
 
-		if (!mStorage.containsKey(virtualGood.getItemId())){
-			mStorage.put(virtualGood.getItemId(), 0);
-		}
-		
-		mStorage.put(virtualGood.getItemId(), mStorage.get(virtualGood.getItemId()) + amount);
-        mPhysicalStorage.save(storageToJson());
+        int balance = getBalance(virtualGood);
+        mStoreDatabase.updateVirtualGood(virtualGood.getItemId(), balance + amount);
 
-        return mStorage.get(virtualGood.getItemId());
+        return balance + amount;
 	}
 
     /**
@@ -75,53 +84,20 @@ public class VirtualGoodsStorage {
      * @param virtualGood is the virtual good to remove the given amount from.
      * @param amount is the amount to remove.
      */
-    public void remove(VirtualGood virtualGood, int amount){
+    public int remove(VirtualGood virtualGood, int amount){
         if (SoomlaPrefs.debug){
             Log.d(TAG, "removing " + amount + " " + virtualGood.getName() + ".");
         }
 
-		if (!mStorage.containsKey(virtualGood.getItemId())){
-			return;
-		}
-		
-		int balance = mStorage.get(virtualGood.getItemId()) - amount;
-		mStorage.put(virtualGood.getItemId(), balance > 0 ? balance : 0);
-        mPhysicalStorage.save(storageToJson());
+        int quantity = getBalance(virtualGood) - amount;
+        quantity = quantity > 0 ? quantity : 0;
+        mStoreDatabase.updateVirtualGood(virtualGood.getItemId(), quantity);
+
+        return quantity;
 	}
-
-    /** Private functions **/
-
-    private void storageFromJson(String storageJson) {
-        ObjectMapper mapper = new ObjectMapper();
-
-        if (storageJson.isEmpty()){
-            mStorage = new HashMap<String, Integer>();
-        }
-        else {
-            try {
-                mStorage = mapper.readValue(storageJson,
-                        new TypeReference<HashMap<String,Integer>>() {});
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private String storageToJson() {
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            return mapper.writeValueAsString(mStorage);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return "";
-    }
 
     /** Private members **/
     private static final String TAG = "SOOMLA VirtualGoodsStorage";
 
-    private HashMap<String, Integer> mStorage;
-    private IPhysicalStorage mPhysicalStorage;
-
+    private StoreDatabase            mStoreDatabase;
 }

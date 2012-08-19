@@ -15,8 +15,8 @@
  */
 package com.soomla.store.data;
 
+import android.content.Context;
 import android.util.Log;
-import com.soomla.store.SoomlaPrefs;
 import com.soomla.store.SoomlaPrefs;
 
 /**
@@ -35,15 +35,16 @@ public class StorageManager {
         return sInstance;
     }
 
-    public void initialize(IPhysicalStorage virtualCurrencyPhysicalStorage,
-                           IPhysicalStorage virtualGoodsPhysicalStorage,
-                           IPhysicalStorage marketPurchasePhysicalStorage){
+    public void initialize(Context context){
         if (SoomlaPrefs.debug){
             Log.d(TAG, "initializing StorageManager");
         }
-        mVirtualCurrencyStorage =   new VirtualCurrencyStorage(virtualCurrencyPhysicalStorage);
-        mVirtualGoodsStorage =      new VirtualGoodsStorage(virtualGoodsPhysicalStorage);
-        mMarketPurchaseStorage =    new MarketPurchaseStorage(marketPurchasePhysicalStorage);
+
+        StoreDatabase database = new StoreDatabase(context);
+
+        mVirtualCurrencyStorage =   new VirtualCurrencyStorage(database);
+        mVirtualGoodsStorage =      new VirtualGoodsStorage(database);
+        mMarketPurchaseStorage =    new MarketPurchaseStorage(database);
     }
 
     public VirtualCurrencyStorage getVirtualCurrencyStorage(){

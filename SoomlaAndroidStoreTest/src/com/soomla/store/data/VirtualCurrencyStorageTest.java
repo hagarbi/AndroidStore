@@ -15,6 +15,7 @@
  */
 package com.soomla.store.data;
 
+import com.soomla.store.StoreInfo;
 import com.xtremelabs.robolectric.Robolectric;
 import com.xtremelabs.robolectric.RobolectricTestRunner;
 import org.junit.Before;
@@ -29,8 +30,9 @@ public class VirtualCurrencyStorageTest{
 
     @Before
     public void setUp() {
-        mStorage = new VirtualCurrencyStorage(new FileStorage(Robolectric.application.getApplicationContext(),
-                "soomla.virtualcurrency.test"));
+        StoreInfo.getInstance().initialize(Robolectric.application.getApplicationContext());
+        StorageManager.getInstance().initialize(Robolectric.application.getApplicationContext());
+        mStorage = new VirtualCurrencyStorage(new StoreDatabase(Robolectric.application.getApplicationContext()));
 
 //        System.out.println(Robolectric.application.getApplicationContext().getFilesDir());
     }
@@ -38,19 +40,19 @@ public class VirtualCurrencyStorageTest{
     @Test
     public void testAdd(){
         mStorage.add(10);
-        Assert.assertEquals(mStorage.getBalance(), 10);
+        Assert.assertEquals(10, mStorage.getBalance());
     }
 
     @Test
     public void testRemove(){
         mStorage.remove(2);
-        Assert.assertEquals(mStorage.getBalance(), 0);
+        Assert.assertEquals(0, mStorage.getBalance());
     }
 
     @Test
     public void testAddRemove(){
         mStorage.add(10);
         mStorage.remove(2);
-        Assert.assertEquals(mStorage.getBalance(), 8);
+        Assert.assertEquals(8, mStorage.getBalance());
     }
 }

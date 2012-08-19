@@ -40,7 +40,7 @@ public class VirtualCurrencyPack extends VirtualItem {
         super(mName, mDescription, mImgFilePath, mItemId);
         this.mGoogleItem = mGoogleItem;
         this.mCost = mCost;
-        this.mCurrencyAmout = mCurrencyAmout;
+        this.mCurrencyAmount = mCurrencyAmout;
     }
 
     /** Getters **/
@@ -53,8 +53,8 @@ public class VirtualCurrencyPack extends VirtualItem {
         return mCost;
     }
 
-    public int getmCurrencyAmout() {
-        return mCurrencyAmout;
+    public int getmCurrencyAmount() {
+        return mCurrencyAmount;
     }
 
 
@@ -62,5 +62,5 @@ public class VirtualCurrencyPack extends VirtualItem {
 
     private GoogleMarketItem mGoogleItem;
     private double           mCost;
-    private int              mCurrencyAmout;
+    private int mCurrencyAmount;
 }

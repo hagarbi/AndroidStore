@@ -23,10 +23,7 @@ public class StorageManagerTest {
 
     @Before
     public void setUp(){
-        StorageManager.getInstance().initialize(new FileStorage(
-                Robolectric.application.getApplicationContext(), "soomla.virtualcurrency.test"),
-                new FileStorage(Robolectric.application.getApplicationContext(), "soomla.virtualgoods.test"),
-                new FileStorage(Robolectric.application.getApplicationContext(), "soomla.market.test"));
+        StorageManager.getInstance().initialize(Robolectric.application.getApplicationContext());
     }
 
 }

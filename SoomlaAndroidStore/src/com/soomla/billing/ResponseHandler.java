@@ -27,7 +27,6 @@ import com.soomla.billing.BillingService.RestoreTransactions;
 import com.soomla.billing.Consts.PurchaseState;
 import com.soomla.billing.Consts.ResponseCode;
 import com.soomla.store.SoomlaPrefs;
-import com.soomla.store.SoomlaPrefs;
 import com.soomla.store.StoreInfo;
 import com.soomla.store.data.StorageManager;
 import com.soomla.store.domain.VirtualCurrencyPack;
@@ -126,11 +125,10 @@ public class ResponseHandler {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                // adding a record to history
-                StorageManager.getInstance().getMarketPurchaseStorage().add(
-                        purchaseState, productId, orderId, purchaseTime, developerPayload);
-
                 try {
+                    // adding a record to history
+                    StorageManager.getInstance().getMarketPurchaseStorage().add(
+                        purchaseState, productId, orderId, purchaseTime, developerPayload);
 
                     VirtualCurrencyPack pack = StoreInfo.getInstance().getPackByGoogleProductId(productId);
 
@@ -138,7 +136,7 @@ public class ResponseHandler {
                     // note that a refunded purchase is treated as a purchase.
                     // a friendly refund policy is nice for the user.
                     if (purchaseState == PurchaseState.PURCHASED || purchaseState == PurchaseState.REFUNDED) {
-                        StorageManager.getInstance().getVirtualCurrencyStorage().add(pack.getmCurrencyAmout());
+                        StorageManager.getInstance().getVirtualCurrencyStorage().add(pack.getmCurrencyAmount());
                     }
 
                     // This needs to be synchronized because the UI thread can change the

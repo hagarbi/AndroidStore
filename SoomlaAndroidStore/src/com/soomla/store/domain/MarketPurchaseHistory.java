@@ -12,15 +12,20 @@ public class MarketPurchaseHistory {
     private String               mOrderId;
     private long                 mPurchaseTime;
     private String               mDevPayload;
+    private int                  mCurrentBalance;
+    private String               mItemId;
 
     public MarketPurchaseHistory(){}
 
-    public MarketPurchaseHistory(Consts.PurchaseState mState, String mProductId, String mOrderId, long mPurchaseTime, String mDevPayload) {
+    public MarketPurchaseHistory(Consts.PurchaseState mState, String mProductId, String mOrderId,
+                                 long mPurchaseTime, String mDevPayload, int mCurrentBalance, String mItemId) {
         this.mState = mState;
         this.mProductId = mProductId;
         this.mOrderId = mOrderId;
         this.mPurchaseTime = mPurchaseTime;
         this.mDevPayload = mDevPayload;
+        this.mCurrentBalance = mCurrentBalance;
+        this.mItemId = mItemId;
     }
 
     public Consts.PurchaseState getmState() {
@@ -41,5 +46,13 @@ public class MarketPurchaseHistory {
 
     public String getmDevPayload() {
         return mDevPayload;
+    }
+
+    public int getmCurrentBalance() {
+        return mCurrentBalance;
+    }
+
+    public String getmItemId() {
+        return mItemId;
     }
 }

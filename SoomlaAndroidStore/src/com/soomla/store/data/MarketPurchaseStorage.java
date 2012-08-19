@@ -21,7 +21,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.soomla.billing.Consts;
 import com.soomla.store.SoomlaPrefs;
 import com.soomla.store.SoomlaPrefs;
+import com.soomla.store.StoreInfo;
 import com.soomla.store.domain.MarketPurchaseHistory;
+import com.soomla.store.domain.VirtualCurrencyPack;
+import com.soomla.store.exceptions.VirtualItemNotFoundException;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -34,55 +37,26 @@ public class MarketPurchaseStorage {
 
     /** Constructor
      *
-     * @param mPhysicalStorage is the class responsible to persist the data for this storage.
+     * @param storeDatabase is the class responsible to persist the data for this storage.
      */
-    public MarketPurchaseStorage(IPhysicalStorage mPhysicalStorage) {
-        this.mPhysicalStorage = mPhysicalStorage;
+    public MarketPurchaseStorage(StoreDatabase storeDatabase) {
+        this.mStoreDatabase = storeDatabase;
     }
 
     public void add(final Consts.PurchaseState purchaseState, final String productId,
-                   final String orderId, final long purchaseTime, final String developerPayload){
+                   final String orderId, final long purchaseTime, final String developerPayload) throws VirtualItemNotFoundException {
         if (SoomlaPrefs.debug){
             Log.d(TAG, "adding market purchase data for orderId " + orderId + " and productId " + productId);
         }
-        storageFromJson(mPhysicalStorage.load());
-        if (!mPurchaseHistories.containsKey(orderId)){
-            mPurchaseHistories.put(orderId, new MarketPurchaseHistory(purchaseState, productId, orderId, purchaseTime, developerPayload));
-            mPhysicalStorage.save(storageToJson());
-        }
-    }
 
-    /** Private functions **/
+        VirtualCurrencyPack pack = StoreInfo.getInstance().getPackByGoogleProductId(productId);
 
-    private void storageFromJson(String storageJson) {
-        ObjectMapper mapper = new ObjectMapper();
-        if (storageJson.isEmpty()){
-            mPurchaseHistories = new HashMap<String, MarketPurchaseHistory>();
-        }
-        else{
-            try {
-                mPurchaseHistories = mapper.readValue(storageJson,
-                        new TypeReference<HashMap<String,MarketPurchaseHistory>>() {});
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private String storageToJson() {
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            return mapper.writeValueAsString(mPurchaseHistories);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return "";
+        mStoreDatabase.addOrUpdatePurchaseHistory(orderId, productId, pack.getItemId(),
+                purchaseState, purchaseTime, developerPayload, StorageManager.getInstance().getVirtualCurrencyStorage().getBalance());
     }
 
     /** Private members **/
     private static final String TAG = "SOOMLA MarketPurchaseStorage";
 
-    private IPhysicalStorage mPhysicalStorage;
-    private HashMap<String, MarketPurchaseHistory> mPurchaseHistories;
+    private StoreDatabase mStoreDatabase;
 }

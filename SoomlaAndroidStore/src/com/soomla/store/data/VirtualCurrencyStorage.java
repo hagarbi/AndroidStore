@@ -16,14 +16,9 @@
 
 package com.soomla.store.data;
 
+import android.database.Cursor;
 import android.util.Log;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.soomla.store.SoomlaPrefs;
-import com.soomla.store.SoomlaPrefs;
-
-import java.io.IOException;
-import java.util.HashMap;
 
 /**
  * This is the storage for the virtual currency.
@@ -32,17 +27,39 @@ public class VirtualCurrencyStorage {
 
     /** Constructor
      *
-     * @param mPhysicalStorage is the class responsible to persist the data for this storage.
+     * @param storeDatabase is the class responsible to persist the data for this storage.
      */
-    public VirtualCurrencyStorage(IPhysicalStorage mPhysicalStorage) {
-        this.mPhysicalStorage = mPhysicalStorage;
+    public VirtualCurrencyStorage(StoreDatabase storeDatabase) {
+        this.mStoreDatabase = storeDatabase;
     }
 
     /** Getters **/
 
     public int getBalance(){
-        storageFromJson(mPhysicalStorage.load());
-        return mBalance;
+        if (SoomlaPrefs.debug){
+            Log.d(TAG, "trying to fetch balance for virtual currency");
+        }
+        Cursor cursor = mStoreDatabase.getVirtualCurrency(SoomlaPrefs.CURRENCY_ITEM_ID);
+
+        if (cursor == null) {
+            return 0;
+        }
+
+        try {
+            int balanceCol = cursor.getColumnIndexOrThrow(
+                    StoreDatabase.VIRTUAL_CURRENCY_COLUMN_BALANCE);
+            if (cursor.moveToNext()) {
+                int balance = cursor.getInt(balanceCol);
+                if (SoomlaPrefs.debug){
+                    Log.d(TAG, "the currency balance is " + balance);
+                }
+                return balance;
+            }
+        } finally {
+            cursor.close();
+        }
+
+        return 0;
     }
 
     /** Public functions **/
@@ -50,64 +67,37 @@ public class VirtualCurrencyStorage {
     /**
      * Adds the given amount of currency to the storage.
      * @param amount is the amount of currency to add.
+     * @return the new balance after adding amount.
      */
-    public void add(int amount){
+    public int add(int amount){
         if (SoomlaPrefs.debug){
             Log.d(TAG, "adding " + amount + " currencies.");
         }
 
-        mBalance += amount;
-        mPhysicalStorage.save(storageToJson());
+        int balance = getBalance();
+        mStoreDatabase.updateVirtualCurrency(SoomlaPrefs.CURRENCY_ITEM_ID, balance + amount);
+
+        return balance + amount;
     }
 
     /**
      * Removes the given amount of currency from the storage.
      * @param amount is the amount of currency to remove.
      */
-    public void remove(int amount){
+    public int remove(int amount){
         if (SoomlaPrefs.debug){
             Log.d(TAG, "removing " + amount + " currencies.");
         }
 
-        mBalance -= amount;
-        if (mBalance < 0) mBalance = 0; // you can't have negative amount of currency
+        int quantity = getBalance() - amount;
+        quantity = quantity > 0 ? quantity : 0;
+        mStoreDatabase.updateVirtualCurrency(SoomlaPrefs.CURRENCY_ITEM_ID, quantity);
 
-        mPhysicalStorage.save(storageToJson());
-    }
-
-    /** Private functions **/
-
-    private void storageFromJson(String storageJson) {
-        mBalance = 0;
-
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            HashMap<String, Object> json = mapper.readValue(storageJson,
-                    new TypeReference<HashMap<String,Object>>() {});
-            mBalance =       (Integer)json.get("balance");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private String storageToJson() {
-        ObjectMapper mapper = new ObjectMapper();
-
-        HashMap<String, Object> json = new HashMap<String, Object>();
-        json.put("balance", mBalance);
-
-        try {
-            return mapper.writeValueAsString(json);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return "";
+        return quantity;
     }
 
     /** Private members **/
     private static final String TAG = "SOOMLA VirtualCurrencyStorage";
 
-    private int     mBalance;
-    private IPhysicalStorage mPhysicalStorage;
+    private StoreDatabase mStoreDatabase;
 }

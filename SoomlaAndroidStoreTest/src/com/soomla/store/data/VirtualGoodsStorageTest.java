@@ -15,6 +15,7 @@
  */
 package com.soomla.store.data;
 
+import com.soomla.store.StoreInfo;
 import com.soomla.store.domain.VirtualGood;
 import com.soomla.store.R;
 import com.xtremelabs.robolectric.Robolectric;
@@ -34,8 +35,9 @@ public class VirtualGoodsStorageTest {
 
     @Before
     public void setUp() {
-        mStorage = new VirtualGoodsStorage(new FileStorage(Robolectric.application.getApplicationContext(),
-                "soomla.virtualgoods.test"));
+        StoreInfo.getInstance().initialize(Robolectric.application.getApplicationContext());
+        StorageManager.getInstance().initialize(Robolectric.application.getApplicationContext());
+        mStorage = new VirtualGoodsStorage(new StoreDatabase(Robolectric.application.getApplicationContext()));
 
         mYellowHat = new VirtualGood(YELLOW_HAT_NAME, YELLOW_HAT_DESC, "image", 3, "yellow_hat");
     }

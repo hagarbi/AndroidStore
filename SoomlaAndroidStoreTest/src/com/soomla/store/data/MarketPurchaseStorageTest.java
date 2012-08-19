@@ -15,7 +15,9 @@
  */
 package com.soomla.store.data;
 
+import android.database.Cursor;
 import com.soomla.billing.Consts;
+import com.soomla.store.StoreInfo;
 import com.xtremelabs.robolectric.Robolectric;
 import com.xtremelabs.robolectric.RobolectricTestRunner;
 import junit.framework.Assert;
@@ -32,38 +34,35 @@ import java.util.Calendar;
 @RunWith(RobolectricTestRunner.class)
 public class MarketPurchaseStorageTest {
     private MarketPurchaseStorage mStorage;
+    private StoreDatabase         mDB;
 
     @Before
     public void setUp(){
-        mStorage = new MarketPurchaseStorage(new FileStorage(
-                Robolectric.application.getApplicationContext(),"soomla.marketpurchase.test"
-        ));
+        StoreInfo.getInstance().initialize(Robolectric.application.getApplicationContext());
+        StorageManager.getInstance().initialize(Robolectric.application.getApplicationContext());
+        mDB = new StoreDatabase(Robolectric.application.getApplicationContext());
+        mStorage = new MarketPurchaseStorage(mDB);
     }
 
     @Test
     public void testAdd() throws Exception{
         long purchaseTime = Calendar.getInstance().getTimeInMillis();
-        mStorage.add(Consts.PurchaseState.PURCHASED, "yellow_hat", "123456", purchaseTime,
+        mStorage.add(Consts.PurchaseState.PURCHASED, "pipeline_pumpin_pack", "123456", purchaseTime,
                 "This is the dev payload");
 
-        String filename = Robolectric.application.getApplicationContext().getFilesDir() + "/soomla.marketpurchase.test";
-        Assert.assertTrue(new File(filename).exists());
+        Cursor cursor = mDB.getPurchaseHistory("123456");
+        Assert.assertNotNull(cursor);
 
-        FileInputStream fis = Robolectric.application.getApplicationContext().openFileInput("soomla.marketpurchase.test");
-        InputStreamReader inputStreamReader = new InputStreamReader(fis);
-        StringBuilder fileContent = new StringBuilder();
-        BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-        String line;
-        while ((line = bufferedReader.readLine()) != null) {
-            fileContent.append(line);
+        try {
+            int productIdCol = cursor.getColumnIndexOrThrow(
+                    StoreDatabase.PURCHASE_HISTORY_COLUMN_PRODUCT_ID);
+            if (cursor.moveToNext()) {
+                String productId = cursor.getString(productIdCol);
+                Assert.assertEquals(productId, "pipeline_pumpin_pack");
+            }
+        } finally {
+            cursor.close();
         }
-        fis.close();
-
-        Assert.assertEquals(
-                "{\"123456\":{\"mState\":\"PURCHASED\",\"mProductId\":\"yellow_hat\",\"mOrderId\":\"123456\",\"mPurchaseTime\":" +
-                        purchaseTime +
-                        ",\"mDevPayload\":\"This is the dev payload\"}}",
-                new String(fileContent));
     }
 
 
