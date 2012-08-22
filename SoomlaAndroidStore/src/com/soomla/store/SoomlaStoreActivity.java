@@ -19,6 +19,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Settings;
 import android.util.Log;
 import android.webkit.ConsoleMessage;
 import android.webkit.WebChromeClient;
@@ -28,6 +29,7 @@ import com.soomla.billing.Consts;
 import com.soomla.billing.ResponseHandler;
 import com.soomla.store.data.StorageManager;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -41,8 +43,19 @@ public class SoomlaStoreActivity extends Activity {
         mStoreJSInitialized = false;
 
         Bundle bundle = getIntent().getExtras();
-        SoomlaPrefs.debug =     bundle.getBoolean("debug");
-        SoomlaPrefs.publicKey = bundle.getString("publicKey");
+        SoomlaPrefs.debug        = bundle.getBoolean("debug");
+        SoomlaPrefs.publicKey    = bundle.getString("publicKey");
+        HashMap<String, String> secureData;
+        if (SoomlaPrefs.DB_SECURE){
+            secureData = new HashMap<String, String>();
+            String deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+            secureData.put("applicationId", getPackageName());
+            secureData.put("deviceId", deviceId);
+        }
+        else {
+            Log.w(TAG, "Your database data will not be encrypted. Don't ever release your application this way!" +
+                    " Change SoomlaPrefs.DB_SECURE to true.");
+        }
 
         /* Billing */
         mHandler = new Handler();
@@ -60,7 +73,7 @@ public class SoomlaStoreActivity extends Activity {
         mSoomlaStore = new SoomlaStore(getApplicationContext(), mBillingService, mHandler, this, null);
 
         StoreInfo.getInstance().initialize(getApplicationContext());
-        StorageManager.getInstance().initialize(getApplicationContext());
+        StorageManager.getInstance().initialize(getApplicationContext(), secureData);
 
         /* Setting up the store WebView */
         mWebView = new WebView(this);

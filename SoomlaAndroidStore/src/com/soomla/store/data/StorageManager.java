@@ -17,7 +17,10 @@ package com.soomla.store.data;
 
 import android.content.Context;
 import android.util.Log;
+import com.soomla.billing.util.AESObfuscator;
 import com.soomla.store.SoomlaPrefs;
+
+import java.util.HashMap;
 
 /**
  * This is the place where all the relevant storage classes are created.
@@ -35,16 +38,21 @@ public class StorageManager {
         return sInstance;
     }
 
-    public void initialize(Context context){
+    public void initialize(Context context, HashMap<String, String> secureData){
         if (SoomlaPrefs.debug){
             Log.d(TAG, "initializing StorageManager");
         }
 
-        StoreDatabase database = new StoreDatabase(context);
+        mDatabase = new StoreDatabase(context);
 
-        mVirtualCurrencyStorage =   new VirtualCurrencyStorage(database);
-        mVirtualGoodsStorage =      new VirtualGoodsStorage(database);
-        mMarketPurchaseStorage =    new MarketPurchaseStorage(database);
+        if(SoomlaPrefs.DB_SECURE){
+            mObfuscator = new AESObfuscator(SoomlaPrefs.obfuscationSalt,
+                    secureData.get("applicationId"), secureData.get("deviceId"));
+        }
+
+        mVirtualCurrencyStorage =   new VirtualCurrencyStorage();
+        mVirtualGoodsStorage =      new VirtualGoodsStorage();
+        mMarketPurchaseStorage =    new MarketPurchaseStorage();
     }
 
     public VirtualCurrencyStorage getVirtualCurrencyStorage(){
@@ -59,6 +67,14 @@ public class StorageManager {
         return mMarketPurchaseStorage;
     }
 
+    public static AESObfuscator getObfuscator(){
+        return mObfuscator;
+    }
+
+    public static StoreDatabase getDatabase(){
+        return mDatabase;
+    }
+
     private StorageManager(){ }
 
     /** Private members **/
@@ -68,4 +84,7 @@ public class StorageManager {
     private VirtualCurrencyStorage  mVirtualCurrencyStorage;
     private MarketPurchaseStorage   mMarketPurchaseStorage;
     private static StorageManager   sInstance;
+
+    private static AESObfuscator    mObfuscator;
+    private static StoreDatabase    mDatabase;
 }

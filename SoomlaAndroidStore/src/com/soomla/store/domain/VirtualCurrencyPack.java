@@ -57,6 +57,19 @@ public class VirtualCurrencyPack extends VirtualItem {
         return mCurrencyAmount;
     }
 
+    /** Setters **/
+
+    public void setmGoogleItem(GoogleMarketItem mGoogleItem) {
+        this.mGoogleItem = mGoogleItem;
+    }
+
+    public void setmCost(double mCost) {
+        this.mCost = mCost;
+    }
+
+    public void setmCurrencyAmount(int mCurrencyAmount) {
+        this.mCurrencyAmount = mCurrencyAmount;
+    }
 
     /** Private members **/
 

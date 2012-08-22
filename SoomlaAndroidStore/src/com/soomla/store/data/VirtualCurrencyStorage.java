@@ -18,6 +18,7 @@ package com.soomla.store.data;
 
 import android.database.Cursor;
 import android.util.Log;
+import com.soomla.billing.util.AESObfuscator;
 import com.soomla.store.SoomlaPrefs;
 
 /**
@@ -27,10 +28,8 @@ public class VirtualCurrencyStorage {
 
     /** Constructor
      *
-     * @param storeDatabase is the class responsible to persist the data for this storage.
      */
-    public VirtualCurrencyStorage(StoreDatabase storeDatabase) {
-        this.mStoreDatabase = storeDatabase;
+    public VirtualCurrencyStorage() {
     }
 
     /** Getters **/
@@ -39,7 +38,12 @@ public class VirtualCurrencyStorage {
         if (SoomlaPrefs.debug){
             Log.d(TAG, "trying to fetch balance for virtual currency");
         }
-        Cursor cursor = mStoreDatabase.getVirtualCurrency(SoomlaPrefs.CURRENCY_ITEM_ID);
+
+        String itemId = SoomlaPrefs.CURRENCY_ITEM_ID;
+        if (StorageManager.getObfuscator() != null){
+            itemId = StorageManager.getObfuscator().obfuscateString(itemId);
+        }
+        Cursor cursor = StorageManager.getDatabase().getVirtualCurrency(itemId);
 
         if (cursor == null) {
             return 0;
@@ -49,12 +53,22 @@ public class VirtualCurrencyStorage {
             int balanceCol = cursor.getColumnIndexOrThrow(
                     StoreDatabase.VIRTUAL_CURRENCY_COLUMN_BALANCE);
             if (cursor.moveToNext()) {
-                int balance = cursor.getInt(balanceCol);
+                String balanceStr = cursor.getString(balanceCol);
+                int balance;
+                if (StorageManager.getObfuscator() != null){
+                    balance = StorageManager.getObfuscator().unobfuscateToInt(balanceStr);
+                }
+                else {
+                    balance = Integer.parseInt(balanceStr);
+                }
+
                 if (SoomlaPrefs.debug){
                     Log.d(TAG, "the currency balance is " + balance);
                 }
                 return balance;
             }
+        } catch (AESObfuscator.ValidationException e) {
+            e.printStackTrace();
         } finally {
             cursor.close();
         }
@@ -74,8 +88,14 @@ public class VirtualCurrencyStorage {
             Log.d(TAG, "adding " + amount + " currencies.");
         }
 
+        String itemId = SoomlaPrefs.CURRENCY_ITEM_ID;
         int balance = getBalance();
-        mStoreDatabase.updateVirtualCurrency(SoomlaPrefs.CURRENCY_ITEM_ID, balance + amount);
+        String quantityStr = "" + (balance + amount);
+        if (StorageManager.getObfuscator() != null){
+            quantityStr = StorageManager.getObfuscator().obfuscateString(quantityStr);
+            itemId      = StorageManager.getObfuscator().obfuscateString(itemId);
+        }
+        StorageManager.getDatabase().updateVirtualCurrency(itemId, quantityStr);
 
         return balance + amount;
     }
@@ -89,15 +109,19 @@ public class VirtualCurrencyStorage {
             Log.d(TAG, "removing " + amount + " currencies.");
         }
 
+        String itemId = SoomlaPrefs.CURRENCY_ITEM_ID;
         int quantity = getBalance() - amount;
         quantity = quantity > 0 ? quantity : 0;
-        mStoreDatabase.updateVirtualCurrency(SoomlaPrefs.CURRENCY_ITEM_ID, quantity);
+        String quantityStr = "" + quantity;
+        if (StorageManager.getObfuscator() != null){
+            quantityStr = StorageManager.getObfuscator().obfuscateString(quantityStr);
+            itemId      = StorageManager.getObfuscator().obfuscateString(itemId);
+        }
+        StorageManager.getDatabase().updateVirtualCurrency(itemId, quantityStr);
 
         return quantity;
     }
 
     /** Private members **/
     private static final String TAG = "SOOMLA VirtualCurrencyStorage";
-
-    private StoreDatabase mStoreDatabase;
 }

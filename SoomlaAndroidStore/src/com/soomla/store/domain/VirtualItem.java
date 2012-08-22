@@ -53,6 +53,24 @@ public abstract class VirtualItem {
         return mItemId;
     }
 
+    /** Setters **/
+
+    public void setmName(String mName) {
+        this.mName = mName;
+    }
+
+    public void setmDescription(String mDescription) {
+        this.mDescription = mDescription;
+    }
+
+    public void setmImgFilePath(String mImgFilePath) {
+        this.mImgFilePath = mImgFilePath;
+    }
+
+    public void setmItemId(String mItemId) {
+        this.mItemId = mItemId;
+    }
+
     /** Private members **/
 
     private String mName;

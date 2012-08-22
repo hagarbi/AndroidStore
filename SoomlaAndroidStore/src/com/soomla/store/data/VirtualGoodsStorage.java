@@ -17,6 +17,7 @@ package com.soomla.store.data;
 
 import android.database.Cursor;
 import android.util.Log;
+import com.soomla.billing.util.AESObfuscator;
 import com.soomla.store.SoomlaPrefs;
 import com.soomla.store.domain.VirtualGood;
 
@@ -27,10 +28,8 @@ public class VirtualGoodsStorage {
 
     /** Constructor
      *
-     * @param storeDatabase is the SQLite database.
      */
-    public VirtualGoodsStorage(StoreDatabase storeDatabase) {
-        this.mStoreDatabase = storeDatabase;
+    public VirtualGoodsStorage() {
     }
 
     /** Getters **/
@@ -39,7 +38,11 @@ public class VirtualGoodsStorage {
         if (SoomlaPrefs.debug){
             Log.d(TAG, "trying to fetch balance for virtual good with itemId: " + virtualGood.getItemId());
         }
-        Cursor cursor = mStoreDatabase.getVirtualGood(virtualGood.getItemId());
+        String itemId = virtualGood.getItemId();
+        if (StorageManager.getObfuscator() != null){
+            itemId = StorageManager.getObfuscator().obfuscateString(itemId);
+        }
+        Cursor cursor = StorageManager.getDatabase().getVirtualGood(itemId);
 
         if (cursor == null) {
             return 0;
@@ -49,12 +52,22 @@ public class VirtualGoodsStorage {
             int balanceCol = cursor.getColumnIndexOrThrow(
                     StoreDatabase.VIRTUAL_GOODS_COLUMN_BALANCE);
             if (cursor.moveToNext()) {
-                int balance = cursor.getInt(balanceCol);
+                String balanceStr = cursor.getString(balanceCol);
+                int balance;
+                if (StorageManager.getObfuscator() != null){
+                    balance = StorageManager.getObfuscator().unobfuscateToInt(balanceStr);
+                }
+                else {
+                    balance = Integer.parseInt(balanceStr);
+                }
+
                 if (SoomlaPrefs.debug){
                     Log.d(TAG, "the balance for " + virtualGood.getItemId() + " is " + balance);
                 }
                 return balance;
             }
+        } catch (AESObfuscator.ValidationException e) {
+            e.printStackTrace();
         } finally {
             cursor.close();
         }
@@ -65,16 +78,22 @@ public class VirtualGoodsStorage {
     /** Public functions **/
 
     /**
-    * Adds the given amount of currency to the storage.
-    * @param amount is the amount of currency to add.
+    * Adds the given amount of goods to the storage.
+    * @param amount is the amount of goods to add.
     */
     public int add(VirtualGood virtualGood, int amount){
         if (SoomlaPrefs.debug){
             Log.d(TAG, "adding " + amount + " " + virtualGood.getName() + ".");
         }
 
+        String itemId = virtualGood.getItemId();
         int balance = getBalance(virtualGood);
-        mStoreDatabase.updateVirtualGood(virtualGood.getItemId(), balance + amount);
+        String quantityStr = "" + (balance + amount);
+        if (StorageManager.getObfuscator() != null){
+            quantityStr = StorageManager.getObfuscator().obfuscateString(quantityStr);
+            itemId      = StorageManager.getObfuscator().obfuscateString(itemId);
+        }
+        StorageManager.getDatabase().updateVirtualGood(itemId, quantityStr);
 
         return balance + amount;
 	}
@@ -89,15 +108,19 @@ public class VirtualGoodsStorage {
             Log.d(TAG, "removing " + amount + " " + virtualGood.getName() + ".");
         }
 
+        String itemId = virtualGood.getItemId();
         int quantity = getBalance(virtualGood) - amount;
         quantity = quantity > 0 ? quantity : 0;
-        mStoreDatabase.updateVirtualGood(virtualGood.getItemId(), quantity);
+        String quantityStr = "" + quantity;
+        if (StorageManager.getObfuscator() != null){
+            quantityStr = StorageManager.getObfuscator().obfuscateString(quantityStr);
+            itemId      = StorageManager.getObfuscator().obfuscateString(itemId);
+        }
+        StorageManager.getDatabase().updateVirtualGood(itemId, quantityStr);
 
         return quantity;
 	}
 
     /** Private members **/
     private static final String TAG = "SOOMLA VirtualGoodsStorage";
-
-    private StoreDatabase            mStoreDatabase;
 }

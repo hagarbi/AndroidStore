@@ -30,4 +30,21 @@ public class SoomlaPrefs {
     // the DB itemId of the virtual currency
     public static final String CURRENCY_ITEM_ID = "store_currency";
 
+    /*
+    your personal secret that'll be used to encrypt data.
+
+    CHANGE THE VALUE OF THIS SECRET NOW !
+    */
+    public static String customSecret = "ChangeMe!!!";
+
+    /*
+    this variable determines if the values in the database should be encrypted or not.
+    if you change this value to "false", anyone will be able to browse your sqlite file
+    and change the values of the currencies and balances.
+
+    SOOMLA RECOMMENDS THAT YOU DON'T CHANGE THE VALUE FOR THIS VARIABLE !!!
+    (the only possible reason for you to want to even think of an insecure database is for debugging purposes)
+     */
+    public static final boolean DB_SECURE = true;
+
 }

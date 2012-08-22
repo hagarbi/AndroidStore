@@ -252,21 +252,20 @@ public class Security {
         if (mAesObfuscator == null) {
             String deviceId = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
             mAesObfuscator = new AESObfuscator(SoomlaPrefs.obfuscationSalt, context.getPackageName(), deviceId);
-
         }
         return mAesObfuscator;
     }
 
-    public static String obfuscate(Context context, String data, String key){
-        return getAesObfuscator(context).obfuscate(data, key);
-    }
-
-    public static String unobfuscate(Context context, String key, String obfuscated) {
-        try {
-            return getAesObfuscator(context).unobfuscate(obfuscated, key);
-        } catch (AESObfuscator.ValidationException e) {
-            Log.w(TAG, "Validation error while reading: " + key);
-        }
-        return null;
-    }
+//    public static String obfuscate(Context context, String data){
+//        return getAesObfuscator(context).obfuscate(data);
+//    }
+//
+//    public static String unobfuscate(Context context, String obfuscated) {
+//        try {
+//            return getAesObfuscator(context).unobfuscate(obfuscated);
+//        } catch (AESObfuscator.ValidationException e) {
+//            Log.w(TAG, "Validation error while reading");
+//        }
+//        return null;
+//    }
 }

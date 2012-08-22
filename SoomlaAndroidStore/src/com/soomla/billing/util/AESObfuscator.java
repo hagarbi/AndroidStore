@@ -16,6 +16,8 @@
 
 package com.soomla.billing.util;
 
+import com.soomla.store.SoomlaPrefs;
+
 import java.io.UnsupportedEncodingException;
 import java.security.GeneralSecurityException;
 import java.security.spec.KeySpec;
@@ -38,7 +40,7 @@ public class AESObfuscator {
     private static final String CIPHER_ALGORITHM = "AES/CBC/PKCS5Padding";
     private static final byte[] IV =
             { 16, 74, 71, -80, 32, 101, -47, 72, 117, -14, 0, -29, 70, 65, -12, 74 };
-    private static final String header = "com.android.vending.licensing.AESObfuscator-1|";
+    private static final String header = "com.soomla.billing.util.AESObfuscator-1|";
 
     private Cipher mEncryptor;
     private Cipher mDecryptor;
@@ -53,7 +55,7 @@ public class AESObfuscator {
         try {
             SecretKeyFactory factory = SecretKeyFactory.getInstance(KEYGEN_ALGORITHM);
             KeySpec keySpec =
-                    new PBEKeySpec((applicationId + deviceId).toCharArray(), salt, 1024, 256);
+                    new PBEKeySpec((applicationId + deviceId + SoomlaPrefs.customSecret).toCharArray(), salt, 1024, 256);
             SecretKey tmp = factory.generateSecret(keySpec);
             SecretKey secret = new SecretKeySpec(tmp.getEncoded(), "AES");
             mEncryptor = Cipher.getInstance(CIPHER_ALGORITHM);
@@ -66,13 +68,17 @@ public class AESObfuscator {
         }
     }
 
-    public String obfuscate(String original, String key) {
+    public String obfuscateInt(int original) {
+        return obfuscateString("" + original);
+    }
+
+    public String obfuscateString(String original) {
         if (original == null) {
             return null;
         }
         try {
             // Header is appended as an integrity check
-            return Base64.encode(mEncryptor.doFinal((header + key + original).getBytes(UTF8)));
+            return Base64.encode(mEncryptor.doFinal((header + original).getBytes(UTF8)));
         } catch (UnsupportedEncodingException e) {
             throw new RuntimeException("Invalid environment", e);
         } catch (GeneralSecurityException e) {
@@ -80,7 +86,11 @@ public class AESObfuscator {
         }
     }
 
-    public String unobfuscate(String obfuscated, String key) throws ValidationException {
+    public int unobfuscateToInt(String obfuscated) throws ValidationException {
+        return Integer.parseInt(unobfuscateToString(obfuscated));
+    }
+
+    public String unobfuscateToString(String obfuscated) throws ValidationException {
         if (obfuscated == null) {
             return null;
         }
@@ -88,12 +98,12 @@ public class AESObfuscator {
             String result = new String(mDecryptor.doFinal(Base64.decode(obfuscated)), UTF8);
             // Check for presence of header. This serves as a final integrity check, for cases
             // where the block size is correct during decryption.
-            int headerIndex = result.indexOf(header+key);
+            int headerIndex = result.indexOf(header);
             if (headerIndex != 0) {
                 throw new ValidationException("Header not found (invalid data or key)" + ":" +
                         obfuscated);
             }
-            return result.substring(header.length()+key.length(), result.length());
+            return result.substring(header.length(), result.length());
         } catch (Base64DecoderException e) {
             throw new ValidationException(e.getMessage() + ":" + obfuscated);
         } catch (IllegalBlockSizeException e) {

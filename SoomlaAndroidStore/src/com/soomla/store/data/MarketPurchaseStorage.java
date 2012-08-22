@@ -37,26 +37,34 @@ public class MarketPurchaseStorage {
 
     /** Constructor
      *
-     * @param storeDatabase is the class responsible to persist the data for this storage.
      */
-    public MarketPurchaseStorage(StoreDatabase storeDatabase) {
-        this.mStoreDatabase = storeDatabase;
+    public MarketPurchaseStorage() {
     }
 
-    public void add(final Consts.PurchaseState purchaseState, final String productId,
-                   final String orderId, final long purchaseTime, final String developerPayload) throws VirtualItemNotFoundException {
+    public void add(final Consts.PurchaseState purchaseState, String productId,
+                   String orderId, final long purchaseTime, String developerPayload) throws VirtualItemNotFoundException {
         if (SoomlaPrefs.debug){
             Log.d(TAG, "adding market purchase data for orderId " + orderId + " and productId " + productId);
         }
 
-        VirtualCurrencyPack pack = StoreInfo.getInstance().getPackByGoogleProductId(productId);
+        String itemId = StoreInfo.getInstance().getPackByGoogleProductId(productId).getItemId();
+        String purchaseStateStr = "" + purchaseState.ordinal();
+        String purchaseTimeStr  = "" + purchaseTime;
+        String currentBalanceStr = "" + StorageManager.getInstance().getVirtualCurrencyStorage().getBalance();
+        if (StorageManager.getObfuscator() != null){
+            orderId   =         StorageManager.getObfuscator().obfuscateString(orderId);
+            productId =         StorageManager.getObfuscator().obfuscateString(productId);
+            itemId =            StorageManager.getObfuscator().obfuscateString(itemId);
+            purchaseStateStr =  StorageManager.getObfuscator().obfuscateString(purchaseStateStr);
+            purchaseTimeStr  =  StorageManager.getObfuscator().obfuscateString(purchaseTimeStr);
+            developerPayload =  StorageManager.getObfuscator().obfuscateString(developerPayload);
+            currentBalanceStr = StorageManager.getObfuscator().obfuscateString(currentBalanceStr);
+        }
 
-        mStoreDatabase.addOrUpdatePurchaseHistory(orderId, productId, pack.getItemId(),
-                purchaseState, purchaseTime, developerPayload, StorageManager.getInstance().getVirtualCurrencyStorage().getBalance());
+        StorageManager.getDatabase().addOrUpdatePurchaseHistory(orderId, productId, itemId,
+                purchaseStateStr, purchaseTimeStr, developerPayload, currentBalanceStr);
     }
 
     /** Private members **/
     private static final String TAG = "SOOMLA MarketPurchaseStorage";
-
-    private StoreDatabase mStoreDatabase;
 }

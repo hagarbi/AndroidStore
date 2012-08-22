@@ -16,6 +16,7 @@
 package com.soomla.store.data;
 
 import android.database.Cursor;
+import android.provider.Settings;
 import com.soomla.billing.Consts;
 import com.soomla.store.StoreInfo;
 import com.xtremelabs.robolectric.Robolectric;
@@ -30,18 +31,21 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.util.Calendar;
+import java.util.HashMap;
 
 @RunWith(RobolectricTestRunner.class)
 public class MarketPurchaseStorageTest {
     private MarketPurchaseStorage mStorage;
-    private StoreDatabase         mDB;
 
     @Before
     public void setUp(){
         StoreInfo.getInstance().initialize(Robolectric.application.getApplicationContext());
-        StorageManager.getInstance().initialize(Robolectric.application.getApplicationContext());
-        mDB = new StoreDatabase(Robolectric.application.getApplicationContext());
-        mStorage = new MarketPurchaseStorage(mDB);
+        HashMap<String, String> secureData = new HashMap<String, String>();
+        String deviceId = Settings.Secure.getString(Robolectric.application.getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+        secureData.put("applicationId", Robolectric.application.getApplicationContext().getPackageName());
+        secureData.put("deviceId", deviceId);
+        StorageManager.getInstance().initialize(Robolectric.application.getApplicationContext(), true, secureData);
+        mStorage = new MarketPurchaseStorage();
     }
 
     @Test
@@ -50,7 +54,7 @@ public class MarketPurchaseStorageTest {
         mStorage.add(Consts.PurchaseState.PURCHASED, "pipeline_pumpin_pack", "123456", purchaseTime,
                 "This is the dev payload");
 
-        Cursor cursor = mDB.getPurchaseHistory("123456");
+        Cursor cursor = StorageManager.getDatabase().getPurchaseHistory("123456");
         Assert.assertNotNull(cursor);
 
         try {

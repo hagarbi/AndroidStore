@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import com.soomla.billing.Consts;
 
 public class StoreDatabase {
 
@@ -19,13 +18,13 @@ public class StoreDatabase {
     }
 
     public void addOrUpdatePurchaseHistory(String orderId, String productId, String itemId,
-                                      Consts.PurchaseState purchaseState, long purchaseTime,
-                                      String developerPayload, int currentBalance){
+                                      String purchaseState, String purchaseTime,
+                                      String developerPayload, String currentBalance){
         ContentValues values = new ContentValues();
         values.put(PURCHASE_HISTORY_COLUMN_ORDER_ID, orderId);
         values.put(PURCHASE_HISTORY_COLUMN_PRODUCT_ID, productId);
         values.put(PURCHASE_HISTORY_COLUMN_ITEM_ID, itemId);
-        values.put(PURCHASE_HISTORY_COLUMN_STATE, purchaseState.ordinal());
+        values.put(PURCHASE_HISTORY_COLUMN_STATE, purchaseState);
         values.put(PURCHASE_HISTORY_COLUMN_TIME, purchaseTime);
         values.put(PURCHASE_HISTORY_COLUMN_DEVPAYLOAD, developerPayload);
         values.put(PURCHASE_HISTORY_COLUMN_BALANCE, currentBalance);
@@ -37,7 +36,7 @@ public class StoreDatabase {
                 PURCHASE_HISTORY_COLUMN_ORDER_ID + " = '" + orderId + "'", null, null, null, null);
     }
 
-    public void updateVirtualCurrency(String itemId, int quantity){
+    public void updateVirtualCurrency(String itemId, String quantity){
         ContentValues values = new ContentValues();
         values.put(VIRTUAL_CURRENCY_COLUMN_ITEM_ID, itemId);
         values.put(VIRTUAL_CURRENCY_COLUMN_BALANCE, quantity);
@@ -54,7 +53,7 @@ public class StoreDatabase {
                 VIRTUAL_CURRENCY_COLUMN_ITEM_ID +  " = '" + itemId + "'", null, null, null, null);
     }
 
-    public void updateVirtualGood(String itemId, int quantity){
+    public void updateVirtualGood(String itemId, String quantity){
         ContentValues values = new ContentValues();
         values.put(VIRTUAL_GOODS_COLUMN_ITEM_ID, itemId);
         values.put(VIRTUAL_GOODS_COLUMN_BALANCE, quantity);
@@ -96,16 +95,16 @@ public class StoreDatabase {
                         PURCHASE_HISTORY_COLUMN_ORDER_ID + " TEXT PRIMARY KEY, " +
                         PURCHASE_HISTORY_COLUMN_PRODUCT_ID + " TEXT, " +
                         PURCHASE_HISTORY_COLUMN_ITEM_ID + " TEXT, " +
-                        PURCHASE_HISTORY_COLUMN_STATE + " INTEGER, " +
-                        PURCHASE_HISTORY_COLUMN_TIME + " INTEGER, " +
+                        PURCHASE_HISTORY_COLUMN_STATE + " TEXT, " +
+                        PURCHASE_HISTORY_COLUMN_TIME + " TEXT, " +
                         PURCHASE_HISTORY_COLUMN_DEVPAYLOAD + " TEXT, " +
-                        PURCHASE_HISTORY_COLUMN_BALANCE + " INTEGER)");
+                        PURCHASE_HISTORY_COLUMN_BALANCE + " TEXT)");
             sqLiteDatabase.execSQL("CREATE TABLE " + VIRTUAL_CURRENCY_TABLE_NAME + "(" +
                         VIRTUAL_CURRENCY_COLUMN_ITEM_ID + " TEXT PRIMARY KEY, " +
-                        VIRTUAL_CURRENCY_COLUMN_BALANCE + " INTEGER)");
+                        VIRTUAL_CURRENCY_COLUMN_BALANCE + " TEXT)");
             sqLiteDatabase.execSQL("CREATE TABLE " + VIRTUAL_GOODS_TABLE_NAME + "(" +
                         VIRTUAL_GOODS_COLUMN_ITEM_ID + " TEXT PRIMARY KEY, " +
-                        VIRTUAL_GOODS_COLUMN_BALANCE + " INTEGER)");
+                        VIRTUAL_GOODS_COLUMN_BALANCE + " TEXT)");
         }
     }
 
