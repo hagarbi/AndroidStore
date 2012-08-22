@@ -45,7 +45,6 @@ public class SoomlaPrefs {
     SOOMLA RECOMMENDS THAT YOU DON'T CHANGE THE VALUE FOR THIS VARIABLE !!!
     (the only possible reason for you to want to even think of an insecure database is for debugging purposes)
      */
-    // TODO: change to TRUE !!!!
-    public static final boolean DB_SECURE = false;
+    public static final boolean DB_SECURE = true;
 
 }
