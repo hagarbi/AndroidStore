@@ -39,7 +39,7 @@ public class SoomlaStore {
                 int balance = StorageManager.getInstance().getVirtualGoodsStorage().add(good, 1);
                 StorageManager.getInstance().getVirtualCurrencyStorage().remove(good.getmCurrencyValue());
 
-                mActivity.sendSoomlaJS("goodsPurchased", "true,'" + itemId + "'," + balance + ",''");
+                mActivity.sendSoomlaJS("goodsBalanceChanged", "'" + itemId + "'," + balance);
                 if (mEventHandler != null){
                     mEventHandler.onVirtualGoodPurchased(good);
                 }
@@ -47,10 +47,10 @@ public class SoomlaStore {
             else {
                 int balance = StorageManager.getInstance().getVirtualGoodsStorage().getBalance(good);
                 String failureMsg = "You don\'t have enough " + StoreInfo.getInstance().getVirtualCurrency().getName() + " to buy a " + good.getName() + ".";
-                mActivity.sendSoomlaJS("goodsPurchased", "false,'" + itemId + "'," + balance + ",'" + failureMsg + "'");
+                mActivity.sendSoomlaJS("showInsufficientFundsDialog", "" + balance);
             }
         } catch (VirtualItemNotFoundException e) {
-            mActivity.sendSoomlaJS("goodsPurchased", "false,'" + itemId + "'," + -1 + ",'Unexpected error occurred. Purchase is cancelled.'");
+            mActivity.sendSoomlaJS("showUnexpectedErrorDialog", "");
             Log.e(TAG, "Couldn't find a VirtualGood with itemId: " + itemId + ". Purchase is cancelled.");
         }
     }

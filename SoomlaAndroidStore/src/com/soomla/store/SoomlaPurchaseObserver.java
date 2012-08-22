@@ -76,14 +76,14 @@ public class SoomlaPurchaseObserver extends PurchaseObserver {
 
                 // we're throwing this event when on PURCHASE or REFUND !
 
-                mActivity.sendSoomlaJS("currencyPurchased", "true,'" + productId + "'," + balance + ",''");
+                mActivity.sendSoomlaJS("currencyBalanceChanged", "'" + productId + "'," + balance);
                 if (mEventHandler != null){
                     mEventHandler.onVirtualCurrencyPackPurchased(pack);
                 }
             }
 
         } catch (VirtualItemNotFoundException e) {
-            mActivity.sendSoomlaJS("currencyPurchased", "false,'" + productId + "'," + balance + ",''");
+            mActivity.sendSoomlaJS("showUnexpectedErrorDialog", "");
             Log.e(TAG, "ERROR : Couldn't find VirtualCurrencyPack with productId: " + productId);
         }
     }
@@ -97,13 +97,12 @@ public class SoomlaPurchaseObserver extends PurchaseObserver {
             // purchase was sent to server
         } else if (responseCode == Consts.ResponseCode.RESULT_USER_CANCELED) {
 
-            // purchase canceled by user
+            // purchase canceled by user... doing nothing for now.
 
-            mActivity.sendSoomlaJS("currencyPurchased", "false,'" + request.mProductId + "'," + balance + ",'You canceled the purchase'");
         } else {
            // purchase failed !
 
-           mActivity.sendSoomlaJS("currencyPurchased", "false,'" + request.mProductId + "'," + balance + ",'Unexpected error occured! Your purchase is canceled.'");
+           mActivity.sendSoomlaJS("showUnexpectedErrorDialog", "");
         }
     }
 
