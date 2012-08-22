@@ -31,8 +31,8 @@ public class VirtualCurrencyStorageTest{
     @Before
     public void setUp() {
         StoreInfo.getInstance().initialize(Robolectric.application.getApplicationContext());
-        StorageManager.getInstance().initialize(Robolectric.application.getApplicationContext());
-        mStorage = new VirtualCurrencyStorage(new StoreDatabase(Robolectric.application.getApplicationContext()));
+        StorageManager.getInstance().initialize(Robolectric.application.getApplicationContext(), false, null);
+        mStorage = new VirtualCurrencyStorage();
 
 //        System.out.println(Robolectric.application.getApplicationContext().getFilesDir());
     }

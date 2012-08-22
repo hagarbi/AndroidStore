@@ -23,7 +23,7 @@ public class StorageManagerTest {
 
     @Before
     public void setUp(){
-        StorageManager.getInstance().initialize(Robolectric.application.getApplicationContext());
+//        StorageManager.getInstance().initialize(Robolectric.application.getApplicationContext());
     }
 
 }

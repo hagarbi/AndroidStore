@@ -36,8 +36,8 @@ public class VirtualGoodsStorageTest {
     @Before
     public void setUp() {
         StoreInfo.getInstance().initialize(Robolectric.application.getApplicationContext());
-        StorageManager.getInstance().initialize(Robolectric.application.getApplicationContext());
-        mStorage = new VirtualGoodsStorage(new StoreDatabase(Robolectric.application.getApplicationContext()));
+        StorageManager.getInstance().initialize(Robolectric.application.getApplicationContext(), false, null);
+        mStorage = new VirtualGoodsStorage();
 
         mYellowHat = new VirtualGood(YELLOW_HAT_NAME, YELLOW_HAT_DESC, "image", 3, "yellow_hat");
     }
@@ -45,19 +45,19 @@ public class VirtualGoodsStorageTest {
     @Test
     public void testAdd(){
         mStorage.add(mYellowHat, 10);
-        Assert.assertEquals(mStorage.getBalance(mYellowHat), 10);
+        Assert.assertEquals(10, mStorage.getBalance(mYellowHat));
     }
 
     @Test
     public void testRemove(){
         mStorage.remove(mYellowHat, 2);
-        Assert.assertEquals(mStorage.getBalance(mYellowHat), 0);
+        Assert.assertEquals(0, mStorage.getBalance(mYellowHat));
     }
 
     @Test
     public void testAddRemove(){
         mStorage.add(mYellowHat, 10);
         mStorage.remove(mYellowHat, 2);
-        Assert.assertEquals(mStorage.getBalance(mYellowHat), 8);
+        Assert.assertEquals(8, mStorage.getBalance(mYellowHat));
     }
 }
