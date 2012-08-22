@@ -1,20 +1,22 @@
 package com.soomla.store;
 
-import android.content.Context;
-import com.fasterxml.jackson.databind.JsonNode;
+import android.util.Log;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.soomla.store.domain.GoogleMarketItem;
-import com.soomla.store.domain.VirtualCurrency;
-import com.soomla.store.domain.VirtualCurrencyPack;
-import com.soomla.store.domain.VirtualGood;
+import com.soomla.store.domain.data.VirtualCurrency;
+import com.soomla.store.domain.data.VirtualCurrencyPack;
+import com.soomla.store.domain.data.VirtualGood;
+import com.soomla.store.domain.ui.StoreTemplate;
 import com.soomla.store.exceptions.VirtualItemNotFoundException;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
- * This class also holds and serves the pointer to the single {@link com.soomla.store.domain.VirtualCurrency}
+ * This class also holds and serves the pointer to the single {@link com.soomla.store.domain.data.VirtualCurrency}
  * in the entire application.
  */
 public class StoreInfo {
@@ -30,83 +32,26 @@ public class StoreInfo {
     /**
      * This function parses store_def.json in order to load necessary
      * store info values.
-     * @param context is the application context.
      */
-    public void initialize(Context context){
-        InputStream is = null;
-        byte[] buffer = null;
-        try {
-            is = context.getAssets().open("store_def.json");
-            int size = is.available();
-            buffer = new byte[size];
-            is.read(buffer);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        finally {
-            try {
-                if (is != null){
-                    is.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+    public void initialize(IStoreAssets storeAssets){
+        if (storeAssets == null){
+            Log.e(TAG, "The given store assets can't be null !");
+            return;
         }
 
-        mJsonString = new String(buffer);
-
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            JsonNode rootNode = mapper.readValue(mJsonString, JsonNode.class);
-//            JsonNode templateNode =      rootNode.path("template");
-//            JsonNode backgroundNode =    rootNode.path("background");
-
-            JsonNode currencyNode =      rootNode.path("currency");
-            mVirtualCurrency = new VirtualCurrency(currencyNode.path("name").textValue(),
-                    "", currencyNode.path("image").textValue(), "");
-
-            JsonNode virtualGoodsNode =  rootNode.path("virtualGoods");
-            mVirtualGoodOptions = new HashMap<String, VirtualGood>();
-            for (final JsonNode jsonNode : virtualGoodsNode){
-                VirtualGood good = new VirtualGood(jsonNode.path("name").textValue(),
-                        jsonNode.path("description").textValue(),
-                        jsonNode.path("src").textValue(),
-                        jsonNode.path("price").intValue(),
-                        jsonNode.path("itemId").textValue());
-                mVirtualGoodOptions.put(jsonNode.path("itemId").textValue(), good);
-            }
-
-            JsonNode currencyPacksNode = rootNode.path("currencyPacks");
-            mPacksOptions = new HashMap<String, VirtualCurrencyPack>();
-            for (final JsonNode jsonNode : currencyPacksNode){
-                GoogleMarketItem.Managed managed = jsonNode.path("managed").booleanValue() ?
-                        GoogleMarketItem.Managed.MANAGED :
-                        GoogleMarketItem.Managed.UNMANAGED;
-                GoogleMarketItem gItem = new GoogleMarketItem(
-                        jsonNode.path("productId").textValue(),
-                        managed);
-                VirtualCurrencyPack pack = new VirtualCurrencyPack(jsonNode.path("name").textValue(),
-                        jsonNode.path("description").textValue(),
-                        jsonNode.path("image").textValue(),
-                        jsonNode.path("itemId").textValue(),
-                        gItem,
-                        jsonNode.path("price").doubleValue(),
-                        jsonNode.path("amount").intValue());
-
-                mPacksOptions.put(jsonNode.path("productId").textValue(), pack);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+        mVirtualCurrency = storeAssets.getVirtualCurrency();
+        mPacksOptions = new HashMap<String, VirtualCurrencyPack>();
+        for(VirtualCurrencyPack pack : storeAssets.getVirtualCurrencyPacks()){
+            mPacksOptions.put(pack.getmGoogleItem().getMarketId(), pack);
         }
 
-    }
+        mVirtualGoodOptions = new HashMap<String, VirtualGood>();
+        for(VirtualGood good : storeAssets.getVirtualGoods()){
+            mVirtualGoodOptions.put(good.getItemId(), good);
+        }
 
-    /**
-     * Use this function if you need to know the definition of the virtual currency used in this game.
-     * @return the definition of a virtual currency in the current game;
-     */
-    public VirtualCurrency getVirtualCurrency(){
-        return mVirtualCurrency;
+        mStoreBackground = storeAssets.getStoreBackground();
+        mTemplate = storeAssets.getStoreTemplate();
     }
 
     /**
@@ -137,22 +82,69 @@ public class StoreInfo {
         return mVirtualGoodOptions.get(itemId);
     }
 
-    /**
-     * Use this function to get the json string (store_def.json)
-     * @return the json that's kept in store_def.json.
-     */
-    public String getJsonString(){
-        return mJsonString;
+
+    /** Getters **/
+
+    @JsonProperty("currency")
+    public VirtualCurrency getVirtualCurrency(){
+        return mVirtualCurrency;
     }
+
+    @JsonProperty("currencyPacks")
+    public List<VirtualCurrencyPack> getCurrencyPacksList() {
+        return new LinkedList<VirtualCurrencyPack>(mPacksOptions.values());
+    }
+
+    @JsonProperty("virtualGoods")
+    public List<VirtualGood> getVirtualGoodsList() {
+        return new LinkedList<VirtualGood>(mVirtualGoodOptions.values());
+    }
+
+    public StoreTemplate getTemplate() {
+        return mTemplate;
+    }
+
+    @JsonProperty("background")
+    public String getStoreBackground() {
+        return mStoreBackground;
+    }
+
+    @JsonProperty("isCurrencyStoreDisabled")
+    public boolean isIsCurrencyStoreDisabled() {
+        return mIsCurrencyStoreDisabled;
+    }
+
+    /**
+     * Use this function to get a json representation of StoreInfo.
+     * @return a json representation of StoreInfo.
+     */
+    @JsonIgnore
+    public String getJsonString(){
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            return mapper.writeValueAsString(this);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+
+    /** Private functions **/
 
     private StoreInfo() { }
 
 
     /** Private members **/
 
+    private static final String TAG = "SOOMLA StoreInfo";
     private static StoreInfo                        sInstance = null;
-    private String                                  mJsonString;
+
     private VirtualCurrency                         mVirtualCurrency;
     private HashMap<String, VirtualCurrencyPack>    mPacksOptions;
     private HashMap<String, VirtualGood>            mVirtualGoodOptions;
+    private StoreTemplate                           mTemplate;
+    private String                                  mStoreBackground;
+    private boolean                                 mIsCurrencyStoreDisabled;
 }

@@ -1,7 +1,7 @@
 package com.soomla.store;
 
-import com.soomla.store.domain.VirtualCurrencyPack;
-import com.soomla.store.domain.VirtualGood;
+import com.soomla.store.domain.data.VirtualCurrencyPack;
+import com.soomla.store.domain.data.VirtualGood;
 
 public interface ISoomlaStoreEventHandler {
     void onVirtualCurrencyPackPurchased(VirtualCurrencyPack pack);

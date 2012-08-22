@@ -22,8 +22,8 @@ import com.soomla.billing.Consts;
 import com.soomla.store.SoomlaPrefs;
 import com.soomla.store.SoomlaPrefs;
 import com.soomla.store.StoreInfo;
-import com.soomla.store.domain.MarketPurchaseHistory;
-import com.soomla.store.domain.VirtualCurrencyPack;
+import com.soomla.store.domain.data.MarketPurchaseHistory;
+import com.soomla.store.domain.data.VirtualCurrencyPack;
 import com.soomla.store.exceptions.VirtualItemNotFoundException;
 
 import java.io.IOException;

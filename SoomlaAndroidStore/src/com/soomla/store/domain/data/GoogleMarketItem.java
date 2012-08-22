@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.soomla.store.domain;
+package com.soomla.store.domain.data;
 
 /**
  * This class represents an item in Google Play.

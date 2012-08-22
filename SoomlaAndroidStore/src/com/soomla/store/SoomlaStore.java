@@ -6,7 +6,7 @@ import android.util.Log;
 import com.soomla.billing.BillingService;
 import com.soomla.billing.Consts;
 import com.soomla.store.data.StorageManager;
-import com.soomla.store.domain.VirtualGood;
+import com.soomla.store.domain.data.VirtualGood;
 import com.soomla.store.exceptions.VirtualItemNotFoundException;
 
 

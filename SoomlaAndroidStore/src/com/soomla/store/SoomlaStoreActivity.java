@@ -45,7 +45,7 @@ public class SoomlaStoreActivity extends Activity {
         Bundle bundle = getIntent().getExtras();
         SoomlaPrefs.debug        = bundle.getBoolean("debug");
         SoomlaPrefs.publicKey    = bundle.getString("publicKey");
-        HashMap<String, String> secureData;
+        HashMap<String, String> secureData = null;
         if (SoomlaPrefs.DB_SECURE){
             secureData = new HashMap<String, String>();
             String deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
@@ -72,7 +72,6 @@ public class SoomlaStoreActivity extends Activity {
         // The Native<->JS implementation
         mSoomlaStore = new SoomlaStore(getApplicationContext(), mBillingService, mHandler, this, null);
 
-        StoreInfo.getInstance().initialize(getApplicationContext());
         StorageManager.getInstance().initialize(getApplicationContext(), secureData);
 
         /* Setting up the store WebView */

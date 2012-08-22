@@ -19,6 +19,7 @@ import android.database.Cursor;
 import android.provider.Settings;
 import com.soomla.billing.Consts;
 import com.soomla.store.StoreInfo;
+import com.soomla.store.example.ExampleSurfStoreAssets;
 import com.xtremelabs.robolectric.Robolectric;
 import com.xtremelabs.robolectric.RobolectricTestRunner;
 import junit.framework.Assert;
@@ -26,10 +27,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
 import java.util.Calendar;
 import java.util.HashMap;
 
@@ -39,12 +36,12 @@ public class MarketPurchaseStorageTest {
 
     @Before
     public void setUp(){
-        StoreInfo.getInstance().initialize(Robolectric.application.getApplicationContext());
+        StoreInfo.getInstance().initialize(new ExampleSurfStoreAssets());
         HashMap<String, String> secureData = new HashMap<String, String>();
         String deviceId = Settings.Secure.getString(Robolectric.application.getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
         secureData.put("applicationId", Robolectric.application.getApplicationContext().getPackageName());
         secureData.put("deviceId", deviceId);
-        StorageManager.getInstance().initialize(Robolectric.application.getApplicationContext(), true, secureData);
+        StorageManager.getInstance().initialize(Robolectric.application.getApplicationContext(), secureData);
         mStorage = new MarketPurchaseStorage();
     }
 

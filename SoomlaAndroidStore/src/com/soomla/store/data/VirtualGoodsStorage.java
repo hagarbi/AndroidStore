@@ -19,7 +19,7 @@ import android.database.Cursor;
 import android.util.Log;
 import com.soomla.billing.util.AESObfuscator;
 import com.soomla.store.SoomlaPrefs;
-import com.soomla.store.domain.VirtualGood;
+import com.soomla.store.domain.data.VirtualGood;
 
 /**
  * This is the storage for the virtual goods.

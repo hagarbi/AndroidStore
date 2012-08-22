@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.soomla.store.domain;
+package com.soomla.store.domain.data;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * This is a representation of the application's virtual good.
@@ -37,6 +39,7 @@ public class VirtualGood extends VirtualItem {
 
     /** Getters **/
 
+    @JsonProperty("price")
     public int getmCurrencyValue(){
         return mCurrencyValue;
     }

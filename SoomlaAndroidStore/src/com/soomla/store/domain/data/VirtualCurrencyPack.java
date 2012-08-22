@@ -13,7 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.soomla.store.domain;
+package com.soomla.store.domain.data;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * This class represents a pack of the game's virtual currency.
@@ -31,49 +34,48 @@ public class VirtualCurrencyPack extends VirtualItem {
      *                       in the store in the description section.
      * @param mImgFilePath is the path to the image that corresponds to the currency pack.
      * @param mItemId is the id of the virtual currency pack.
-     * @param mGoogleItem The Google Market item that's related to this pack.
+     * @param productId is the product id on Google Market..
      * @param mCost is the actual $$ cost of the virtual currency pack.
      * @param mCurrencyAmout is the amount of currency in the pack.
      */
     public VirtualCurrencyPack(String mName, String mDescription, String mImgFilePath, String mItemId,
-                               GoogleMarketItem mGoogleItem, double mCost, int mCurrencyAmout) {
+                               String productId, double mCost, int mCurrencyAmout, boolean consumable) {
         super(mName, mDescription, mImgFilePath, mItemId);
-        this.mGoogleItem = mGoogleItem;
+        this.mGoogleItem = new GoogleMarketItem(productId, GoogleMarketItem.Managed.UNMANAGED);
         this.mCost = mCost;
         this.mCurrencyAmount = mCurrencyAmout;
+        this.mConsumable = consumable;
     }
 
     /** Getters **/
 
+    @JsonIgnore
     public GoogleMarketItem getmGoogleItem() {
         return mGoogleItem;
     }
 
-    public double getmCost() {
+    public String getProductId(){
+        return mGoogleItem.getMarketId();
+    }
+
+    @JsonProperty("price")
+    public double getCost() {
         return mCost;
     }
 
-    public int getmCurrencyAmount() {
+    @JsonProperty("amount")
+    public int getCurrencyAmount() {
         return mCurrencyAmount;
     }
 
-    /** Setters **/
-
-    public void setmGoogleItem(GoogleMarketItem mGoogleItem) {
-        this.mGoogleItem = mGoogleItem;
-    }
-
-    public void setmCost(double mCost) {
-        this.mCost = mCost;
-    }
-
-    public void setmCurrencyAmount(int mCurrencyAmount) {
-        this.mCurrencyAmount = mCurrencyAmount;
+    public boolean isConsumable() {
+        return mConsumable;
     }
 
     /** Private members **/
 
     private GoogleMarketItem mGoogleItem;
     private double           mCost;
-    private int mCurrencyAmount;
+    private int              mCurrencyAmount;
+    private boolean          mConsumable;
 }

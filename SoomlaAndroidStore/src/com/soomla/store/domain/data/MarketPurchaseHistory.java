@@ -1,4 +1,4 @@
-package com.soomla.store.domain;
+package com.soomla.store.domain.data;
 
 import com.soomla.billing.Consts;
 

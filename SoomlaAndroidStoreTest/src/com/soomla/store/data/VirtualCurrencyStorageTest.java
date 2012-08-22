@@ -16,12 +16,13 @@
 package com.soomla.store.data;
 
 import com.soomla.store.StoreInfo;
+import com.soomla.store.example.ExampleSurfStoreAssets;
 import com.xtremelabs.robolectric.Robolectric;
 import com.xtremelabs.robolectric.RobolectricTestRunner;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.junit.Assert;
 
 @RunWith(RobolectricTestRunner.class)
 public class VirtualCurrencyStorageTest{
@@ -30,8 +31,8 @@ public class VirtualCurrencyStorageTest{
 
     @Before
     public void setUp() {
-        StoreInfo.getInstance().initialize(Robolectric.application.getApplicationContext());
-        StorageManager.getInstance().initialize(Robolectric.application.getApplicationContext(), false, null);
+        StoreInfo.getInstance().initialize(new ExampleSurfStoreAssets());
+        StorageManager.getInstance().initialize(Robolectric.application.getApplicationContext(), null);
         mStorage = new VirtualCurrencyStorage();
 
 //        System.out.println(Robolectric.application.getApplicationContext().getFilesDir());

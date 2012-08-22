@@ -16,14 +16,25 @@
 package com.soomla.store.data;
 
 
-import com.xtremelabs.robolectric.Robolectric;
+import com.soomla.store.StoreInfo;
+import com.xtremelabs.robolectric.RobolectricTestRunner;
 import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import com.soomla.store.example.ExampleSurfStoreAssets;
 
+@RunWith(RobolectricTestRunner.class)
 public class StorageManagerTest {
 
     @Before
     public void setUp(){
 //        StorageManager.getInstance().initialize(Robolectric.application.getApplicationContext());
+    }
+
+    @Test
+    public void testStoreInfo(){
+        StoreInfo.getInstance().initialize(new ExampleSurfStoreAssets());
+        System.out.println(StoreInfo.getInstance().getJsonString());
     }
 
 }

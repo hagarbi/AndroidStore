@@ -29,7 +29,7 @@ import com.soomla.billing.Consts.ResponseCode;
 import com.soomla.store.SoomlaPrefs;
 import com.soomla.store.StoreInfo;
 import com.soomla.store.data.StorageManager;
-import com.soomla.store.domain.VirtualCurrencyPack;
+import com.soomla.store.domain.data.VirtualCurrencyPack;
 import com.soomla.store.exceptions.VirtualItemNotFoundException;
 
 /**
@@ -136,7 +136,7 @@ public class ResponseHandler {
                     // note that a refunded purchase is treated as a purchase.
                     // a friendly refund policy is nice for the user.
                     if (purchaseState == PurchaseState.PURCHASED || purchaseState == PurchaseState.REFUNDED) {
-                        StorageManager.getInstance().getVirtualCurrencyStorage().add(pack.getmCurrencyAmount());
+                        StorageManager.getInstance().getVirtualCurrencyStorage().add(pack.getCurrencyAmount());
                     }
 
                     // This needs to be synchronized because the UI thread can change the

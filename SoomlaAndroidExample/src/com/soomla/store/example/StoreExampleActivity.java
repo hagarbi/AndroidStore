@@ -4,9 +4,9 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import com.soomla.store.SoomlaStoreActivity;
+import com.soomla.store.StoreInfo;
 
 public class StoreExampleActivity extends Activity {
     /**
@@ -16,6 +16,8 @@ public class StoreExampleActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
+
+        StoreInfo.getInstance().initialize(new ExampleSurfStoreAssets());
 
         final ImageButton button = (ImageButton) findViewById(R.id.main_button);
         button.setOnClickListener(new View.OnClickListener() {
