@@ -76,7 +76,7 @@ public class SoomlaPurchaseObserver extends PurchaseObserver {
 
                 // we're throwing this event when on PURCHASE or REFUND !
 
-                mActivity.sendSoomlaJS("currencyBalanceChanged", "'" + productId + "'," + balance);
+                mActivity.sendSoomlaJS("currencyBalanceChanged", "'" + SoomlaPrefs.CURRENCY_ITEM_ID + "'," + balance);
                 if (mEventHandler != null){
                     mEventHandler.onVirtualCurrencyPackPurchased(pack);
                 }

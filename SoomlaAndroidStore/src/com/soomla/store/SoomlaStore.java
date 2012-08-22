@@ -1,6 +1,5 @@
 package com.soomla.store;
 
-import android.content.Context;
 import android.os.Handler;
 import android.util.Log;
 import com.soomla.billing.BillingService;
@@ -12,12 +11,10 @@ import com.soomla.store.exceptions.VirtualItemNotFoundException;
 
 public class SoomlaStore {
 
-    public SoomlaStore(Context mContext,
-                       BillingService mBillingService,
+    public SoomlaStore(BillingService mBillingService,
                        Handler mHandler,
                        SoomlaStoreActivity mActivity,
                        ISoomlaStoreEventHandler eventHandler) {
-        this.mContext = mContext;
         this.mBillingService = mBillingService;
         this.mHandler = mHandler;
         this.mActivity = mActivity;
@@ -36,10 +33,11 @@ public class SoomlaStore {
             VirtualGood good = StoreInfo.getInstance().getVirtualGoodBySoomlaId(itemId);
 
             if (StorageManager.getInstance().getVirtualCurrencyStorage().getBalance() >= good.getmCurrencyValue()){
-                int balance = StorageManager.getInstance().getVirtualGoodsStorage().add(good, 1);
+                StorageManager.getInstance().getVirtualGoodsStorage().add(good, 1);
                 StorageManager.getInstance().getVirtualCurrencyStorage().remove(good.getmCurrencyValue());
 
-                mActivity.sendSoomlaJS("goodsBalanceChanged", "'" + itemId + "'," + balance);
+                updateJSBalances();
+
                 if (mEventHandler != null){
                     mEventHandler.onVirtualGoodPurchased(good);
                 }
@@ -69,11 +67,23 @@ public class SoomlaStore {
         Log.d(TAG, "pageInitialized");
         mActivity.storeJSInitialized();
         mActivity.sendSoomlaJS("initialize", StoreInfo.getInstance().getJsonString());
+
+        updateJSBalances();
+    }
+
+    private void updateJSBalances(){
+        int currencyBalance = StorageManager.getInstance().getVirtualCurrencyStorage().getBalance();
+        mActivity.sendSoomlaJS("currencyBalanceChanged", "'" + SoomlaPrefs.CURRENCY_ITEM_ID + "'," + currencyBalance);
+
+        for (VirtualGood good : StoreInfo.getInstance().getVirtualGoodsList()){
+            int goodBalance = StorageManager.getInstance().getVirtualGoodsStorage().getBalance(good);
+
+            mActivity.sendSoomlaJS("goodsBalanceChanged", "'" + good.getItemId() + "'," + goodBalance);
+        }
     }
 
     private static final String TAG = "SOOMLA SoomlaStore";
 
-    private Context mContext;
     private BillingService mBillingService;
     private Handler mHandler;
     private SoomlaStoreActivity mActivity;
