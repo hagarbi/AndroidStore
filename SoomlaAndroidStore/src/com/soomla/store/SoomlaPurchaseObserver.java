@@ -54,7 +54,7 @@ public class SoomlaPurchaseObserver extends PurchaseObserver {
                 mActivity.sendSoomlaJS("disableCurrencyStore", "");
             }
         } else if (type.equals(Consts.ITEM_TYPE_SUBSCRIPTION)) {
-            // subscription is supported
+            // subscription is not supported
             // Soomla doesn't support subscriptions yet. doing nothing here ...
         } else {
             // subscription is not supported
