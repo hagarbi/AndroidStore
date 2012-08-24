@@ -126,7 +126,7 @@ public class ExampleSurfStoreAssets implements IStoreAssets {
     private final VirtualCurrencyPack SuperSaverPack = new VirtualCurrencyPack(
             "Super Saver Pack",                             // name
             "For you cheap skates...",                      // description
-            "coin.jpg",                                     // image file path
+            "img/examples/surf/clam.png",                                     // image file path
             "super_saver_pack",                             // item id
             "super_saver_pack",                             // product id in Google Market
             0.99,                                           // actual price in $$
@@ -137,7 +137,7 @@ public class ExampleSurfStoreAssets implements IStoreAssets {
     private final VirtualCurrencyPack MalibuMediumPack = new VirtualCurrencyPack(
             "Malibu Medium Pack",                           // name
             "For you cheap skates...",                      // description
-            "coin.jpg",                                     // image file path
+            "img/examples/surf/clam.png",                                     // image file path
             "malibu_medium_pack",                           // item id
             "android.test.purchased",                       // product id in Google Market
             1.99,                                           // actual price in $$
@@ -148,7 +148,7 @@ public class ExampleSurfStoreAssets implements IStoreAssets {
     private final VirtualCurrencyPack PipelinePumpinPack = new VirtualCurrencyPack(
             "Pipeline Pumpin' Pack",                        // name
             "The holy grail for ya spendin' surfers",       // description
-            "coin.jpg",                                     // image file path
+            "img/examples/surf/clam.png",                                     // image file path
             "pipeline_pumpin_pack",                         // item id
             "pipeline_pumpin_pack",                         // product id in Google Market
             5.99,                                           // actual price in $$
