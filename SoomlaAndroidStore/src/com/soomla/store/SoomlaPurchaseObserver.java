@@ -83,7 +83,7 @@ public class SoomlaPurchaseObserver extends PurchaseObserver {
             }
 
         } catch (VirtualItemNotFoundException e) {
-            mActivity.sendSoomlaJS("showUnexpectedErrorDialog", "");
+            mActivity.sendSoomlaJS("unexpectedError", "");
             Log.e(TAG, "ERROR : Couldn't find VirtualCurrencyPack with productId: " + productId);
         }
     }
@@ -102,7 +102,7 @@ public class SoomlaPurchaseObserver extends PurchaseObserver {
         } else {
            // purchase failed !
 
-           mActivity.sendSoomlaJS("showUnexpectedErrorDialog", "");
+           mActivity.sendSoomlaJS("unexpectedError", "");
         }
     }
 

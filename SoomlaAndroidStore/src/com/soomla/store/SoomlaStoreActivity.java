@@ -70,7 +70,7 @@ public class SoomlaStoreActivity extends Activity {
         }
 
         // The Native<->JS implementation
-        mSoomlaStore = new SoomlaStore(getApplicationContext(), mBillingService, mHandler, this, null);
+        mSoomlaStore = new SoomlaStore(mBillingService, mHandler, this, null);
 
         StorageManager.getInstance().initialize(getApplicationContext(), secureData);
 
@@ -89,8 +89,15 @@ public class SoomlaStoreActivity extends Activity {
         });
 
         mWebView.loadUrl("file:///android_asset/store.html");
+    }
 
-        setContentView(mWebView);
+    public void loadWebView(){
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                setContentView(mWebView);
+            }
+        });
     }
 
     public void sendSoomlaJS(String action, String data){
@@ -122,6 +129,8 @@ public class SoomlaStoreActivity extends Activity {
                     }
                 });
             }
+
+
         }
     }
 

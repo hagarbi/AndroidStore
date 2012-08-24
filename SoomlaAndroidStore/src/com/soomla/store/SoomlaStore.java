@@ -45,10 +45,10 @@ public class SoomlaStore {
             else {
                 int balance = StorageManager.getInstance().getVirtualGoodsStorage().getBalance(good);
                 String failureMsg = "You don\'t have enough " + StoreInfo.getInstance().getVirtualCurrency().getName() + " to buy a " + good.getName() + ".";
-                mActivity.sendSoomlaJS("showInsufficientFundsDialog", "" + balance);
+                mActivity.sendSoomlaJS("insufficientFunds", "" + balance);
             }
         } catch (VirtualItemNotFoundException e) {
-            mActivity.sendSoomlaJS("showUnexpectedErrorDialog", "");
+            mActivity.sendSoomlaJS("unexpectedError", "");
             Log.e(TAG, "Couldn't find a VirtualGood with itemId: " + itemId + ". Purchase is cancelled.");
         }
     }
@@ -69,6 +69,8 @@ public class SoomlaStore {
         mActivity.sendSoomlaJS("initialize", StoreInfo.getInstance().getJsonString());
 
         updateJSBalances();
+
+        mActivity.loadWebView();
     }
 
     private void updateJSBalances(){
