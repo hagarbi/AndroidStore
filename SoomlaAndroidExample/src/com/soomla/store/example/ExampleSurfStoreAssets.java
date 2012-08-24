@@ -25,7 +25,8 @@ public class ExampleSurfStoreAssets implements IStoreAssets {
                     new StoreTitleElement("Surf Store"),
                     new StoreBuyMoreElement("Get more clams", "img/examples/surf/clam.png")
             ),
-            new StoreTemplateProperties(3)
+            new StoreTemplateProperties(3),
+            false
         );
     }
 

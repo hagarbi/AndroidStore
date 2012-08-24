@@ -16,7 +16,9 @@
 package com.soomla.store;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
@@ -38,6 +40,13 @@ public class SoomlaStoreActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        setRequestedOrientation(StoreInfo.getInstance().getTemplate().isOrientationLandscape() ?
+                ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE :
+                ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        mProgressDialog = ProgressDialog.show(SoomlaStoreActivity.this, "",
+                "Loading. Please wait...", true);
+
         mContext = getApplicationContext();
         mPendingJSMessages = new LinkedList<String>();
         mStoreJSInitialized = false;
@@ -45,7 +54,7 @@ public class SoomlaStoreActivity extends Activity {
         Bundle bundle = getIntent().getExtras();
         SoomlaPrefs.debug        = bundle.getBoolean("debug");
         SoomlaPrefs.publicKey    = bundle.getString("publicKey");
-        HashMap<String, String> secureData = null;
+        HashMap<String, String> secureData;
         if (SoomlaPrefs.DB_SECURE){
             secureData = new HashMap<String, String>();
             String deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
@@ -96,6 +105,7 @@ public class SoomlaStoreActivity extends Activity {
             @Override
             public void run() {
                 setContentView(mWebView);
+                mProgressDialog.dismiss();
             }
         });
     }
@@ -182,4 +192,5 @@ public class SoomlaStoreActivity extends Activity {
     private Handler     mHandler;
     private Queue<String> mPendingJSMessages;
     private boolean     mStoreJSInitialized;
+    private ProgressDialog mProgressDialog;
 }
