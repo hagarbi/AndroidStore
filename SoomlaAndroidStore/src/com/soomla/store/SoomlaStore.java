@@ -14,7 +14,7 @@ public class SoomlaStore {
     public SoomlaStore(BillingService mBillingService,
                        Handler mHandler,
                        SoomlaStoreActivity mActivity,
-                       ISoomlaStoreEventHandler eventHandler) {
+                       AbstractSoomlaStoreEventHandler eventHandler) {
         this.mBillingService = mBillingService;
         this.mHandler = mHandler;
         this.mActivity = mActivity;
@@ -89,5 +89,5 @@ public class SoomlaStore {
     private BillingService mBillingService;
     private Handler mHandler;
     private SoomlaStoreActivity mActivity;
-    private ISoomlaStoreEventHandler mEventHandler;
+    private AbstractSoomlaStoreEventHandler mEventHandler;
 }

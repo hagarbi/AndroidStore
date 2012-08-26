@@ -41,6 +41,14 @@ public class SoomlaStoreActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        Bundle bundle = getIntent().getExtras();
+        SoomlaPrefs.debug        = bundle.getBoolean("debug");
+        SoomlaPrefs.publicKey    = bundle.getString("publicKey");
+        AbstractStoreAssets assets = (AbstractStoreAssets) bundle.getParcelable("assets");
+        StoreInfo.getInstance().initialize(assets);
+        AbstractSoomlaStoreEventHandler eventHandler =
+                (AbstractSoomlaStoreEventHandler) bundle.getParcelable("handler");
+
         setRequestedOrientation(StoreInfo.getInstance().getTemplate().isOrientationLandscape() ?
                 ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE :
                 ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -51,9 +59,6 @@ public class SoomlaStoreActivity extends Activity {
         mPendingJSMessages = new LinkedList<String>();
         mStoreJSInitialized = false;
 
-        Bundle bundle = getIntent().getExtras();
-        SoomlaPrefs.debug        = bundle.getBoolean("debug");
-        SoomlaPrefs.publicKey    = bundle.getString("publicKey");
         HashMap<String, String> secureData;
         if (SoomlaPrefs.DB_SECURE){
             secureData = new HashMap<String, String>();
@@ -62,13 +67,15 @@ public class SoomlaStoreActivity extends Activity {
             secureData.put("deviceId", deviceId);
         }
         else {
-            Log.w(TAG, "Your database data will not be encrypted. Don't ever release your application this way!" +
-                    " Change SoomlaPrefs.DB_SECURE to true.");
+            Log.w(TAG,
+                    "Your database data will not be encrypted. " +
+                    "Don't ever release your application this way! " +
+                    "Change SoomlaPrefs.DB_SECURE to true.");
         }
 
         /* Billing */
         mHandler = new Handler();
-        mSoomlaPurchaseObserver = new SoomlaPurchaseObserver(mHandler, this, null);
+        mSoomlaPurchaseObserver = new SoomlaPurchaseObserver(mHandler, this, eventHandler);
         mBillingService = new BillingService();
         mBillingService.setContext(this);
         ResponseHandler.register(mSoomlaPurchaseObserver);
@@ -79,7 +86,7 @@ public class SoomlaStoreActivity extends Activity {
         }
 
         // The Native<->JS implementation
-        mSoomlaStore = new SoomlaStore(mBillingService, mHandler, this, null);
+        mSoomlaStore = new SoomlaStore(mBillingService, mHandler, this, eventHandler);
 
         StorageManager.getInstance().initialize(getApplicationContext(), secureData);
 

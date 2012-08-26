@@ -15,6 +15,8 @@
  */
 package com.soomla.store;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import com.soomla.store.domain.data.VirtualCurrency;
 import com.soomla.store.domain.data.VirtualCurrencyPack;
 import com.soomla.store.domain.data.VirtualGood;
@@ -27,34 +29,44 @@ import java.util.List;
  * Use this interface to create your assets class that will be transferred to StoreInfo
  * upon initialization.
  */
-public interface IStoreAssets {
+public abstract class AbstractStoreAssets implements Parcelable{
     /**
      * The template that you chose to use for your store's.
      * @return your chosen template.
      */
-    StoreTemplate getStoreTemplate();
+    public abstract StoreTemplate getStoreTemplate();
 
     /**
      * A path to the image that you want to use as your store background.
      * @return a path to an image file.
      */
-    String getStoreBackground();
+    public abstract String getStoreBackground();
 
     /**
      * A representation of your game's virtual currency.
      * @return a representation of your game's virtual currency.
      */
-    VirtualCurrency getVirtualCurrency();
+    public abstract VirtualCurrency getVirtualCurrency();
 
     /**
      * A list of all virtual goods served by your store.
      * @return a list of all virtual goods served by your store.
      */
-    List<VirtualGood> getVirtualGoods();
+    public abstract List<VirtualGood> getVirtualGoods();
 
     /**
      * A list of all virtual currency packs served by your store.
      * @return a list of all virtual currency packs served by your store.
      */
-    List<VirtualCurrencyPack> getVirtualCurrencyPacks();
+    public abstract List<VirtualCurrencyPack> getVirtualCurrencyPacks();
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+    }
+
 }

@@ -30,7 +30,7 @@ import com.soomla.store.exceptions.VirtualItemNotFoundException;
  */
 public class SoomlaPurchaseObserver extends PurchaseObserver {
 
-    public SoomlaPurchaseObserver(Handler handler, SoomlaStoreActivity activity, ISoomlaStoreEventHandler eventHandler) {
+    public SoomlaPurchaseObserver(Handler handler, SoomlaStoreActivity activity, AbstractSoomlaStoreEventHandler eventHandler) {
         super(activity, handler);
 
         mActivity = activity;
@@ -122,5 +122,5 @@ public class SoomlaPurchaseObserver extends PurchaseObserver {
     private static final String TAG = "SOOMLA SoomlaPurchaseObserver";
 
     private SoomlaStoreActivity      mActivity;
-    private ISoomlaStoreEventHandler mEventHandler;
+    private AbstractSoomlaStoreEventHandler mEventHandler;
 }

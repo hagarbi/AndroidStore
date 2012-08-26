@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
 import com.soomla.store.SoomlaStoreActivity;
-import com.soomla.store.StoreInfo;
 
 public class StoreExampleActivity extends Activity {
     /**
@@ -17,14 +16,14 @@ public class StoreExampleActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
-        StoreInfo.getInstance().initialize(new ExampleSurfStoreAssets());
-
         final ImageButton button = (ImageButton) findViewById(R.id.main_button);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), SoomlaStoreActivity.class);
                 Bundle bundle = new Bundle();
                 bundle.putBoolean("debug", true);
+                bundle.putParcelable("assets", new ExampleSurfStoreAssets());
+                bundle.putParcelable("handler", new ExampleEventHandler());
 
                 /**
                  * Compute your public key (that you got from the Android Market publisher site).

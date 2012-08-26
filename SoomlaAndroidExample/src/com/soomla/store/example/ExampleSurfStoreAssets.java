@@ -1,21 +1,18 @@
 package com.soomla.store.example;
 
-import com.soomla.store.IStoreAssets;
+import android.os.Parcel;
+import android.os.Parcelable;
+import com.soomla.store.AbstractStoreAssets;
 import com.soomla.store.SoomlaPrefs;
 import com.soomla.store.domain.data.VirtualCurrency;
-import com.soomla.store.domain.ui.StoreBuyMoreElement;
-import com.soomla.store.domain.ui.StoreTemplate;
 import com.soomla.store.domain.data.VirtualCurrencyPack;
 import com.soomla.store.domain.data.VirtualGood;
-import com.soomla.store.domain.ui.StoreTemplateElements;
-import com.soomla.store.domain.ui.StoreTemplateProperties;
-import com.soomla.store.domain.ui.StoreTitleElement;
+import com.soomla.store.domain.ui.*;
 
-import java.lang.String;
 import java.util.Arrays;
 import java.util.List;
 
-public class ExampleSurfStoreAssets implements IStoreAssets {
+public class ExampleSurfStoreAssets extends AbstractStoreAssets {
 
     @Override
     public StoreTemplate getStoreTemplate(){
@@ -146,7 +143,7 @@ public class ExampleSurfStoreAssets implements IStoreAssets {
             false                                           // consumable
     );
 
-    private final VirtualCurrencyPack PipelinePumpinPack = new VirtualCurrencyPack(
+    private VirtualCurrencyPack PipelinePumpinPack = new VirtualCurrencyPack(
             "Pipeline Pumpin' Pack",                        // name
             "The holy grail for ya spendin' surfers",       // description
             "img/examples/surf/clam.png",                                     // image file path
@@ -156,4 +153,20 @@ public class ExampleSurfStoreAssets implements IStoreAssets {
             1500,                                           // number of currencies in the pack
             false                                           // consumable
     );
+
+
+    public static final Parcelable.Creator<ExampleSurfStoreAssets> CREATOR = new Parcelable.Creator<ExampleSurfStoreAssets>() {
+        public ExampleSurfStoreAssets createFromParcel(Parcel in) {
+            return new ExampleSurfStoreAssets(in);
+        }
+
+        public ExampleSurfStoreAssets[] newArray(int size) {
+            return new ExampleSurfStoreAssets[size];
+        }
+    };
+
+    public ExampleSurfStoreAssets(){}
+
+    private ExampleSurfStoreAssets(Parcel parcel){
+    }
 }
