@@ -15,12 +15,43 @@ public class ExampleEventHandler implements IStoreEventHandler {
 
     @Override
     public void onVirtualCurrencyPackPurchased(VirtualCurrencyPack pack) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        Toast toast = Toast.makeText(mContext, pack.getName() + " was just purchased", 5000);
+        toast.show();
     }
 
     @Override
     public void onVirtualGoodPurchased(VirtualGood good) {
-        Toast toast = Toast.makeText(mContext, "Hey Hey Hey", 5000);
+        Toast toast = Toast.makeText(mContext, good.getName() + " was just purchased", 5000);
+        toast.show();
+    }
+
+    @Override
+    public void onBillingSupported() {
+        Toast toast = Toast.makeText(mContext, "Billing is supported", 5000);
+        toast.show();
+    }
+
+    @Override
+    public void onBillingNotSupported() {
+        Toast toast = Toast.makeText(mContext, "Billing is not supported", 5000);
+        toast.show();
+    }
+
+    @Override
+    public void onMarketPurchaseProcessStarted() {
+        Toast toast = Toast.makeText(mContext, "Market purchase started", 5000);
+        toast.show();
+    }
+
+    @Override
+    public void onGoodsPurchaseProcessStarted() {
+        Toast toast = Toast.makeText(mContext, "Goods purchase started", 5000);
+        toast.show();
+    }
+
+    @Override
+    public void onClosingStore() {
+        Toast toast = Toast.makeText(mContext, "Going to close store", 5000);
         toast.show();
     }
 }
