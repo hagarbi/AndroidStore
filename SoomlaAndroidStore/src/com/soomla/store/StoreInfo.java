@@ -31,8 +31,11 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * This class also holds and serves the pointer to the single {@link com.soomla.store.domain.data.VirtualCurrency}
- * in the entire application.
+ * This class holds the store's meta data including:
+ * - Virtual Currency definition
+ * - Virtual Currency Packs definitions
+ * - Virtual Goods definitions
+ * - Store UI Template
  */
 public class StoreInfo {
 

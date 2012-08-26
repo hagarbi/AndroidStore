@@ -47,6 +47,52 @@ public class StoreEventHandlers {
         }
     }
 
+    /**
+     * Just got a notification that billing is supported.
+     */
+    public void onBillingSupported(){
+        for(IStoreEventHandler handler : mEventHandlers){
+            handler.onBillingSupported();
+        }
+    }
+
+    /**
+     * Just got a notification that billing is NOT supported.
+     */
+    public void onBillingNotSupported(){
+        for(IStoreEventHandler handler : mEventHandlers){
+            handler.onBillingNotSupported();
+        }
+    }
+
+    /**
+     * Going to invoke the purchase process through the BillingService.
+     */
+    public void onMarketPurchaseProcessStarted(){
+        for(IStoreEventHandler handler : mEventHandlers){
+            handler.onMarketPurchaseProcessStarted();
+        }
+    }
+
+    /**
+     * Going to start the process of purchasing virtual goods
+     * (mainly just setting new balances of currency and goods)
+     */
+    public void onGoodsPurchaseProcessStarted(){
+        for(IStoreEventHandler handler : mEventHandlers){
+            handler.onGoodsPurchaseProcessStarted();
+        }
+    }
+
+    /**
+     * Going to close the store.
+     */
+    public void onClosingStore(){
+        for(IStoreEventHandler handler : mEventHandlers){
+            handler.onClosingStore();
+        }
+    }
+
 
     /**
      * Adds an event handler to the list of handlers.

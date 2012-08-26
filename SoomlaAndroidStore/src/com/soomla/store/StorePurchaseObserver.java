@@ -43,6 +43,7 @@ public class StorePurchaseObserver extends PurchaseObserver {
                 if (StoreConfig.debug){
                     Log.d(TAG, "billing is supported !");
                 }
+                StoreEventHandlers.getInstance().onBillingSupported();
             } else {
                 // purchase is not supported. just send a message to JS to disable the "get more ..." button.
 
@@ -51,6 +52,7 @@ public class StorePurchaseObserver extends PurchaseObserver {
                 }
 
                 mActivity.sendToJS("disableCurrencyStore", "");
+                StoreEventHandlers.getInstance().onBillingNotSupported();
             }
         } else if (type.equals(Consts.ITEM_TYPE_SUBSCRIPTION)) {
             // subscription is not supported

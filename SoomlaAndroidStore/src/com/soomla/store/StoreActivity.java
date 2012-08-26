@@ -17,21 +17,15 @@ package com.soomla.store;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.Handler;
-import android.provider.Settings;
 import android.util.Log;
 import android.webkit.ConsoleMessage;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
-import com.soomla.billing.BillingService;
-import com.soomla.billing.Consts;
 import com.soomla.billing.ResponseHandler;
-import com.soomla.store.data.StorageManager;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -51,40 +45,14 @@ public class StoreActivity extends Activity {
         mProgressDialog = ProgressDialog.show(StoreActivity.this, "",
                 "Loading. Please wait...", true);
 
-        mContext = getApplicationContext();
         mPendingJSMessages = new LinkedList<String>();
         mStoreJSInitialized = false;
 
-        HashMap<String, String> secureData;
-        if (StoreConfig.DB_SECURE){
-            secureData = new HashMap<String, String>();
-            String deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
-            secureData.put("applicationId", getPackageName());
-            secureData.put("deviceId", deviceId);
-        }
-        else {
-            Log.w(TAG,
-                    "Your database data will not be encrypted. " +
-                    "Don't ever release your application this way! " +
-                    "Change StoreConfig.DB_SECURE to true.");
-        }
-
-        /* Billing */
         mHandler = new Handler();
         mStorePurchaseObserver = new StorePurchaseObserver(mHandler, this);
-        mBillingService = new BillingService();
-        mBillingService.setContext(this);
         ResponseHandler.register(mStorePurchaseObserver);
-        if (!mBillingService.checkBillingSupported(Consts.ITEM_TYPE_INAPP)){
-            if (StoreConfig.debug){
-                Log.d(TAG, "There's no connectivity with the billing service.");
-            }
-        }
 
-        // The Native<->JS implementation
-        mStoreController = new StoreController(mBillingService, mHandler, this);
-
-        StorageManager.getInstance().initialize(getApplicationContext(), secureData);
+        StoreController mStoreController = new StoreController(mHandler, this);
 
         /* Setting up the store WebView */
         mWebView = new WebView(this);
@@ -180,20 +148,16 @@ public class StoreActivity extends Activity {
         mWebView = null;
 
         super.onDestroy();
-        mBillingService.unbind();
     }
 
     /** Private members **/
     private static String TAG = "SOOMLA Android";
 
     private StorePurchaseObserver mStorePurchaseObserver;
-    private BillingService          mBillingService;
 
-    private WebView     mWebView;
-    private Context     mContext;
-    private StoreController mStoreController;
-    private Handler     mHandler;
-    private Queue<String> mPendingJSMessages;
-    private boolean     mStoreJSInitialized;
-    private ProgressDialog mProgressDialog;
+    private WebView         mWebView;
+    private Handler         mHandler;
+    private Queue<String>   mPendingJSMessages;
+    private boolean         mStoreJSInitialized;
+    private ProgressDialog  mProgressDialog;
 }

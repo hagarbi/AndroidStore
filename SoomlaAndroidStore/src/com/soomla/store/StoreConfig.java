@@ -15,7 +15,9 @@
  */
 package com.soomla.store;
 
-
+/**
+ * This class holds the store's configurations.
+ */
 public class StoreConfig {
 
     // do you want to print out debug messages?
