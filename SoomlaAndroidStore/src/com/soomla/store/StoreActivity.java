@@ -35,24 +35,20 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Queue;
 
-public class SoomlaStoreActivity extends Activity {
+public class StoreActivity extends Activity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         Bundle bundle = getIntent().getExtras();
-        SoomlaPrefs.debug        = bundle.getBoolean("debug");
-        SoomlaPrefs.publicKey    = bundle.getString("publicKey");
-        AbstractStoreAssets assets = (AbstractStoreAssets) bundle.getParcelable("assets");
-        StoreInfo.getInstance().initialize(assets);
-        AbstractSoomlaStoreEventHandler eventHandler =
-                (AbstractSoomlaStoreEventHandler) bundle.getParcelable("handler");
+        StoreConfig.debug        = bundle.getBoolean("debug");
+        StoreConfig.publicKey    = bundle.getString("publicKey");
 
         setRequestedOrientation(StoreInfo.getInstance().getTemplate().isOrientationLandscape() ?
                 ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE :
                 ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        mProgressDialog = ProgressDialog.show(SoomlaStoreActivity.this, "",
+        mProgressDialog = ProgressDialog.show(StoreActivity.this, "",
                 "Loading. Please wait...", true);
 
         mContext = getApplicationContext();
@@ -60,7 +56,7 @@ public class SoomlaStoreActivity extends Activity {
         mStoreJSInitialized = false;
 
         HashMap<String, String> secureData;
-        if (SoomlaPrefs.DB_SECURE){
+        if (StoreConfig.DB_SECURE){
             secureData = new HashMap<String, String>();
             String deviceId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
             secureData.put("applicationId", getPackageName());
@@ -70,30 +66,30 @@ public class SoomlaStoreActivity extends Activity {
             Log.w(TAG,
                     "Your database data will not be encrypted. " +
                     "Don't ever release your application this way! " +
-                    "Change SoomlaPrefs.DB_SECURE to true.");
+                    "Change StoreConfig.DB_SECURE to true.");
         }
 
         /* Billing */
         mHandler = new Handler();
-        mSoomlaPurchaseObserver = new SoomlaPurchaseObserver(mHandler, this, eventHandler);
+        mStorePurchaseObserver = new StorePurchaseObserver(mHandler, this);
         mBillingService = new BillingService();
         mBillingService.setContext(this);
-        ResponseHandler.register(mSoomlaPurchaseObserver);
+        ResponseHandler.register(mStorePurchaseObserver);
         if (!mBillingService.checkBillingSupported(Consts.ITEM_TYPE_INAPP)){
-            if (SoomlaPrefs.debug){
+            if (StoreConfig.debug){
                 Log.d(TAG, "There's no connectivity with the billing service.");
             }
         }
 
         // The Native<->JS implementation
-        mSoomlaStore = new SoomlaStore(mBillingService, mHandler, this, eventHandler);
+        mStoreController = new StoreController(mBillingService, mHandler, this);
 
         StorageManager.getInstance().initialize(getApplicationContext(), secureData);
 
         /* Setting up the store WebView */
         mWebView = new WebView(this);
         mWebView.getSettings().setJavaScriptEnabled(true);
-        mWebView.addJavascriptInterface(mSoomlaStore, "SoomlaNative");
+        mWebView.addJavascriptInterface(mStoreController, "SoomlaNative");
 
         mWebView.setWebChromeClient(new WebChromeClient() {
             public boolean onConsoleMessage(ConsoleMessage cm) {
@@ -117,14 +113,14 @@ public class SoomlaStoreActivity extends Activity {
         });
     }
 
-    public void sendSoomlaJS(String action, String data){
+    public void sendToJS(String action, String data){
         final String urlToLoad = "javascript:SoomlaJS." + action + "(" + data + ")";
 
         if (!mStoreJSInitialized){
             mPendingJSMessages.add(urlToLoad);
         }
         else{
-            if (SoomlaPrefs.debug){
+            if (StoreConfig.debug){
                 Log.d(TAG, "sending message to JS: " + urlToLoad);
             }
             mHandler.post(new Runnable() {
@@ -136,7 +132,7 @@ public class SoomlaStoreActivity extends Activity {
 
             while(!mPendingJSMessages.isEmpty()){
                 final String tmpPendingUrl = mPendingJSMessages.remove();
-                if (SoomlaPrefs.debug){
+                if (StoreConfig.debug){
                     Log.d(TAG, "sending message to JS: " + tmpPendingUrl);
                 }
                 mHandler.post(new Runnable() {
@@ -163,7 +159,7 @@ public class SoomlaStoreActivity extends Activity {
     @Override
     protected void onStart() {
         super.onStart();
-        ResponseHandler.register(mSoomlaPurchaseObserver);
+        ResponseHandler.register(mStorePurchaseObserver);
     }
 
     /**
@@ -172,7 +168,7 @@ public class SoomlaStoreActivity extends Activity {
     @Override
     protected void onStop() {
         super.onStop();
-        ResponseHandler.unregister(mSoomlaPurchaseObserver);
+        ResponseHandler.unregister(mStorePurchaseObserver);
     }
 
     /**
@@ -188,14 +184,14 @@ public class SoomlaStoreActivity extends Activity {
     }
 
     /** Private members **/
-    private static String TAG = "SOOMLA Soomla Android";
+    private static String TAG = "SOOMLA Android";
 
-    private SoomlaPurchaseObserver  mSoomlaPurchaseObserver;
+    private StorePurchaseObserver mStorePurchaseObserver;
     private BillingService          mBillingService;
 
     private WebView     mWebView;
     private Context     mContext;
-    private SoomlaStore mSoomlaStore;
+    private StoreController mStoreController;
     private Handler     mHandler;
     private Queue<String> mPendingJSMessages;
     private boolean     mStoreJSInitialized;

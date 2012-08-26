@@ -28,8 +28,7 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
 import com.android.vending.billing.IMarketBillingService;
-import com.soomla.store.SoomlaPrefs;
-import com.soomla.store.SoomlaPrefs;
+import com.soomla.store.StoreConfig;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -107,13 +106,13 @@ public class BillingService extends Service implements ServiceConnection {
          * is not connected or there was an error when trying to use it
          */
         public boolean runIfConnected() {
-            if (SoomlaPrefs.debug) {
+            if (StoreConfig.debug) {
                 Log.d(TAG, getClass().getSimpleName());
             }
             if (mService != null) {
                 try {
                     mRequestId = run();
-                    if (SoomlaPrefs.debug) {
+                    if (StoreConfig.debug) {
                         Log.d(TAG, "request id: " + mRequestId);
                     }
                     if (mRequestId >= 0) {
@@ -163,7 +162,7 @@ public class BillingService extends Service implements ServiceConnection {
         protected void logResponseCode(String method, Bundle response) {
             Consts.ResponseCode responseCode = Consts.ResponseCode.valueOf(
                     response.getInt(Consts.BILLING_RESPONSE_RESPONSE_CODE));
-            if (SoomlaPrefs.debug) {
+            if (StoreConfig.debug) {
                 Log.e(TAG, method + " received " + responseCode.toString());
             }
         }
@@ -203,7 +202,7 @@ public class BillingService extends Service implements ServiceConnection {
             }
             Bundle response = mService.sendBillingRequest(request);
             int responseCode = response.getInt(Consts.BILLING_RESPONSE_RESPONSE_CODE);
-            if (SoomlaPrefs.debug) {
+            if (StoreConfig.debug) {
                 Log.i(TAG, "CheckBillingSupported response code: " +
                         Consts.ResponseCode.valueOf(responseCode));
             }
@@ -415,7 +414,7 @@ public class BillingService extends Service implements ServiceConnection {
      */
     public void handleCommand(Intent intent, int startId) {
         String action = intent.getAction();
-        if (SoomlaPrefs.debug) {
+        if (StoreConfig.debug) {
             Log.i(TAG, "handleCommand() action: " + action);
         }
         if (Consts.ACTION_CONFIRM_NOTIFICATION.equals(action)) {
@@ -444,7 +443,7 @@ public class BillingService extends Service implements ServiceConnection {
      */
     private boolean bindToMarketBillingService() {
         try {
-            if (SoomlaPrefs.debug) {
+            if (StoreConfig.debug) {
                 Log.i(TAG, "binding to Market billing service");
             }
             boolean bindResult = bindService(
@@ -575,7 +574,7 @@ public class BillingService extends Service implements ServiceConnection {
     private void checkResponseCode(long requestId, Consts.ResponseCode responseCode) {
         BillingRequest request = mSentRequests.get(requestId);
         if (request != null) {
-            if (SoomlaPrefs.debug) {
+            if (StoreConfig.debug) {
                 Log.d(TAG, request.getClass().getSimpleName() + ": " + responseCode);
             }
             request.responseCodeReceived(responseCode);
@@ -612,7 +611,7 @@ public class BillingService extends Service implements ServiceConnection {
         // is not -1, then one of the requests started the service, so we can
         // stop it now.
         if (maxStartId >= 0) {
-            if (SoomlaPrefs.debug) {
+            if (StoreConfig.debug) {
                 Log.i(TAG, "stopping service, startId: " + maxStartId);
             }
             stopSelf(maxStartId);
@@ -625,7 +624,7 @@ public class BillingService extends Service implements ServiceConnection {
      */
     @Override
     public void onServiceConnected(ComponentName name, IBinder service) {
-        if (SoomlaPrefs.debug) {
+        if (StoreConfig.debug) {
             Log.d(TAG, "Billing service connected");
         }
         mService = IMarketBillingService.Stub.asInterface(service);

@@ -1,9 +1,7 @@
 package com.soomla.store.example;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-import com.soomla.store.AbstractStoreAssets;
-import com.soomla.store.SoomlaPrefs;
+import com.soomla.store.IStoreAssets;
+import com.soomla.store.StoreConfig;
 import com.soomla.store.domain.data.VirtualCurrency;
 import com.soomla.store.domain.data.VirtualCurrencyPack;
 import com.soomla.store.domain.data.VirtualGood;
@@ -12,7 +10,7 @@ import com.soomla.store.domain.ui.*;
 import java.util.Arrays;
 import java.util.List;
 
-public class ExampleSurfStoreAssets extends AbstractStoreAssets {
+public class ExampleSurfStoreAssets implements IStoreAssets {
 
     @Override
     public StoreTemplate getStoreTemplate(){
@@ -38,7 +36,7 @@ public class ExampleSurfStoreAssets extends AbstractStoreAssets {
                 "clams",
                 "",
                 "img/examples/surf/clam.png",
-                SoomlaPrefs.CURRENCY_ITEM_ID
+                StoreConfig.CURRENCY_ITEM_ID
         );
     }
 
@@ -153,20 +151,4 @@ public class ExampleSurfStoreAssets extends AbstractStoreAssets {
             1500,                                           // number of currencies in the pack
             false                                           // consumable
     );
-
-
-    public static final Parcelable.Creator<ExampleSurfStoreAssets> CREATOR = new Parcelable.Creator<ExampleSurfStoreAssets>() {
-        public ExampleSurfStoreAssets createFromParcel(Parcel in) {
-            return new ExampleSurfStoreAssets(in);
-        }
-
-        public ExampleSurfStoreAssets[] newArray(int size) {
-            return new ExampleSurfStoreAssets[size];
-        }
-    };
-
-    public ExampleSurfStoreAssets(){}
-
-    private ExampleSurfStoreAssets(Parcel parcel){
-    }
 }

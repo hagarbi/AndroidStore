@@ -18,7 +18,7 @@ package com.soomla.store.data;
 import android.content.Context;
 import android.util.Log;
 import com.soomla.billing.util.AESObfuscator;
-import com.soomla.store.SoomlaPrefs;
+import com.soomla.store.StoreConfig;
 
 import java.util.HashMap;
 
@@ -39,14 +39,14 @@ public class StorageManager {
     }
 
     public void initialize(Context context, HashMap<String, String> secureData){
-        if (SoomlaPrefs.debug){
+        if (StoreConfig.debug){
             Log.d(TAG, "initializing StorageManager");
         }
 
         mDatabase = new StoreDatabase(context);
 
-        if(SoomlaPrefs.DB_SECURE){
-            mObfuscator = new AESObfuscator(SoomlaPrefs.obfuscationSalt,
+        if(StoreConfig.DB_SECURE){
+            mObfuscator = new AESObfuscator(StoreConfig.obfuscationSalt,
                     secureData.get("applicationId"), secureData.get("deviceId"));
         }
 

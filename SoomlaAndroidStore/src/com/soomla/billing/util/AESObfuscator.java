@@ -16,7 +16,7 @@
 
 package com.soomla.billing.util;
 
-import com.soomla.store.SoomlaPrefs;
+import com.soomla.store.StoreConfig;
 
 import java.io.UnsupportedEncodingException;
 import java.security.GeneralSecurityException;
@@ -55,7 +55,7 @@ public class AESObfuscator {
         try {
             SecretKeyFactory factory = SecretKeyFactory.getInstance(KEYGEN_ALGORITHM);
             KeySpec keySpec =
-                    new PBEKeySpec((applicationId + deviceId + SoomlaPrefs.customSecret).toCharArray(), salt, 1024, 256);
+                    new PBEKeySpec((applicationId + deviceId + StoreConfig.customSecret).toCharArray(), salt, 1024, 256);
             SecretKey tmp = factory.generateSecret(keySpec);
             SecretKey secret = new SecretKeySpec(tmp.getEncoded(), "AES");
             mEncryptor = Cipher.getInstance(CIPHER_ALGORITHM);

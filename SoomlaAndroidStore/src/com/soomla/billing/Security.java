@@ -26,8 +26,7 @@ import com.soomla.billing.Consts.PurchaseState;
 import com.soomla.billing.util.AESObfuscator;
 import com.soomla.billing.util.Base64;
 import com.soomla.billing.util.Base64DecoderException;
-import com.soomla.store.SoomlaPrefs;
-import com.soomla.store.SoomlaPrefs;
+import com.soomla.store.StoreConfig;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -120,12 +119,12 @@ public class Security {
             Log.e(TAG, "data is null");
             return null;
         }
-        if (SoomlaPrefs.debug) {
+        if (StoreConfig.debug) {
             Log.i(TAG, "signedData: " + signedData);
         }
         boolean verified = false;
         if (!TextUtils.isEmpty(signature)) {
-            PublicKey key = Security.generatePublicKey(SoomlaPrefs.publicKey);
+            PublicKey key = Security.generatePublicKey(StoreConfig.publicKey);
             verified = Security.verify(key, signedData, signature);
             if (!verified) {
                 Log.w(TAG, "signature does not match data.");
@@ -220,7 +219,7 @@ public class Security {
      * @return true if the data and signature match
      */
     public static boolean verify(PublicKey publicKey, String signedData, String signature) {
-        if (SoomlaPrefs.debug) {
+        if (StoreConfig.debug) {
             Log.i(TAG, "signature: " + signature);
         }
         Signature sig;
@@ -251,7 +250,7 @@ public class Security {
     private static AESObfuscator getAesObfuscator(Context context) {
         if (mAesObfuscator == null) {
             String deviceId = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
-            mAesObfuscator = new AESObfuscator(SoomlaPrefs.obfuscationSalt, context.getPackageName(), deviceId);
+            mAesObfuscator = new AESObfuscator(StoreConfig.obfuscationSalt, context.getPackageName(), deviceId);
         }
         return mAesObfuscator;
     }

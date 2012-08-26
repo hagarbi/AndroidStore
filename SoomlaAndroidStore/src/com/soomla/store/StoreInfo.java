@@ -47,7 +47,7 @@ public class StoreInfo {
     /**
      * This function initializes StoreInfo using the given store assets.
      */
-    public void initialize(AbstractStoreAssets storeAssets){
+    public void initialize(IStoreAssets storeAssets){
         if (storeAssets == null){
             Log.e(TAG, "The given store assets can't be null !");
             return;
@@ -88,7 +88,7 @@ public class StoreInfo {
      * @return the definition of the virtual good requested.
      * @throws VirtualItemNotFoundException
      */
-    public VirtualGood getVirtualGoodBySoomlaId(String itemId) throws VirtualItemNotFoundException {
+    public VirtualGood getVirtualGoodByItemId(String itemId) throws VirtualItemNotFoundException {
         if (!mVirtualGoodOptions.containsKey(itemId)){
             throw new VirtualItemNotFoundException("itemId", itemId);
         }

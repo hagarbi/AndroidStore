@@ -16,18 +16,10 @@
 package com.soomla.store.data;
 
 import android.util.Log;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.soomla.billing.Consts;
-import com.soomla.store.SoomlaPrefs;
-import com.soomla.store.SoomlaPrefs;
+import com.soomla.store.StoreConfig;
 import com.soomla.store.StoreInfo;
-import com.soomla.store.domain.data.MarketPurchaseHistory;
-import com.soomla.store.domain.data.VirtualCurrencyPack;
 import com.soomla.store.exceptions.VirtualItemNotFoundException;
-
-import java.io.IOException;
-import java.util.HashMap;
 
 
 /**
@@ -43,7 +35,7 @@ public class MarketPurchaseStorage {
 
     public void add(final Consts.PurchaseState purchaseState, String productId,
                    String orderId, final long purchaseTime, String developerPayload) throws VirtualItemNotFoundException {
-        if (SoomlaPrefs.debug){
+        if (StoreConfig.debug){
             Log.d(TAG, "adding market purchase data for orderId " + orderId + " and productId " + productId);
         }
 

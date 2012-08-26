@@ -25,33 +25,32 @@ import com.soomla.store.domain.data.VirtualCurrencyPack;
 import com.soomla.store.exceptions.VirtualItemNotFoundException;
 
 /**
- * A {@link SoomlaPurchaseObserver} is used to get callbacks when Android Market sends
+ * A {@link StorePurchaseObserver} is used to get callbacks when Android Market sends
  * messages to this application so that we can update the UI.
  */
-public class SoomlaPurchaseObserver extends PurchaseObserver {
+public class StorePurchaseObserver extends PurchaseObserver {
 
-    public SoomlaPurchaseObserver(Handler handler, SoomlaStoreActivity activity, AbstractSoomlaStoreEventHandler eventHandler) {
+    public StorePurchaseObserver(Handler handler, StoreActivity activity) {
         super(activity, handler);
 
         mActivity = activity;
-        mEventHandler = eventHandler;
     }
 
     @Override
     public void onBillingSupported(boolean supported, String type) {
         if (type == null || type.equals(Consts.ITEM_TYPE_INAPP)) {
             if (supported) {
-                if (SoomlaPrefs.debug){
+                if (StoreConfig.debug){
                     Log.d(TAG, "billing is supported !");
                 }
             } else {
                 // purchase is not supported. just send a message to JS to disable the "get more ..." button.
 
-                if (SoomlaPrefs.debug){
+                if (StoreConfig.debug){
                     Log.d(TAG, "billing is not supported !");
                 }
 
-                mActivity.sendSoomlaJS("disableCurrencyStore", "");
+                mActivity.sendToJS("disableCurrencyStore", "");
             }
         } else if (type.equals(Consts.ITEM_TYPE_SUBSCRIPTION)) {
             // subscription is not supported
@@ -69,21 +68,21 @@ public class SoomlaPurchaseObserver extends PurchaseObserver {
         int balance = StorageManager.getInstance().getVirtualCurrencyStorage().getBalance();
 
         try {
-            VirtualCurrencyPack pack = StoreInfo.getInstance().getPackByGoogleProductId(productId);
 
             if (purchaseState == Consts.PurchaseState.PURCHASED ||
                     purchaseState == Consts.PurchaseState.REFUNDED) {
 
                 // we're throwing this event when on PURCHASE or REFUND !
 
-                mActivity.sendSoomlaJS("currencyBalanceChanged", "'" + SoomlaPrefs.CURRENCY_ITEM_ID + "'," + balance);
-                if (mEventHandler != null){
-                    mEventHandler.onVirtualCurrencyPackPurchased(pack);
-                }
+                mActivity.sendToJS("currencyBalanceChanged", "'" + StoreConfig.CURRENCY_ITEM_ID + "'," + balance);
+
+                VirtualCurrencyPack pack = StoreInfo.getInstance().getPackByGoogleProductId(productId);
+
+                StoreEventHandlers.getInstance().onVirtualCurrencyPackPurchased(pack);
             }
 
         } catch (VirtualItemNotFoundException e) {
-            mActivity.sendSoomlaJS("unexpectedError", "");
+            mActivity.sendToJS("unexpectedError", "");
             Log.e(TAG, "ERROR : Couldn't find VirtualCurrencyPack with productId: " + productId);
         }
     }
@@ -102,7 +101,7 @@ public class SoomlaPurchaseObserver extends PurchaseObserver {
         } else {
            // purchase failed !
 
-           mActivity.sendSoomlaJS("unexpectedError", "");
+           mActivity.sendToJS("unexpectedError", "");
         }
     }
 
@@ -119,8 +118,7 @@ public class SoomlaPurchaseObserver extends PurchaseObserver {
         }
     }
 
-    private static final String TAG = "SOOMLA SoomlaPurchaseObserver";
+    private static final String TAG = "SOOMLA StorePurchaseObserver";
 
-    private SoomlaStoreActivity      mActivity;
-    private AbstractSoomlaStoreEventHandler mEventHandler;
+    private StoreActivity mActivity;
 }

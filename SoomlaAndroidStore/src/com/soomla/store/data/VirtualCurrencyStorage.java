@@ -19,7 +19,7 @@ package com.soomla.store.data;
 import android.database.Cursor;
 import android.util.Log;
 import com.soomla.billing.util.AESObfuscator;
-import com.soomla.store.SoomlaPrefs;
+import com.soomla.store.StoreConfig;
 
 /**
  * This is the storage for the virtual currency.
@@ -35,11 +35,11 @@ public class VirtualCurrencyStorage {
     /** Getters **/
 
     public int getBalance(){
-        if (SoomlaPrefs.debug){
+        if (StoreConfig.debug){
             Log.d(TAG, "trying to fetch balance for virtual currency");
         }
 
-        String itemId = SoomlaPrefs.CURRENCY_ITEM_ID;
+        String itemId = StoreConfig.CURRENCY_ITEM_ID;
         if (StorageManager.getObfuscator() != null){
             itemId = StorageManager.getObfuscator().obfuscateString(itemId);
         }
@@ -62,7 +62,7 @@ public class VirtualCurrencyStorage {
                     balance = Integer.parseInt(balanceStr);
                 }
 
-                if (SoomlaPrefs.debug){
+                if (StoreConfig.debug){
                     Log.d(TAG, "the currency balance is " + balance);
                 }
                 return balance;
@@ -84,11 +84,11 @@ public class VirtualCurrencyStorage {
      * @return the new balance after adding amount.
      */
     public int add(int amount){
-        if (SoomlaPrefs.debug){
+        if (StoreConfig.debug){
             Log.d(TAG, "adding " + amount + " currencies.");
         }
 
-        String itemId = SoomlaPrefs.CURRENCY_ITEM_ID;
+        String itemId = StoreConfig.CURRENCY_ITEM_ID;
         int balance = getBalance();
         String quantityStr = "" + (balance + amount);
         if (StorageManager.getObfuscator() != null){
@@ -105,11 +105,11 @@ public class VirtualCurrencyStorage {
      * @param amount is the amount of currency to remove.
      */
     public int remove(int amount){
-        if (SoomlaPrefs.debug){
+        if (StoreConfig.debug){
             Log.d(TAG, "removing " + amount + " currencies.");
         }
 
-        String itemId = SoomlaPrefs.CURRENCY_ITEM_ID;
+        String itemId = StoreConfig.CURRENCY_ITEM_ID;
         int quantity = getBalance() - amount;
         quantity = quantity > 0 ? quantity : 0;
         String quantityStr = "" + quantity;

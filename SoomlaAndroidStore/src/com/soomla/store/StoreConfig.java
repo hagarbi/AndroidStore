@@ -16,7 +16,7 @@
 package com.soomla.store;
 
 
-public class SoomlaPrefs {
+public class StoreConfig {
 
     // do you want to print out debug messages?
     public static boolean debug = false;
@@ -25,7 +25,7 @@ public class SoomlaPrefs {
     public static byte[] obfuscationSalt = new byte[] { 64, -54, -113, -47, 98, -52, 87, -102, -65, -127, 89, 51, -11, -35, 30, 77, -45, 75, -26, 3 };
 
     // the Google Market public key
-    public static String publicKey = "WILL BE CHANGED WHEN SoomlaStoreActivity COMES TO PLAY !";
+    public static String publicKey = "WILL BE CHANGED WHEN StoreActivity COMES TO PLAY !";
 
     // the DB itemId of the virtual currency
     public static final String CURRENCY_ITEM_ID = "store_currency";

@@ -18,7 +18,7 @@ package com.soomla.store.data;
 import android.database.Cursor;
 import android.util.Log;
 import com.soomla.billing.util.AESObfuscator;
-import com.soomla.store.SoomlaPrefs;
+import com.soomla.store.StoreConfig;
 import com.soomla.store.domain.data.VirtualGood;
 
 /**
@@ -35,7 +35,7 @@ public class VirtualGoodsStorage {
     /** Getters **/
 
     public int getBalance(VirtualGood virtualGood){
-        if (SoomlaPrefs.debug){
+        if (StoreConfig.debug){
             Log.d(TAG, "trying to fetch balance for virtual good with itemId: " + virtualGood.getItemId());
         }
         String itemId = virtualGood.getItemId();
@@ -61,7 +61,7 @@ public class VirtualGoodsStorage {
                     balance = Integer.parseInt(balanceStr);
                 }
 
-                if (SoomlaPrefs.debug){
+                if (StoreConfig.debug){
                     Log.d(TAG, "the balance for " + virtualGood.getItemId() + " is " + balance);
                 }
                 return balance;
@@ -82,7 +82,7 @@ public class VirtualGoodsStorage {
     * @param amount is the amount of goods to add.
     */
     public int add(VirtualGood virtualGood, int amount){
-        if (SoomlaPrefs.debug){
+        if (StoreConfig.debug){
             Log.d(TAG, "adding " + amount + " " + virtualGood.getName() + ".");
         }
 
@@ -104,7 +104,7 @@ public class VirtualGoodsStorage {
      * @param amount is the amount to remove.
      */
     public int remove(VirtualGood virtualGood, int amount){
-        if (SoomlaPrefs.debug){
+        if (StoreConfig.debug){
             Log.d(TAG, "removing " + amount + " " + virtualGood.getName() + ".");
         }
 
