@@ -68,7 +68,7 @@ public class StoreActivity extends Activity {
             }
         });
 
-        mWebView.loadUrl("file:///android_asset/store.html");
+        mWebView.loadUrl("file:///android_asset/soomla_ui/store.html");
     }
 
     public void loadWebView(){
