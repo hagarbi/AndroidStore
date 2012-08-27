@@ -6,9 +6,9 @@ SOOMLA-Android-Store
 ---
 The Android store is a Java project that works seamlessly with Google Play's in-app purchasing API. SOOMLA-Android-Store is tightly coupled with Soomla-Storefront to provide you with the store's UI. All you need to do is let it know your specific game's assets and you're good to go.
 
-Getting Started
+Getting Started (Using source code)
 ---
-1. Clone SOOMLA-Android-Store and its submodules. Copy all files from SoomlaAndroidStore's subfolders to their equivallent folders in your Android project (And link the jars from 'libs' folder):
+1. Clone SOOMLA-Android-Store and its submodules (notice the '--recursive' that clones submodules). Copy all files from SoomlaAndroidStore's subfolders to their equivallent folders in your Android project (And link the jars from 'libs' folder):
 
  `git clone --recursive git@github.com:refaelos/Soomla-Android-Store.git`
 
