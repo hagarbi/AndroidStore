@@ -52,7 +52,7 @@ public class StoreActivity extends Activity {
         mStorePurchaseObserver = new StorePurchaseObserver(mHandler, this);
         ResponseHandler.register(mStorePurchaseObserver);
 
-        StoreController mStoreController = new StoreController(mHandler, this);
+        mStoreController = new StoreController(mHandler, this);
 
         /* Setting up the store WebView */
         mWebView = new WebView(this);
@@ -144,6 +144,8 @@ public class StoreActivity extends Activity {
      */
     @Override
     protected void onDestroy() {
+        mStoreController.onDestroy();
+
         mWebView.destroy();
         mWebView = null;
 
@@ -160,4 +162,5 @@ public class StoreActivity extends Activity {
     private Queue<String>   mPendingJSMessages;
     private boolean         mStoreJSInitialized;
     private ProgressDialog  mProgressDialog;
+    private StoreController mStoreController;
 }

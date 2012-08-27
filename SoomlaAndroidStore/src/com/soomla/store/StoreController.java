@@ -119,14 +119,16 @@ public class StoreController {
      */
     public void wantsToLeaveStore(){
         Log.d(TAG, "wantsToLeaveStore");
-        StoreEventHandlers.getInstance().onClosingStore();
         mHandler.post(new Runnable() {
             @Override
             public void run() {
                 mActivity.finish();
             }
         });
+    }
 
+    public void onDestroy(){
+        StoreEventHandlers.getInstance().onClosingStore();
         mBillingService.unbind();
     }
 
