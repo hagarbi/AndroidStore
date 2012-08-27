@@ -8,5 +8,27 @@ The Android store is a Java project that works seamlessly with Google Play's in-
 
 Getting Started
 ---
-1. Clone SOOMLA-Android-Store and its submodules:
+1. Clone SOOMLA-Android-Store and its submodules. Copy all files from SoomlaAndroidStore's subfolders to their equivallent folders in your Android project (And link the jars from 'libs' folder):
+
  `git clone --recursive git@github.com:refaelos/Soomla-Android-Store.git`
+
+2. Make the folowing changes to your AndroidManifest.xml:
+
+  Add the following permission:
+
+ `<uses-permission android:name="com.android.vending.BILLING" />`
+
+  Add the following code to your 'application' element:
+
+        <service android:name="com.soomla.billing.BillingService" />
+
+        <receiver android:name="com.soomla.billing.BillingReceiver">
+            <intent-filter>
+                <action android:name="com.android.vending.billing.IN_APP_NOTIFY" />
+                <action android:name="com.android.vending.billing.RESPONSE_CODE" />
+                <action android:name="com.android.vending.billing.PURCHASE_STATE_CHANGED" />
+            </intent-filter>
+        </receiver>
+
+        <activity
+                android:name="com.soomla.store.StoreActivity" />
