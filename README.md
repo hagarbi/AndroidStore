@@ -30,5 +30,18 @@ Getting Started
             </intent-filter>
         </receiver>
 
-        <activity
-                android:name="com.soomla.store.StoreActivity" />
+        <activity android:name="com.soomla.store.StoreActivity" />
+
+3. Implement IStoreAssets with your own class in order to describe the UI template, your store's art and meta-data. Initialize StoreInfo with the class you just created:
+
+ `StoreInfo.getInstance().initialize(new YourStoreAssetsImplementation());`
+
+4. Decide where in your code you want to open the store and put this code there:
+
+        Intent intent = new Intent(getApplicationContext(), StoreActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putString("publicKey", [Your Google Play public key here]);
+        intent.putExtras(bundle);
+        startActivityForResult(intent, 0);
+
+
