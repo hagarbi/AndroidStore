@@ -63,8 +63,7 @@ In order to create your event handler:
 
 1. create a class that implements IStoreEventHandler.
 2. Add the created class to StoreEventHandlers:
-
-`StoreEventHandlers.getInstance().addEventHandler(new YourEventHandler());`
+ `StoreEventHandlers.getInstance().addEventHandler(new YourEventHandler());`
 
 Contribution
 ---
