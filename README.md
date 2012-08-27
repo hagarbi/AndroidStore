@@ -52,3 +52,10 @@ If you want to protect your application from 'bad people' (and who doesn't?!), y
 + SOOMLA keeps the game's data in an encrypted database. In order to encrypt your data, SOOMLA generates a private key out of several parts of information. StoreInfo.customSecret is one of them. SOOMLA recommends that you change this value before you release your game. BE CAREFUL: You can always change this value once! If you try to change it again, old data from the database will become unavailable.
 + Following Google's recommendation, SOOMLA also recommends that you split your public key and construct it on runtime or even use bit manipulation on it in order to hide it. The key itself is not secret information but if someone replaces it, your application might get fake messages that might harm it.
 
+Contribution
+---
+
+We want you!
+Fork -> Clone -> implement -> Test -> Pull-Request. We have great respect for contribution.
+
+
