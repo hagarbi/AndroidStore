@@ -27,7 +27,7 @@ import com.soomla.billing.BillingService.RestoreTransactions;
 import com.soomla.billing.Consts.PurchaseState;
 import com.soomla.billing.Consts.ResponseCode;
 import com.soomla.store.StoreConfig;
-import com.soomla.store.StoreInfo;
+import com.soomla.store.data.StoreInfo;
 import com.soomla.store.data.StorageManager;
 import com.soomla.store.domain.data.VirtualCurrencyPack;
 import com.soomla.store.exceptions.VirtualItemNotFoundException;

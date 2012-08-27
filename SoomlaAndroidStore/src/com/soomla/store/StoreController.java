@@ -21,6 +21,7 @@ import android.util.Log;
 import com.soomla.billing.BillingService;
 import com.soomla.billing.Consts;
 import com.soomla.store.data.StorageManager;
+import com.soomla.store.data.StoreInfo;
 import com.soomla.store.domain.data.VirtualGood;
 import com.soomla.store.exceptions.VirtualItemNotFoundException;
 
@@ -133,15 +134,20 @@ public class StoreController {
     }
 
     /**
-     * The store is initialized.
+     * The store's ui is ready to receive calls.
      */
-    public void pageInitialized(){
+    public void uiReady(){
         Log.d(TAG, "pageInitialized");
         mActivity.storeJSInitialized();
         mActivity.sendToJS("initialize", StoreInfo.getInstance().getJsonString());
 
         updateJSBalances();
+    }
 
+    /**
+     * The store is initialized.
+     */
+    public void storeInitialized(){
         mActivity.loadWebView();
     }
 

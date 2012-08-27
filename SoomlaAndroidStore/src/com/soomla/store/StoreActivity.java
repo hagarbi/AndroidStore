@@ -25,6 +25,7 @@ import android.webkit.ConsoleMessage;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import com.soomla.billing.ResponseHandler;
+import com.soomla.store.data.StoreInfo;
 
 import java.util.LinkedList;
 import java.util.Queue;

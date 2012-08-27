@@ -18,7 +18,6 @@ package com.soomla.store.data;
 import android.util.Log;
 import com.soomla.billing.Consts;
 import com.soomla.store.StoreConfig;
-import com.soomla.store.StoreInfo;
 import com.soomla.store.exceptions.VirtualItemNotFoundException;
 
 
