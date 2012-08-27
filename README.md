@@ -59,4 +59,7 @@ We want you!
 
 Fork -> Clone -> implement -> Test -> Pull-Request. We have great respect for contribution.
 
-
+License
+---
+MIT License. Copyright (c) 2012 SOOMLA. http://project.soom.la
++ http://www.opensource.org/licenses/MIT
