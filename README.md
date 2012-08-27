@@ -42,7 +42,7 @@ Getting Started (Using source code)
 
         Intent intent = new Intent(getApplicationContext(), StoreActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putString("publicKey", [Your Google Play public key here]);
+        bundle.putString("publicKey", "[Your Google Play public key here]");
         intent.putExtras(bundle);
         startActivityForResult(intent, 0);
 
@@ -73,6 +73,13 @@ Contribution
 We want you!
 
 Fork -> Clone -> implement -> Test -> Pull-Request. We have great respect for contribution.
+
+SOOMLA, Elsewhere ...
+---
+
++ (Website)[http://project.soom.la/]
++ [On Facebook](https://www.facebook.com/pages/The-SOOMLA-Project/389643294427376).
++ [On AngelList](https://angel.co/the-soomla-project)
 
 License
 ---
