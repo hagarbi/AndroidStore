@@ -32,7 +32,7 @@ Getting Started (Using source code)
 
         <activity android:name="com.soomla.store.StoreActivity" />
 
-3. Implement IStoreAssets with your own class in order to describe the UI template, your store's art and meta-data. Initialize StoreInfo with the class you just created:
+3. Create your own implementation of IStoreAssets in order to describe the UI template, your store's art and meta-data. Initialize StoreInfo with the class you just created:
 
  `StoreInfo.getInstance().initialize(new YourStoreAssetsImplementation());`
 
@@ -51,6 +51,20 @@ If you want to protect your application from 'bad people' (and who doesn't?!), y
 
 + SOOMLA keeps the game's data in an encrypted database. In order to encrypt your data, SOOMLA generates a private key out of several parts of information. StoreInfo.customSecret is one of them. SOOMLA recommends that you change this value before you release your game. BE CAREFUL: You can always change this value once! If you try to change it again, old data from the database will become unavailable.
 + Following Google's recommendation, SOOMLA also recommends that you split your public key and construct it on runtime or even use bit manipulation on it in order to hide it. The key itself is not secret information but if someone replaces it, your application might get fake messages that might harm it.
+
+Event Handling
+---
+
+SOOMLA lets you create your own event handler and add it to StoreEventHandlers. That way you'll be able to get notifications on various events and implement your own application specific behaviour to those events.
+
+NOTE: Your behaviour is an addition to the default behaviour implemented by SOOMLA. You don't replace SOOMLA's behaviour.
+
+In order to create your event handler:
+
+1. create a class that implements IStoreEventHandler.
+2. Add the created class to StoreEventHandlers:
+
+`StoreEventHandlers.getInstance().addEventHandler(new YourEventHandler());`
 
 Contribution
 ---
