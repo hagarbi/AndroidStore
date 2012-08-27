@@ -154,7 +154,7 @@ public class StoreActivity extends Activity {
     }
 
     /** Private members **/
-    private static String TAG = "SOOMLA Android";
+    private static String TAG = "SOOMLA StoreActivity";
 
     private StorePurchaseObserver mStorePurchaseObserver;
 

@@ -44,7 +44,7 @@ public class StoreConfig {
     if you change this value to "false", anyone will be able to browse your sqlite file
     and change the values of the currencies and balances.
 
-    SOOMLA RECOMMENDS THAT YOU DON'T CHANGE THE VALUE FOR THIS VARIABLE !!!
+    SOOMLA RECOMMENDS YOU TO ***NEVER*** CHANGE THE VALUE FOR THIS VARIABLE !!!
     (the only possible reason for you to want to even think of an insecure database is for debugging purposes)
      */
     public static final boolean DB_SECURE = true;
