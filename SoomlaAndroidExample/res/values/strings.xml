@@ -3,4 +3,10 @@
     <string name="app_name">Store Example</string>
     <string name="btn_contentDescription">Click to open store</string>
     <string name="info_text">Click the soomla logo to open store</string>
+    <string name="title">SOOMLA Store Example</string>
+    <string name="your_gamehere">[YOUR GAME HERE]</string>
+    <string name="open_store_text">Open Store</string>
+    <string name="drag_text">Drag the SOOMLA-bot to the box to open store</string>
+
+    <color name="white">#FFFFFF</color>
 </resources>
