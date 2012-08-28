@@ -255,16 +255,4 @@ public class Security {
         return mAesObfuscator;
     }
 
-//    public static String obfuscate(Context context, String data){
-//        return getAesObfuscator(context).obfuscate(data);
-//    }
-//
-//    public static String unobfuscate(Context context, String obfuscated) {
-//        try {
-//            return getAesObfuscator(context).unobfuscate(obfuscated);
-//        } catch (AESObfuscator.ValidationException e) {
-//            Log.w(TAG, "Validation error while reading");
-//        }
-//        return null;
-//    }
 }
