@@ -52,7 +52,7 @@ public class ExampleSurfStoreAssets implements IStoreAssets {
     @Override
     public List<VirtualCurrencyPack> getVirtualCurrencyPacks(){
         return Arrays.asList(
-                    SuperSaverPack, MalibuMediumPack, PipelinePumpinPack
+                    SuperSaverPack, MalibuMediumPack, PipelinePumpinPack, SilverPack
                );
     }
 
@@ -121,10 +121,10 @@ public class ExampleSurfStoreAssets implements IStoreAssets {
 
     private final VirtualCurrencyPack SuperSaverPack = new VirtualCurrencyPack(
             "Super Saver Pack",                             // name
-            "For you cheap skates...",                      // description
+            "Testing for a refund ...",                      // description
             "img/examples/surf/clam.png",                                     // image file path
             "super_saver_pack",                             // item id
-            "super_saver_pack",                             // product id in Google Market
+            "android.test.refunded",                             // product id in Google Market
             0.99,                                           // actual price in $$
             200,                                            // number of currencies in the pack
             false                                           // consumable
@@ -132,7 +132,7 @@ public class ExampleSurfStoreAssets implements IStoreAssets {
 
     private final VirtualCurrencyPack MalibuMediumPack = new VirtualCurrencyPack(
             "Malibu Medium Pack",                           // name
-            "For you cheap skates...",                      // description
+            "Testing for an item purchase ...",                      // description
             "img/examples/surf/clam.png",                                     // image file path
             "malibu_medium_pack",                           // item id
             "android.test.purchased",                       // product id in Google Market
@@ -143,12 +143,23 @@ public class ExampleSurfStoreAssets implements IStoreAssets {
 
     private VirtualCurrencyPack PipelinePumpinPack = new VirtualCurrencyPack(
             "Pipeline Pumpin' Pack",                        // name
-            "The holy grail for ya spendin' surfers",       // description
+            "Testing for purchase cacellation ...",       // description
             "img/examples/surf/clam.png",                                     // image file path
             "pipeline_pumpin_pack",                         // item id
-            "pipeline_pumpin_pack",                         // product id in Google Market
+            "android.test.canceled",                         // product id in Google Market
             5.99,                                           // actual price in $$
             1500,                                           // number of currencies in the pack
+            false                                           // consumable
+    );
+
+    private VirtualCurrencyPack SilverPack = new VirtualCurrencyPack(
+            "Silver Pack",                        // name
+            "Testing for item unavailable ...",       // description
+            "img/examples/surf/clam.png",                                     // image file path
+            "pipeline_pumpin_pack",                         // item id
+            "android.test.item_unavailable",                         // product id in Google Market
+            15.99,                                           // actual price in $$
+            5500,                                           // number of currencies in the pack
             false                                           // consumable
     );
 }

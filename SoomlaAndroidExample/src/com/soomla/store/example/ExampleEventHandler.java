@@ -9,8 +9,10 @@ import com.soomla.store.domain.data.VirtualGood;
 public class ExampleEventHandler implements IStoreEventHandler {
 
     private Context mContext;
-    public ExampleEventHandler(Context context){
+    private StoreExampleActivity mActivity;
+    public ExampleEventHandler(Context context, StoreExampleActivity activity){
         mContext = context;
+        mActivity = activity;
     }
 
     @Override
@@ -51,6 +53,8 @@ public class ExampleEventHandler implements IStoreEventHandler {
 
     @Override
     public void onClosingStore() {
+        mActivity.robotBackHome();
+
         Toast toast = Toast.makeText(mContext, "Going to close store", 5000);
         toast.show();
     }
