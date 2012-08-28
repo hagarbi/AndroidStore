@@ -25,18 +25,6 @@
              android:textSize="30sp"
              />
 
-    <!--<Button android:id="@+id/main_button"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:text="@string/open_store_text"-->
-            <!--android:textSize="20sp"-->
-            <!--android:layout_below="@id/ygh_text"-->
-            <!--android:layout_centerInParent="true"-->
-            <!--android:background="@drawable/blue_btn"-->
-            <!--android:contentDescription="@string/btn_contentDescription"-->
-            <!--android:layout_marginTop="200sp"-->
-            <!--/>-->
-
     <GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/grid"
                 android:layout_width="match_parent"
@@ -76,12 +64,6 @@
         </LinearLayout>
     </GridLayout>
 
-    <!--<ImageView android:id="@+id/drag_img"-->
-            <!--android:contentDescription="Drag image to the box"-->
-            <!--android:layout_height="100sp"-->
-            <!--android:layout_width="100sp"-->
-            <!--android:src="@drawable/soomla_logo_new"-->
-            <!--/>-->
 
     <TextView
             android:id="@+id/main_text"
