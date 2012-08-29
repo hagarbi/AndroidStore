@@ -17,7 +17,7 @@ public class StoreDatabase {
         mDatabaseHelper.close();
     }
 
-    public void addOrUpdatePurchaseHistory(String orderId, String productId, String itemId,
+    public synchronized void addOrUpdatePurchaseHistory(String orderId, String productId, String itemId,
                                       String purchaseState, String purchaseTime,
                                       String developerPayload, String currentBalance){
         ContentValues values = new ContentValues();
@@ -31,41 +31,41 @@ public class StoreDatabase {
         mStoreDB.replace(PURCHASE_HISTORY_TABLE_NAME, null /* nullColumnHack */, values);
     }
 
-    public Cursor getPurchaseHistory(String orderId){
+    public synchronized Cursor getPurchaseHistory(String orderId){
         return mStoreDB.query(PURCHASE_HISTORY_TABLE_NAME, PURCHASE_HISTORY_COLUMNS,
                 PURCHASE_HISTORY_COLUMN_ORDER_ID + " = '" + orderId + "'", null, null, null, null);
     }
 
-    public void updateVirtualCurrency(String itemId, String quantity){
+    public synchronized void updateVirtualCurrency(String itemId, String quantity){
         ContentValues values = new ContentValues();
         values.put(VIRTUAL_CURRENCY_COLUMN_ITEM_ID, itemId);
         values.put(VIRTUAL_CURRENCY_COLUMN_BALANCE, quantity);
         mStoreDB.replace(VIRTUAL_CURRENCY_TABLE_NAME, null, values);
     }
 
-    public Cursor getVirtualCurrencies(){
+    public synchronized Cursor getVirtualCurrencies(){
         return mStoreDB.query(VIRTUAL_CURRENCY_TABLE_NAME, VIRTUAL_CURRENCY_COLUMNS,
                 null, null, null, null, null);
     }
 
-    public Cursor getVirtualCurrency(String itemId){
+    public synchronized Cursor getVirtualCurrency(String itemId){
         return mStoreDB.query(VIRTUAL_CURRENCY_TABLE_NAME, VIRTUAL_CURRENCY_COLUMNS,
                 VIRTUAL_CURRENCY_COLUMN_ITEM_ID +  " = '" + itemId + "'", null, null, null, null);
     }
 
-    public void updateVirtualGood(String itemId, String quantity){
+    public synchronized void updateVirtualGood(String itemId, String quantity){
         ContentValues values = new ContentValues();
         values.put(VIRTUAL_GOODS_COLUMN_ITEM_ID, itemId);
         values.put(VIRTUAL_GOODS_COLUMN_BALANCE, quantity);
         mStoreDB.replace(VIRTUAL_GOODS_TABLE_NAME, null, values);
     }
 
-    public Cursor getVirtualGoods(){
+    public synchronized Cursor getVirtualGoods(){
         return mStoreDB.query(VIRTUAL_GOODS_TABLE_NAME, VIRTUAL_GOODS_COLUMNS,
                 null, null, null, null, null);
     }
 
-    public Cursor getVirtualGood(String itemId){
+    public synchronized Cursor getVirtualGood(String itemId){
         return mStoreDB.query(VIRTUAL_GOODS_TABLE_NAME, VIRTUAL_GOODS_COLUMNS,
                 VIRTUAL_GOODS_COLUMN_ITEM_ID + "='" + itemId + "'", null, null, null, null);
     }
