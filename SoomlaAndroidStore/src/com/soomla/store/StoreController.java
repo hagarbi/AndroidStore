@@ -137,7 +137,7 @@ public class StoreController {
      * The store's ui is ready to receive calls.
      */
     public void uiReady(){
-        Log.d(TAG, "pageInitialized");
+        Log.d(TAG, "uiReady");
         mActivity.storeJSInitialized();
         mActivity.sendToJS("initialize", StoreInfo.getInstance().getJsonString());
 
@@ -148,6 +148,7 @@ public class StoreController {
      * The store is initialized.
      */
     public void storeInitialized(){
+        Log.d(TAG, "storeInitialized");
         mActivity.loadWebView();
     }
 
