@@ -158,7 +158,7 @@ public class StoreController {
         int currencyBalance = StorageManager.getInstance().getVirtualCurrencyStorage().getBalance();
         mActivity.sendToJS("currencyBalanceChanged", "'" + StoreConfig.CURRENCY_ITEM_ID + "'," + currencyBalance);
 
-        for (VirtualGood good : StoreInfo.getInstance().getVirtualGoodsList()){
+        for (VirtualGood good : StoreInfo.getInstance().getVirtualGoods()){
             int goodBalance = StorageManager.getInstance().getVirtualGoodsStorage().getBalance(good);
 
             mActivity.sendToJS("goodsBalanceChanged", "'" + good.getItemId() + "'," + goodBalance);

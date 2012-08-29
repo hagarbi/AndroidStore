@@ -15,6 +15,11 @@
  */
 package com.soomla.store.domain.data;
 
+import android.util.Log;
+import com.soomla.store.StoreConfig;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * This class is the parent of all virtual items in the application.
  */
@@ -33,6 +38,22 @@ public abstract class VirtualItem {
         this.mDescription = mDescription;
         this.mImgFilePath = mImgFilePath;
         this.mItemId = mItemId;
+    }
+
+    public JSONObject toJSONObject(){
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("name", mName);
+            jsonObject.put("description", mDescription);
+            jsonObject.put("imgFilePath", mImgFilePath);
+            jsonObject.put("itemId", mItemId);
+        } catch (JSONException e) {
+            if (StoreConfig.debug){
+                Log.d(TAG, "An error occured while generating JSON object.");
+            }
+        }
+
+        return jsonObject;
     }
 
     /** Getters **/
@@ -72,6 +93,8 @@ public abstract class VirtualItem {
     }
 
     /** Private members **/
+
+    private static final String TAG = "SOOMLA VirtualItem";
 
     private String mName;
     private String mDescription;

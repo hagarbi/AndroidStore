@@ -20,8 +20,6 @@ import com.soomla.store.domain.data.VirtualCurrencyPack;
 import com.soomla.store.domain.data.VirtualGood;
 import com.soomla.store.domain.ui.StoreTemplate;
 
-import java.util.List;
-
 /**
  * This interface represents a single game's metadata.
  * Use this interface to create your assets class that will be transferred to StoreInfo
@@ -47,14 +45,16 @@ public interface IStoreAssets {
     VirtualCurrency getVirtualCurrency();
 
     /**
-     * A list of all virtual goods served by your store.
-     * @return a list of all virtual goods served by your store.
+     * An array of all virtual goods served by your store.
+     * NOTE: The order of the items in the array will be their order when shown to the user.
+     * @return an array of all virtual goods served by your store.
      */
-    List<VirtualGood> getVirtualGoods();
+    VirtualGood[] getVirtualGoods();
 
     /**
-     * A list of all virtual currency packs served by your store.
-     * @return a list of all virtual currency packs served by your store.
+     * An array of all virtual currency packs served by your store.
+     * NOTE: The order of the items in the array will be their order when shown to the user.
+     * @return an array of all virtual currency packs served by your store.
      */
-    List<VirtualCurrencyPack> getVirtualCurrencyPacks();
+    VirtualCurrencyPack[] getVirtualCurrencyPacks();
 }

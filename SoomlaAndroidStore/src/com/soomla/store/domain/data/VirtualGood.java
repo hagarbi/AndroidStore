@@ -15,7 +15,12 @@
  */
 package com.soomla.store.domain.data;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import android.util.Log;
+import com.soomla.store.StoreConfig;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Iterator;
 
 /**
  * This is a representation of the application's virtual good.
@@ -37,14 +42,36 @@ public class VirtualGood extends VirtualItem {
         this.mCurrencyValue = mCurrencyValue;
     }
 
+    public JSONObject toJSONObject(){
+        JSONObject parentJsonObject = super.toJSONObject();
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("price", new Integer(mCurrencyValue));
+
+            Iterator<?> keys = parentJsonObject.keys();
+            while(keys.hasNext())
+            {
+                String key = (String)keys.next();
+                jsonObject.put(key, parentJsonObject.get(key));
+            }
+        } catch (JSONException e) {
+            if (StoreConfig.debug){
+                Log.d(TAG, "An error occured while generating JSON object.");
+            }
+        }
+
+        return jsonObject;
+    }
+
     /** Getters **/
 
-    @JsonProperty("price")
     public int getmCurrencyValue(){
         return mCurrencyValue;
     }
 
     /** Private members **/
+
+    private static final String TAG = "SOOMLA VirtualGood";
 
     private int mCurrencyValue;
 }

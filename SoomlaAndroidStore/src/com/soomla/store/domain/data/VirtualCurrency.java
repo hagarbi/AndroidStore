@@ -15,6 +15,8 @@
  */
 package com.soomla.store.domain.data;
 
+import org.json.JSONObject;
+
 /**
  * This is a representation of the game's virtual currency.
  * Each game usually has one instance of this class globally
@@ -31,5 +33,9 @@ public class VirtualCurrency extends VirtualItem {
      */
     public VirtualCurrency(String mName, String mDescription, String mImgFilePath, String itemId) {
         super(mName, mDescription, mImgFilePath, itemId);
+    }
+
+    public JSONObject toJSONObject(){
+        return super.toJSONObject();
     }
 }

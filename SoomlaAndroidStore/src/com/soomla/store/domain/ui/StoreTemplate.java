@@ -1,5 +1,10 @@
 package com.soomla.store.domain.ui;
 
+import android.util.Log;
+import com.soomla.store.StoreConfig;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class StoreTemplate {
 
     public StoreTemplate(String mName,
@@ -10,6 +15,22 @@ public class StoreTemplate {
         this.mElements = mElements;
         this.mProperties = mProperties;
         this.mOrientationLandscape = orientationLandscape;
+    }
+
+    public JSONObject toJSONObject(){
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("name", mName);
+            jsonObject.put("elements", mElements.toJSONObject());
+            jsonObject.put("properties", mProperties.toJSONObject());
+            jsonObject.put("orientationLandscape", mOrientationLandscape);
+        } catch (JSONException e) {
+            if (StoreConfig.debug){
+                Log.d(TAG, "An error occured while generating JSON object.");
+            }
+        }
+
+        return jsonObject;
     }
 
     public String getName() {
@@ -27,6 +48,9 @@ public class StoreTemplate {
     public boolean isOrientationLandscape() {
         return mOrientationLandscape;
     }
+
+
+    private static final String TAG = "SOOMLA StoreTemplate";
 
     private String                  mName;
     private StoreTemplateElements   mElements;

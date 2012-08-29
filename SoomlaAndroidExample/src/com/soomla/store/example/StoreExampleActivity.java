@@ -53,8 +53,10 @@ public class StoreExampleActivity extends Activity {
                 ViewGroup left = (ViewGroup)findViewById(R.id.topleft);
                 ViewGroup right = (ViewGroup)findViewById(R.id.topright);
 
-                right.removeView(mRobotView);
-                left.addView(mRobotView);
+                if (mRobotView.getParent() != left){
+                    right.removeView(mRobotView);
+                    left.addView(mRobotView);
+                }
             }
         });
     }

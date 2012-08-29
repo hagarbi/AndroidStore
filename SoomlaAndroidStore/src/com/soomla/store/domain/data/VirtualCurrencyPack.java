@@ -15,8 +15,12 @@
  */
 package com.soomla.store.domain.data;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import android.util.Log;
+import com.soomla.store.StoreConfig;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Iterator;
 
 /**
  * This class represents a pack of the game's virtual currency.
@@ -47,9 +51,32 @@ public class VirtualCurrencyPack extends VirtualItem {
         this.mConsumable = consumable;
     }
 
+    public JSONObject toJSONObject(){
+        JSONObject parentJsonObject = super.toJSONObject();
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("price", new Double(mCost));
+            jsonObject.put("productId", mGoogleItem.getMarketId());
+            jsonObject.put("amount", new Integer(mCurrencyAmount));
+            jsonObject.put("consumable", mConsumable);
+
+            Iterator<?> keys = parentJsonObject.keys();
+            while(keys.hasNext())
+            {
+                String key = (String)keys.next();
+                jsonObject.put(key, parentJsonObject.get(key));
+            }
+        } catch (JSONException e) {
+            if (StoreConfig.debug){
+                Log.d(TAG, "An error occured while generating JSON object.");
+            }
+        }
+
+        return jsonObject;
+    }
+
     /** Getters **/
 
-    @JsonIgnore
     public GoogleMarketItem getmGoogleItem() {
         return mGoogleItem;
     }
@@ -58,12 +85,10 @@ public class VirtualCurrencyPack extends VirtualItem {
         return mGoogleItem.getMarketId();
     }
 
-    @JsonProperty("price")
     public double getCost() {
         return mCost;
     }
 
-    @JsonProperty("amount")
     public int getCurrencyAmount() {
         return mCurrencyAmount;
     }
@@ -73,6 +98,8 @@ public class VirtualCurrencyPack extends VirtualItem {
     }
 
     /** Private members **/
+
+    private static final String TAG = "SOOMLA VirtualCurrencyPack";
 
     private GoogleMarketItem mGoogleItem;
     private double           mCost;

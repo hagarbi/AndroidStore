@@ -7,9 +7,6 @@ import com.soomla.store.domain.data.VirtualCurrencyPack;
 import com.soomla.store.domain.data.VirtualGood;
 import com.soomla.store.domain.ui.*;
 
-import java.util.Arrays;
-import java.util.List;
-
 public class ExampleSurfStoreAssets implements IStoreAssets {
 
     @Override
@@ -41,19 +38,19 @@ public class ExampleSurfStoreAssets implements IStoreAssets {
     }
 
     @Override
-    public List<VirtualGood> getVirtualGoods(){
-        return Arrays.asList(
+    public VirtualGood[] getVirtualGoods(){
+        return new VirtualGood[] {
                     RipCurlShortBoard, BillanbogVintageLongboard,
                     KeelFish, PicassoPeeler, ReefShredder,
                     SixtiesGun, TraditionalFish
-                );
+        };
     }
 
     @Override
-    public List<VirtualCurrencyPack> getVirtualCurrencyPacks(){
-        return Arrays.asList(
+    public VirtualCurrencyPack[] getVirtualCurrencyPacks(){
+        return new VirtualCurrencyPack[] {
                     SuperSaverPack, MalibuMediumPack, PipelinePumpinPack, SilverPack
-               );
+        };
     }
 
 

@@ -16,20 +16,18 @@
 package com.soomla.store.data;
 
 import android.util.Log;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.soomla.store.IStoreAssets;
+import com.soomla.store.StoreConfig;
 import com.soomla.store.domain.data.VirtualCurrency;
 import com.soomla.store.domain.data.VirtualCurrencyPack;
 import com.soomla.store.domain.data.VirtualGood;
 import com.soomla.store.domain.ui.StoreTemplate;
 import com.soomla.store.exceptions.VirtualItemNotFoundException;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * This class holds the store's meta data including:
@@ -57,19 +55,11 @@ public class StoreInfo {
             return;
         }
 
-        mVirtualCurrency = storeAssets.getVirtualCurrency();
-        mPacksOptions = new HashMap<String, VirtualCurrencyPack>();
-        for(VirtualCurrencyPack pack : storeAssets.getVirtualCurrencyPacks()){
-            mPacksOptions.put(pack.getmGoogleItem().getMarketId(), pack);
-        }
-
-        mVirtualGoodOptions = new HashMap<String, VirtualGood>();
-        for(VirtualGood good : storeAssets.getVirtualGoods()){
-            mVirtualGoodOptions.put(good.getItemId(), good);
-        }
-
-        mStoreBackground = storeAssets.getStoreBackground();
-        mTemplate = storeAssets.getStoreTemplate();
+        mVirtualCurrency      = storeAssets.getVirtualCurrency();
+        mVirtualCurrencyPacks = Arrays.asList(storeAssets.getVirtualCurrencyPacks());
+        mVirtualGoods         = Arrays.asList(storeAssets.getVirtualGoods());
+        mStoreBackground      = storeAssets.getStoreBackground();
+        mTemplate             = storeAssets.getStoreTemplate();
     }
 
     /**
@@ -78,12 +68,20 @@ public class StoreInfo {
      * @return the definition of the virtual pack requested.
      * @throws VirtualItemNotFoundException
      */
-    public VirtualCurrencyPack getPackByGoogleProductId(String productId) throws VirtualItemNotFoundException {{
-        if (!mPacksOptions.containsKey(productId)){
+    public VirtualCurrencyPack getPackByGoogleProductId(String productId) throws VirtualItemNotFoundException {
+        VirtualCurrencyPack pack = null;
+        for(VirtualCurrencyPack p : mVirtualCurrencyPacks){
+            if (p.getmGoogleItem().getMarketId().equals(productId)){
+                pack = p;
+                break;
+            }
+        }
+
+        if (pack == null){
             throw new VirtualItemNotFoundException("productId", productId);
         }
-    }
-        return mPacksOptions.get(productId);
+
+        return pack;
     }
 
     /**
@@ -93,41 +91,43 @@ public class StoreInfo {
      * @throws VirtualItemNotFoundException
      */
     public VirtualGood getVirtualGoodByItemId(String itemId) throws VirtualItemNotFoundException {
-        if (!mVirtualGoodOptions.containsKey(itemId)){
+        VirtualGood good = null;
+        for(VirtualGood g : mVirtualGoods){
+            if (g.getItemId().equals(itemId)){
+                good = g;
+                break;
+            }
+        }
+
+        if (good == null){
             throw new VirtualItemNotFoundException("itemId", itemId);
         }
 
-        return mVirtualGoodOptions.get(itemId);
+        return good;
     }
-
 
     /** Getters **/
 
-    @JsonProperty("currency")
     public VirtualCurrency getVirtualCurrency(){
         return mVirtualCurrency;
     }
 
-    @JsonProperty("currencyPacks")
-    public List<VirtualCurrencyPack> getCurrencyPacksList() {
-        return new LinkedList<VirtualCurrencyPack>(mPacksOptions.values());
+    public List<VirtualCurrencyPack> getCurrencyPacks() {
+        return mVirtualCurrencyPacks;
     }
 
-    @JsonProperty("virtualGoods")
-    public List<VirtualGood> getVirtualGoodsList() {
-        return new LinkedList<VirtualGood>(mVirtualGoodOptions.values());
+    public List<VirtualGood> getVirtualGoods() {
+        return mVirtualGoods;
     }
 
     public StoreTemplate getTemplate() {
         return mTemplate;
     }
 
-    @JsonProperty("background")
     public String getStoreBackground() {
         return mStoreBackground;
     }
 
-    @JsonProperty("isCurrencyStoreDisabled")
     public boolean isIsCurrencyStoreDisabled() {
         return mIsCurrencyStoreDisabled;
     }
@@ -136,16 +136,8 @@ public class StoreInfo {
      * Use this function to get a json representation of StoreInfo.
      * @return a json representation of StoreInfo.
      */
-    @JsonIgnore
     public String getJsonString(){
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            return mapper.writeValueAsString(this);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return null;
+        return toJSONObject().toString();
     }
 
 
@@ -153,6 +145,38 @@ public class StoreInfo {
 
     private StoreInfo() { }
 
+    private JSONObject toJSONObject(){
+        JSONObject currency = mVirtualCurrency.toJSONObject();
+
+        JSONArray currencyPacks = new JSONArray();
+        for(VirtualCurrencyPack pack : mVirtualCurrencyPacks){
+            currencyPacks.put(pack.toJSONObject());
+        }
+
+        JSONArray virtualGoods = new JSONArray();
+        for(VirtualGood good : mVirtualGoods){
+            virtualGoods.put(good.toJSONObject());
+        }
+
+        JSONObject template = mTemplate.toJSONObject();
+
+
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("currency", currency);
+            jsonObject.put("currencyPacks", currencyPacks);
+            jsonObject.put("virtualGoods", virtualGoods);
+            jsonObject.put("template", template);
+            jsonObject.put("background", mStoreBackground);
+            jsonObject.put("isCurrencyStoreDisabled", mIsCurrencyStoreDisabled);
+        } catch (JSONException e) {
+            if (StoreConfig.debug){
+                Log.d(TAG, "An error occured while generating JSON object.");
+            }
+        }
+
+        return jsonObject;
+    }
 
     /** Private members **/
 
@@ -160,8 +184,8 @@ public class StoreInfo {
     private static StoreInfo                        sInstance = null;
 
     private VirtualCurrency                         mVirtualCurrency;
-    private HashMap<String, VirtualCurrencyPack>    mPacksOptions;
-    private HashMap<String, VirtualGood>            mVirtualGoodOptions;
+    private List<VirtualCurrencyPack>               mVirtualCurrencyPacks;
+    private List<VirtualGood>                       mVirtualGoods;
     private StoreTemplate                           mTemplate;
     private String                                  mStoreBackground;
     private boolean                                 mIsCurrencyStoreDisabled;
