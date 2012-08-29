@@ -1,3 +1,17 @@
 gen/*
 bin/*
 .idea/*
+
+SoomlaAndroidExample/.idea/
+SoomlaAndroidExample/out/
+SoomlaAndroidExample/gen/
+
+SoomlaAndroidStore/.idea/
+SoomlaAndroidStore/out/
+SoomlaAndroidStore/gen/
+
+SoomlaAndroidStoreTest/.idea/
+SoomlaAndroidStoreTest/out/
+SoomlaAndroidStoreTest/gen/
+
+
