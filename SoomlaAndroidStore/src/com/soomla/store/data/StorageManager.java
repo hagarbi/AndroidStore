@@ -16,11 +16,11 @@
 package com.soomla.store.data;
 
 import android.content.Context;
+import android.provider.Settings;
 import android.util.Log;
 import com.soomla.billing.util.AESObfuscator;
+import com.soomla.store.IStoreAssets;
 import com.soomla.store.StoreConfig;
-
-import java.util.HashMap;
 
 /**
  * This is the place where all the relevant storage classes are created.
@@ -38,7 +38,8 @@ public class StorageManager {
         return sInstance;
     }
 
-    public void initialize(Context context, HashMap<String, String> secureData){
+    public void initialize(Context context,
+                           IStoreAssets storeAssets){
         if (StoreConfig.debug){
             Log.d(TAG, "initializing StorageManager");
         }
@@ -46,13 +47,15 @@ public class StorageManager {
         mDatabase = new StoreDatabase(context);
 
         if(StoreConfig.DB_SECURE){
-            mObfuscator = new AESObfuscator(StoreConfig.obfuscationSalt,
-                    secureData.get("applicationId"), secureData.get("deviceId"));
+            String deviceId = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
+            mObfuscator = new AESObfuscator(StoreConfig.obfuscationSalt, context.getPackageName(), deviceId);
         }
 
         mVirtualCurrencyStorage =   new VirtualCurrencyStorage();
         mVirtualGoodsStorage =      new VirtualGoodsStorage();
         mMarketPurchaseStorage =    new MarketPurchaseStorage();
+
+        StoreInfo.getInstance().initialize(storeAssets);
     }
 
     public VirtualCurrencyStorage getVirtualCurrencyStorage(){

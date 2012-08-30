@@ -15,7 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.soomla.store.StoreActivity;
 import com.soomla.store.StoreEventHandlers;
-import com.soomla.store.data.StoreInfo;
+import com.soomla.store.data.StorageManager;
 
 public class StoreExampleActivity extends Activity {
     /**
@@ -35,10 +35,12 @@ public class StoreExampleActivity extends Activity {
         ((TextView) findViewById(R.id.main_text)).setTypeface(font);
 
         /**
-         * We initialize StoreInfo and add event handler to StoreEventHandlers before
+         * We initialize StorageManager and add event handler to StoreEventHandlers before
          * we open the store.
          */
-        StoreInfo.getInstance().initialize(new ExampleSurfStoreAssets());
+
+        StorageManager.getInstance().initialize(getApplicationContext(),
+                new ExampleSurfStoreAssets());
         StoreEventHandlers.getInstance().addEventHandler(
                 new ExampleEventHandler(getApplicationContext(), this));
 
