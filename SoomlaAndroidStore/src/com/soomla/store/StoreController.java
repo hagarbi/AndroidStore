@@ -16,7 +16,6 @@
 package com.soomla.store;
 
 import android.os.Handler;
-import android.provider.Settings;
 import android.util.Log;
 import com.soomla.billing.BillingService;
 import com.soomla.billing.Consts;
@@ -24,8 +23,6 @@ import com.soomla.store.data.StorageManager;
 import com.soomla.store.data.StoreInfo;
 import com.soomla.store.domain.data.VirtualGood;
 import com.soomla.store.exceptions.VirtualItemNotFoundException;
-
-import java.util.HashMap;
 
 /**
  * This class is the main place to invoke store actions.
@@ -55,24 +52,6 @@ public class StoreController {
                 Log.d(TAG, "There's no connectivity with the billing service.");
             }
         }
-
-
-        /* Storage */
-
-        HashMap<String, String> secureData;
-        if (StoreConfig.DB_SECURE){
-            secureData = new HashMap<String, String>();
-            String deviceId = Settings.Secure.getString(mActivity.getContentResolver(), Settings.Secure.ANDROID_ID);
-            secureData.put("applicationId", mActivity.getPackageName());
-            secureData.put("deviceId", deviceId);
-        }
-        else {
-            Log.w(TAG,
-                    "Your database data will not be encrypted. " +
-                            "Don't ever release your application this way! " +
-                            "Change StoreConfig.DB_SECURE to true.");
-        }
-        StorageManager.getInstance().initialize(mActivity.getApplicationContext(), secureData);
     }
 
     /**
