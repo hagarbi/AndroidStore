@@ -118,12 +118,16 @@ public class Security {
         if (signedData == null) {
             Log.e(TAG, "data is null");
             return null;
+        } else if (StoreConfig.debug) {
+            Log.d(TAG, "signedData: " + signedData);
         }
-        if (StoreConfig.debug) {
-            Log.i(TAG, "signedData: " + signedData);
-        }
+
         boolean verified = false;
-        if (!TextUtils.isEmpty(signature)) {
+        if (!StoreConfig.debug) {
+            if (TextUtils.isEmpty(signature)) {
+                Log.w(TAG, "Empty signature. Stopping verification.");
+                return null;
+            }
             PublicKey key = Security.generatePublicKey(StoreConfig.publicKey);
             verified = Security.verify(key, signedData, signature);
             if (!verified) {

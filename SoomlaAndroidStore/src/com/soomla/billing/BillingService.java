@@ -542,6 +542,7 @@ public class BillingService extends Service implements ServiceConnection {
         ArrayList<Security.VerifiedPurchase> purchases;
         purchases = Security.verifyPurchase(signedData, signature);
         if (purchases == null) {
+            // TODO: consider posting an error to ResponseHandler from here ...
             return;
         }
 
