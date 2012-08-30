@@ -51,6 +51,20 @@ public class VirtualCurrencyPack extends VirtualItem {
         this.mConsumable = consumable;
     }
 
+    public VirtualCurrencyPack(JSONObject jsonObject) {
+        super(jsonObject);
+        try {
+            this.mGoogleItem = new GoogleMarketItem(jsonObject.getString("productId"), GoogleMarketItem.Managed.UNMANAGED);
+            this.mCost = jsonObject.getDouble("price");
+            this.mCurrencyAmount = jsonObject.getInt("amount");
+            this.mConsumable = jsonObject.getBoolean("consumable");
+        } catch (JSONException e) {
+            if (StoreConfig.debug){
+                Log.d(TAG, "An error occured while parsing JSON object.");
+            }
+        }
+    }
+
     public JSONObject toJSONObject(){
         JSONObject parentJsonObject = super.toJSONObject();
         JSONObject jsonObject = new JSONObject();

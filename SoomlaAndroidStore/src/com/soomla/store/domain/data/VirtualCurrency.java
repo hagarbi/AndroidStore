@@ -35,6 +35,10 @@ public class VirtualCurrency extends VirtualItem {
         super(mName, mDescription, mImgFilePath, itemId);
     }
 
+    public VirtualCurrency(JSONObject jsonObject){
+        super(jsonObject);
+    }
+
     public JSONObject toJSONObject(){
         return super.toJSONObject();
     }

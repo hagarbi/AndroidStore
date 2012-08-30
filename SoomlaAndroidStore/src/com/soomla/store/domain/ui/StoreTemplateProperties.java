@@ -11,6 +11,10 @@ public class StoreTemplateProperties {
         this.mColumns = mColumns;
     }
 
+    public StoreTemplateProperties(JSONObject jsonObject) throws JSONException {
+        this.mColumns = jsonObject.getInt("columns");
+    }
+
     public JSONObject toJSONObject(){
         JSONObject jsonObject = new JSONObject();
         try {

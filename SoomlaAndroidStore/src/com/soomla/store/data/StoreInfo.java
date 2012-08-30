@@ -15,7 +15,10 @@
  */
 package com.soomla.store.data;
 
+import android.database.Cursor;
+import android.text.TextUtils;
 import android.util.Log;
+import com.soomla.billing.util.AESObfuscator;
 import com.soomla.store.IStoreAssets;
 import com.soomla.store.StoreConfig;
 import com.soomla.store.domain.data.VirtualCurrency;
@@ -55,11 +58,55 @@ public class StoreInfo {
             return;
         }
 
+        // first, trying to load StoreInfo from the local DB.
+        Cursor cursor = StorageManager.getDatabase().getMetaData();
+        if (cursor != null) {
+            String metadata_json = "";
+            try {
+                int metadateVal = cursor.getColumnIndexOrThrow(
+                        StoreDatabase.METADATA_COLUMN_VALUE);
+                if (cursor.moveToNext()) {
+                    metadata_json = cursor.getString(metadateVal);
+                    if (StorageManager.getObfuscator() != null){
+                        metadata_json = StorageManager.getObfuscator().unobfuscateToString(metadata_json);
+                    }
+
+                    if (StoreConfig.debug){
+                        Log.d(TAG, "the metadata json (from DB) is " + metadata_json);
+                    }
+                }
+            } catch (AESObfuscator.ValidationException e) {
+                e.printStackTrace();
+            } finally {
+                cursor.close();
+            }
+
+            if (!TextUtils.isEmpty(metadata_json)){
+                try {
+                    fromJSONObject(new JSONObject(metadata_json));
+
+                    // everything went well... StoreInfo is initialized from the local DB.
+                    // it's ok to return now.
+                    return;
+                } catch (JSONException e) {
+                    if (StoreConfig.debug){
+                        Log.d(TAG, "Can't parse metadata json: " + metadata_json);
+                    }
+                }
+            }
+        }
+
+
+        // fall-back here if the json parsing fails or doesn't exist
         mVirtualCurrency      = storeAssets.getVirtualCurrency();
         mVirtualCurrencyPacks = Arrays.asList(storeAssets.getVirtualCurrencyPacks());
         mVirtualGoods         = Arrays.asList(storeAssets.getVirtualGoods());
         mStoreBackground      = storeAssets.getStoreBackground();
         mTemplate             = storeAssets.getStoreTemplate();
+
+        // put StoreInfo in the database as JSON
+        String obf_json = StorageManager.getObfuscator().obfuscateString(getJsonString());
+        StorageManager.getDatabase().setMetaData(obf_json);
     }
 
     /**
@@ -137,13 +184,44 @@ public class StoreInfo {
      * @return a json representation of StoreInfo.
      */
     public String getJsonString(){
-        return toJSONObject().toString();
+        String json = toJSONObject().toString();
+        if (StoreConfig.debug){
+            Log.d(TAG, "generated json: " + json);
+        }
+        return json;
     }
 
 
     /** Private functions **/
 
     private StoreInfo() { }
+
+    private void fromJSONObject(JSONObject jsonObject){
+        try {
+            mVirtualCurrency = new VirtualCurrency(jsonObject.getJSONObject("currency"));
+            mTemplate = new StoreTemplate(jsonObject.getJSONObject("template"));
+            mStoreBackground = jsonObject.getString("background");
+            mIsCurrencyStoreDisabled = jsonObject.getBoolean("isCurrencyStoreDisabled");
+
+            JSONArray currencyPacks = jsonObject.getJSONArray("currencyPacks");
+            mVirtualCurrencyPacks = new LinkedList<VirtualCurrencyPack>();
+            for (int i=0; i<currencyPacks.length(); i++){
+                JSONObject o = currencyPacks.getJSONObject(i);
+                mVirtualCurrencyPacks.add(new VirtualCurrencyPack(o));
+            }
+
+            JSONArray virtualGoods = jsonObject.getJSONArray("virtualGoods");
+            mVirtualGoods = new LinkedList<VirtualGood>();
+            for (int i=0; i<virtualGoods.length(); i++){
+                JSONObject o = virtualGoods.getJSONObject(i);
+                mVirtualGoods.add(new VirtualGood(o));
+            }
+        } catch (JSONException e) {
+            if (StoreConfig.debug){
+                Log.d(TAG, "An error occurred while parsing JSON object.");
+            }
+        }
+    }
 
     private JSONObject toJSONObject(){
         JSONObject currency = mVirtualCurrency.toJSONObject();
@@ -160,7 +238,6 @@ public class StoreInfo {
 
         JSONObject template = mTemplate.toJSONObject();
 
-
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("currency", currency);
@@ -171,7 +248,7 @@ public class StoreInfo {
             jsonObject.put("isCurrencyStoreDisabled", mIsCurrencyStoreDisabled);
         } catch (JSONException e) {
             if (StoreConfig.debug){
-                Log.d(TAG, "An error occured while generating JSON object.");
+                Log.d(TAG, "An error occurred while generating JSON object.");
             }
         }
 

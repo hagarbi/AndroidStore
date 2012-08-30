@@ -12,6 +12,11 @@ public class StoreBuyMoreElement{
         this.mImgFilePath = imagePath;
     }
 
+    public StoreBuyMoreElement(JSONObject jsonObject) throws JSONException {
+        this.mText = jsonObject.getString("text");
+        this.mImgFilePath = jsonObject.getString("imgFilePath");
+    }
+
     public JSONObject toJSONObject(){
         JSONObject jsonObject = new JSONObject();
         try {

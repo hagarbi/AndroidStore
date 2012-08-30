@@ -17,6 +17,19 @@ public class StoreTemplate {
         this.mOrientationLandscape = orientationLandscape;
     }
 
+    public StoreTemplate(JSONObject jsonObject){
+        try {
+            mName = jsonObject.getString("name");
+            mElements = new StoreTemplateElements(jsonObject.getJSONObject("elements"));
+            mProperties = new StoreTemplateProperties(jsonObject.getJSONObject("properties"));
+            mOrientationLandscape = jsonObject.getBoolean("orientationLandscape");
+        } catch (JSONException e) {
+            if (StoreConfig.debug){
+                Log.d(TAG, "An error occured while parsing JSON object.");
+            }
+        }
+    }
+
     public JSONObject toJSONObject(){
         JSONObject jsonObject = new JSONObject();
         try {

@@ -11,6 +11,10 @@ public class StoreTitleElement{
         this.mName = mName;
     }
 
+    public StoreTitleElement(JSONObject jsonObject) throws JSONException {
+        this.mName = jsonObject.getString("name");
+    }
+
     public JSONObject toJSONObject(){
         JSONObject jsonObject = new JSONObject();
         try {

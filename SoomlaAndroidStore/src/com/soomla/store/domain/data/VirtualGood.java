@@ -42,6 +42,17 @@ public class VirtualGood extends VirtualItem {
         this.mCurrencyValue = mCurrencyValue;
     }
 
+    public VirtualGood(JSONObject jsonObject) {
+        super(jsonObject);
+        try {
+            this.mCurrencyValue = jsonObject.getInt("price");
+        } catch (JSONException e) {
+            if (StoreConfig.debug){
+                Log.d(TAG, "An error occured while parsing JSON object.");
+            }
+        }
+    }
+
     public JSONObject toJSONObject(){
         JSONObject parentJsonObject = super.toJSONObject();
         JSONObject jsonObject = new JSONObject();

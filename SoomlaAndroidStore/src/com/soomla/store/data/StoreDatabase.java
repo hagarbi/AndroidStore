@@ -70,6 +70,17 @@ public class StoreDatabase {
                 VIRTUAL_GOODS_COLUMN_ITEM_ID + "='" + itemId + "'", null, null, null, null);
     }
 
+    public synchronized void setMetaData(String metadata){
+        ContentValues values = new ContentValues();
+        values.put(METADATA_COLUMN_VALUE, metadata);
+        mStoreDB.replace(METADATA_TABLE_NAME, null, values);
+    }
+
+    public synchronized Cursor getMetaData(){
+        return mStoreDB.query(METADATA_TABLE_NAME, METADATA_COLUMNS,
+                null, null, null, null, null);
+    }
+
     private class DatabaseHelper extends SQLiteOpenHelper{
 
         public DatabaseHelper(Context context) {
@@ -92,19 +103,24 @@ public class StoreDatabase {
 
         private void createPurchaseTable(SQLiteDatabase sqLiteDatabase) {
             sqLiteDatabase.execSQL("CREATE TABLE " + PURCHASE_HISTORY_TABLE_NAME + "(" +
-                        PURCHASE_HISTORY_COLUMN_ORDER_ID + " TEXT PRIMARY KEY, " +
-                        PURCHASE_HISTORY_COLUMN_PRODUCT_ID + " TEXT, " +
-                        PURCHASE_HISTORY_COLUMN_ITEM_ID + " TEXT, " +
-                        PURCHASE_HISTORY_COLUMN_STATE + " TEXT, " +
-                        PURCHASE_HISTORY_COLUMN_TIME + " TEXT, " +
-                        PURCHASE_HISTORY_COLUMN_DEVPAYLOAD + " TEXT, " +
-                        PURCHASE_HISTORY_COLUMN_BALANCE + " TEXT)");
+                    PURCHASE_HISTORY_COLUMN_ORDER_ID + " TEXT PRIMARY KEY, " +
+                    PURCHASE_HISTORY_COLUMN_PRODUCT_ID + " TEXT, " +
+                    PURCHASE_HISTORY_COLUMN_ITEM_ID + " TEXT, " +
+                    PURCHASE_HISTORY_COLUMN_STATE + " TEXT, " +
+                    PURCHASE_HISTORY_COLUMN_TIME + " TEXT, " +
+                    PURCHASE_HISTORY_COLUMN_DEVPAYLOAD + " TEXT, " +
+                    PURCHASE_HISTORY_COLUMN_BALANCE + " TEXT)");
+
             sqLiteDatabase.execSQL("CREATE TABLE " + VIRTUAL_CURRENCY_TABLE_NAME + "(" +
-                        VIRTUAL_CURRENCY_COLUMN_ITEM_ID + " TEXT PRIMARY KEY, " +
-                        VIRTUAL_CURRENCY_COLUMN_BALANCE + " TEXT)");
+                    VIRTUAL_CURRENCY_COLUMN_ITEM_ID + " TEXT PRIMARY KEY, " +
+                    VIRTUAL_CURRENCY_COLUMN_BALANCE + " TEXT)");
+
             sqLiteDatabase.execSQL("CREATE TABLE " + VIRTUAL_GOODS_TABLE_NAME + "(" +
-                        VIRTUAL_GOODS_COLUMN_ITEM_ID + " TEXT PRIMARY KEY, " +
-                        VIRTUAL_GOODS_COLUMN_BALANCE + " TEXT)");
+                    VIRTUAL_GOODS_COLUMN_ITEM_ID + " TEXT PRIMARY KEY, " +
+                    VIRTUAL_GOODS_COLUMN_BALANCE + " TEXT)");
+
+            sqLiteDatabase.execSQL("CREATE TABLE " + METADATA_TABLE_NAME + "(" +
+                    METADATA_COLUMN_VALUE + " TEXT PRIMARY KEY)");
         }
     }
 
@@ -142,6 +158,13 @@ public class StoreDatabase {
             PURCHASE_HISTORY_COLUMN_ORDER_ID, PURCHASE_HISTORY_COLUMN_PRODUCT_ID, PURCHASE_HISTORY_COLUMN_ITEM_ID,
             PURCHASE_HISTORY_COLUMN_STATE, PURCHASE_HISTORY_COLUMN_TIME, PURCHASE_HISTORY_COLUMN_DEVPAYLOAD,
             PURCHASE_HISTORY_COLUMN_BALANCE
+    };
+
+    // Store Meta-Data Table
+    private static final String METADATA_TABLE_NAME       = "metadata";
+    public static final String METADATA_COLUMN_VALUE      = "value";
+    private static final String[] METADATA_COLUMNS = {
+            METADATA_COLUMN_VALUE
     };
 
     private SQLiteDatabase mStoreDB;

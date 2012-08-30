@@ -40,6 +40,19 @@ public abstract class VirtualItem {
         this.mItemId = mItemId;
     }
 
+    public VirtualItem(JSONObject jsonObject){
+        try {
+            mName = jsonObject.getString("name");
+            mDescription = jsonObject.getString("description");
+            mImgFilePath = jsonObject.getString("imgFilePath");
+            mItemId = jsonObject.getString("itemId");
+        } catch (JSONException e) {
+            if (StoreConfig.debug){
+                Log.d(TAG, "An error occured while parsing JSON object.");
+            }
+        }
+    }
+
     public JSONObject toJSONObject(){
         JSONObject jsonObject = new JSONObject();
         try {
@@ -72,24 +85,6 @@ public abstract class VirtualItem {
 
     public String getItemId(){
         return mItemId;
-    }
-
-    /** Setters **/
-
-    public void setmName(String mName) {
-        this.mName = mName;
-    }
-
-    public void setmDescription(String mDescription) {
-        this.mDescription = mDescription;
-    }
-
-    public void setmImgFilePath(String mImgFilePath) {
-        this.mImgFilePath = mImgFilePath;
-    }
-
-    public void setmItemId(String mItemId) {
-        this.mItemId = mItemId;
     }
 
     /** Private members **/

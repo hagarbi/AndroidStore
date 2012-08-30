@@ -12,6 +12,11 @@ public class StoreTemplateElements {
         this.mBuyMoreElement = mBuyMoreElement;
     }
 
+    public StoreTemplateElements(JSONObject jsonObject) throws JSONException {
+        this.mTitleElement = new StoreTitleElement(jsonObject.getJSONObject("title"));
+        this.mBuyMoreElement = new StoreBuyMoreElement(jsonObject.getJSONObject("buyMore"));
+    }
+
     public JSONObject toJSONObject(){
         JSONObject jsonObject = new JSONObject();
         try {

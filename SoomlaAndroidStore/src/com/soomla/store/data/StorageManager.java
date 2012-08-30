@@ -44,11 +44,11 @@ public class StorageManager {
             Log.d(TAG, "initializing StorageManager");
         }
 
-        mDatabase = new StoreDatabase(context);
+        sDatabase = new StoreDatabase(context);
 
         if(StoreConfig.DB_SECURE){
             String deviceId = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
-            mObfuscator = new AESObfuscator(StoreConfig.obfuscationSalt, context.getPackageName(), deviceId);
+            sObfuscator = new AESObfuscator(StoreConfig.obfuscationSalt, context.getPackageName(), deviceId);
         }
 
         mVirtualCurrencyStorage =   new VirtualCurrencyStorage();
@@ -71,11 +71,11 @@ public class StorageManager {
     }
 
     public static AESObfuscator getObfuscator(){
-        return mObfuscator;
+        return sObfuscator;
     }
 
     public static StoreDatabase getDatabase(){
-        return mDatabase;
+        return sDatabase;
     }
 
     private StorageManager(){ }
@@ -88,6 +88,6 @@ public class StorageManager {
     private MarketPurchaseStorage   mMarketPurchaseStorage;
     private static StorageManager   sInstance;
 
-    private static AESObfuscator    mObfuscator;
-    private static StoreDatabase    mDatabase;
+    private static AESObfuscator    sObfuscator;
+    private static StoreDatabase    sDatabase;
 }

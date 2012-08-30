@@ -16,20 +16,16 @@
 
 package com.soomla.billing.util;
 
+import android.text.TextUtils;
 import com.soomla.store.StoreConfig;
 
-import java.io.UnsupportedEncodingException;
-import java.security.GeneralSecurityException;
-import java.security.spec.KeySpec;
-
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.SecretKey;
-import javax.crypto.SecretKeyFactory;
+import javax.crypto.*;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
+import java.io.UnsupportedEncodingException;
+import java.security.GeneralSecurityException;
+import java.security.spec.KeySpec;
 
 /**
  * An Obfuscator that uses AES to encrypt data.
@@ -91,7 +87,7 @@ public class AESObfuscator {
     }
 
     public String unobfuscateToString(String obfuscated) throws ValidationException {
-        if (obfuscated == null) {
+        if (TextUtils.isEmpty(obfuscated)) {
             return null;
         }
         try {
