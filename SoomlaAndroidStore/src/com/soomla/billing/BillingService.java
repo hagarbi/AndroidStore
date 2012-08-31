@@ -401,7 +401,9 @@ public class BillingService extends Service implements ServiceConnection {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        handleCommand(intent, startId);
+        if (intent != null) {
+            handleCommand(intent, startId);
+        }
 
         return START_STICKY;
     }
