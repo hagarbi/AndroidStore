@@ -136,7 +136,8 @@ public class ResponseHandler {
                     // note that a refunded purchase is treated as a purchase.
                     // a friendly refund policy is nice for the user.
                     if (purchaseState == PurchaseState.PURCHASED || purchaseState == PurchaseState.REFUNDED) {
-                        StorageManager.getInstance().getVirtualCurrencyStorage().add(pack.getCurrencyAmount());
+                        StorageManager.getInstance().getVirtualCurrencyStorage().add(
+                                pack.getmCurrency().getItemId(), pack.getCurrencyAmount());
                     }
 
                     // This needs to be synchronized because the UI thread can change the

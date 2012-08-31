@@ -34,12 +34,11 @@ public class VirtualCurrencyStorage {
 
     /** Getters **/
 
-    public int getBalance(){
+    public int getBalance(String itemId){
         if (StoreConfig.debug){
             Log.d(TAG, "trying to fetch balance for virtual currency");
         }
 
-        String itemId = StoreConfig.CURRENCY_ITEM_ID;
         if (StorageManager.getObfuscator() != null){
             itemId = StorageManager.getObfuscator().obfuscateString(itemId);
         }
@@ -83,13 +82,12 @@ public class VirtualCurrencyStorage {
      * @param amount is the amount of currency to add.
      * @return the new balance after adding amount.
      */
-    public int add(int amount){
+    public int add(String itemId, int amount){
         if (StoreConfig.debug){
             Log.d(TAG, "adding " + amount + " currencies.");
         }
 
-        String itemId = StoreConfig.CURRENCY_ITEM_ID;
-        int balance = getBalance();
+        int balance = getBalance(itemId);
         String quantityStr = "" + (balance + amount);
         if (StorageManager.getObfuscator() != null){
             quantityStr = StorageManager.getObfuscator().obfuscateString(quantityStr);
@@ -104,13 +102,12 @@ public class VirtualCurrencyStorage {
      * Removes the given amount of currency from the storage.
      * @param amount is the amount of currency to remove.
      */
-    public int remove(int amount){
+    public int remove(String itemId, int amount){
         if (StoreConfig.debug){
             Log.d(TAG, "removing " + amount + " currencies.");
         }
 
-        String itemId = StoreConfig.CURRENCY_ITEM_ID;
-        int quantity = getBalance() - amount;
+        int quantity = getBalance(itemId) - amount;
         quantity = quantity > 0 ? quantity : 0;
         String quantityStr = "" + quantity;
         if (StorageManager.getObfuscator() != null){

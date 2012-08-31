@@ -42,7 +42,7 @@ public interface IStoreAssets {
      * A representation of your game's virtual currency.
      * @return a representation of your game's virtual currency.
      */
-    VirtualCurrency getVirtualCurrency();
+    VirtualCurrency[] getVirtualCurrencies();
 
     /**
      * An array of all virtual goods served by your store.

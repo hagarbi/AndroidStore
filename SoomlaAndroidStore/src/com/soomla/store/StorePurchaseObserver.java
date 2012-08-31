@@ -24,6 +24,9 @@ import com.soomla.store.data.StorageManager;
 import com.soomla.store.data.StoreInfo;
 import com.soomla.store.domain.data.VirtualCurrencyPack;
 import com.soomla.store.exceptions.VirtualItemNotFoundException;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * A {@link StorePurchaseObserver} is used to get callbacks when Android Market sends
@@ -68,8 +71,6 @@ public class StorePurchaseObserver extends PurchaseObserver {
     public void onPurchaseStateChange(Consts.PurchaseState purchaseState, String productId,
                                       long purchaseTime, String developerPayload) {
 
-        int balance = StorageManager.getInstance().getVirtualCurrencyStorage().getBalance();
-
         try {
 
             if (purchaseState == Consts.PurchaseState.PURCHASED ||
@@ -77,9 +78,15 @@ public class StorePurchaseObserver extends PurchaseObserver {
 
                 // we're throwing this event when on PURCHASE or REFUND !
 
-                mActivity.sendToJS("currencyBalanceChanged", "'" + StoreConfig.CURRENCY_ITEM_ID + "'," + balance);
-
                 VirtualCurrencyPack pack = StoreInfo.getInstance().getPackByGoogleProductId(productId);
+                JSONArray jsonArray = new JSONArray();
+                JSONObject jsonObject = new JSONObject();
+                String currencyItemId = pack.getmCurrency().getItemId();
+                jsonObject.put(currencyItemId, StorageManager.getInstance()
+                        .getVirtualCurrencyStorage().getBalance(currencyItemId));
+                jsonArray.put(jsonObject);
+
+                mActivity.sendToJS("currencyBalanceChanged", "'" + jsonArray.toString() + "'");
 
                 StoreEventHandlers.getInstance().onVirtualCurrencyPackPurchased(pack);
             }
@@ -87,13 +94,14 @@ public class StorePurchaseObserver extends PurchaseObserver {
         } catch (VirtualItemNotFoundException e) {
             mActivity.sendToJS("unexpectedError", "");
             Log.e(TAG, "ERROR : Couldn't find VirtualCurrencyPack with productId: " + productId);
+        } catch (JSONException e) {
+            Log.e(TAG, "couldn't generate json to return balance.");
         }
     }
 
     @Override
     public void onRequestPurchaseResponse(BillingService.RequestPurchase request,
                                           Consts.ResponseCode responseCode) {
-        int balance = StorageManager.getInstance().getVirtualCurrencyStorage().getBalance();
 
         if (responseCode == Consts.ResponseCode.RESULT_OK) {
             // purchase was sent to server

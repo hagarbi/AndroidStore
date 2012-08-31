@@ -17,9 +17,11 @@ package com.soomla.store.domain.data;
 
 import android.util.Log;
 import com.soomla.store.StoreConfig;
+import com.soomla.store.data.JSONConsts;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
 import java.util.Iterator;
 
 /**
@@ -35,9 +37,11 @@ public class VirtualGood extends VirtualItem {
      *                       in the store in the description section.
      * @param mImgFilePath is the path to the image that corresponds to the virtual good.
      * @param mItemId is the id of the virtual good.
-     * @param mCurrencyValue is the number of currencies needed to buy the current virtual good.
+     * @param mCurrencyValue is a hash with the a currency's itemId and the amount needed from it to purchase this
+     *                       virtual good.
      */
-    public VirtualGood(String mName, String mDescription, String mImgFilePath, int mCurrencyValue, String mItemId) {
+    public VirtualGood(String mName, String mDescription, String mImgFilePath, HashMap<String, Integer> mCurrencyValue,
+            String mItemId) {
         super(mName, mDescription, mImgFilePath, mItemId);
         this.mCurrencyValue = mCurrencyValue;
     }
@@ -45,7 +49,14 @@ public class VirtualGood extends VirtualItem {
     public VirtualGood(JSONObject jsonObject) {
         super(jsonObject);
         try {
-            this.mCurrencyValue = jsonObject.getInt("price");
+            JSONObject currencyValues = jsonObject.getJSONObject(JSONConsts.GOOD_CURRENCY_VALUE);
+            Iterator<?> keys = currencyValues.keys();
+            this.mCurrencyValue = new HashMap<String, Integer>();
+            while(keys.hasNext())
+            {
+                String key = (String)keys.next();
+                this.mCurrencyValue.put(key, currencyValues.getInt(key));
+            }
         } catch (JSONException e) {
             if (StoreConfig.debug){
                 Log.d(TAG, "An error occured while parsing JSON object.");
@@ -57,7 +68,11 @@ public class VirtualGood extends VirtualItem {
         JSONObject parentJsonObject = super.toJSONObject();
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("price", new Integer(mCurrencyValue));
+            JSONObject currencyValues = new JSONObject();
+            for(String key : mCurrencyValue.keySet()){
+                currencyValues.put(key, mCurrencyValue.get(key));
+            }
+            jsonObject.put(JSONConsts.GOOD_CURRENCY_VALUE, currencyValues);
 
             Iterator<?> keys = parentJsonObject.keys();
             while(keys.hasNext())
@@ -76,7 +91,23 @@ public class VirtualGood extends VirtualItem {
 
     /** Getters **/
 
-    public int getmCurrencyValue(){
+    /**
+     * Get the amount of currency need to purchase this virtual good by the currency itemId.
+     * @param currencyItemId is the itemId of the currency in question.
+     * @return the amount of currency needed to purchase this virtual good.
+     */
+    public int getCurrencyValue(String currencyItemId){
+        if (!mCurrencyValue.containsKey(currencyItemId)){
+            return 0;
+        }
+        return mCurrencyValue.get(currencyItemId);
+    }
+
+    /**
+     * Get the entire hash that represents the price of this virtual good.
+     * @return the entire hash that represents the price of this virtual good.
+     */
+    public HashMap<String, Integer> getCurrencyValues(){
         return mCurrencyValue;
     }
 
@@ -84,5 +115,5 @@ public class VirtualGood extends VirtualItem {
 
     private static final String TAG = "SOOMLA VirtualGood";
 
-    private int mCurrencyValue;
+    private HashMap<String, Integer> mCurrencyValue;
 }

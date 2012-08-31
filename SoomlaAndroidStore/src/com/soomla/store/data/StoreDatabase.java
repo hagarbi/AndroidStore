@@ -19,7 +19,7 @@ public class StoreDatabase {
 
     public synchronized void addOrUpdatePurchaseHistory(String orderId, String productId, String itemId,
                                       String purchaseState, String purchaseTime,
-                                      String developerPayload, String currentBalance){
+                                      String developerPayload){
         ContentValues values = new ContentValues();
         values.put(PURCHASE_HISTORY_COLUMN_ORDER_ID, orderId);
         values.put(PURCHASE_HISTORY_COLUMN_PRODUCT_ID, productId);
@@ -27,7 +27,6 @@ public class StoreDatabase {
         values.put(PURCHASE_HISTORY_COLUMN_STATE, purchaseState);
         values.put(PURCHASE_HISTORY_COLUMN_TIME, purchaseTime);
         values.put(PURCHASE_HISTORY_COLUMN_DEVPAYLOAD, developerPayload);
-        values.put(PURCHASE_HISTORY_COLUMN_BALANCE, currentBalance);
         mStoreDB.replace(PURCHASE_HISTORY_TABLE_NAME, null /* nullColumnHack */, values);
     }
 
@@ -108,8 +107,7 @@ public class StoreDatabase {
                     PURCHASE_HISTORY_COLUMN_ITEM_ID + " TEXT, " +
                     PURCHASE_HISTORY_COLUMN_STATE + " TEXT, " +
                     PURCHASE_HISTORY_COLUMN_TIME + " TEXT, " +
-                    PURCHASE_HISTORY_COLUMN_DEVPAYLOAD + " TEXT, " +
-                    PURCHASE_HISTORY_COLUMN_BALANCE + " TEXT)");
+                    PURCHASE_HISTORY_COLUMN_DEVPAYLOAD + " TEXT)");
 
             sqLiteDatabase.execSQL("CREATE TABLE " + VIRTUAL_CURRENCY_TABLE_NAME + "(" +
                     VIRTUAL_CURRENCY_COLUMN_ITEM_ID + " TEXT PRIMARY KEY, " +
@@ -153,11 +151,9 @@ public class StoreDatabase {
     public static final String PURCHASE_HISTORY_COLUMN_ITEM_ID    = "item_id";
     public static final String PURCHASE_HISTORY_COLUMN_TIME       = "purchase_time";
     public static final String PURCHASE_HISTORY_COLUMN_DEVPAYLOAD = "developer_payload";
-    public static final String PURCHASE_HISTORY_COLUMN_BALANCE    = "current_balance";
     private static final String[] PURCHASE_HISTORY_COLUMNS = {
             PURCHASE_HISTORY_COLUMN_ORDER_ID, PURCHASE_HISTORY_COLUMN_PRODUCT_ID, PURCHASE_HISTORY_COLUMN_ITEM_ID,
-            PURCHASE_HISTORY_COLUMN_STATE, PURCHASE_HISTORY_COLUMN_TIME, PURCHASE_HISTORY_COLUMN_DEVPAYLOAD,
-            PURCHASE_HISTORY_COLUMN_BALANCE
+            PURCHASE_HISTORY_COLUMN_STATE, PURCHASE_HISTORY_COLUMN_TIME, PURCHASE_HISTORY_COLUMN_DEVPAYLOAD
     };
 
     // Store Meta-Data Table

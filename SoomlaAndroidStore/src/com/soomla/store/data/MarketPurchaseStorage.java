@@ -41,7 +41,6 @@ public class MarketPurchaseStorage {
         String itemId = StoreInfo.getInstance().getPackByGoogleProductId(productId).getItemId();
         String purchaseStateStr = "" + purchaseState.ordinal();
         String purchaseTimeStr  = "" + purchaseTime;
-        String currentBalanceStr = "" + StorageManager.getInstance().getVirtualCurrencyStorage().getBalance();
         if (StorageManager.getObfuscator() != null){
             orderId   =         StorageManager.getObfuscator().obfuscateString(orderId);
             productId =         StorageManager.getObfuscator().obfuscateString(productId);
@@ -49,11 +48,10 @@ public class MarketPurchaseStorage {
             purchaseStateStr =  StorageManager.getObfuscator().obfuscateString(purchaseStateStr);
             purchaseTimeStr  =  StorageManager.getObfuscator().obfuscateString(purchaseTimeStr);
             developerPayload =  StorageManager.getObfuscator().obfuscateString(developerPayload);
-            currentBalanceStr = StorageManager.getObfuscator().obfuscateString(currentBalanceStr);
         }
 
         StorageManager.getDatabase().addOrUpdatePurchaseHistory(orderId, productId, itemId,
-                purchaseStateStr, purchaseTimeStr, developerPayload, currentBalanceStr);
+                purchaseStateStr, purchaseTimeStr, developerPayload);
     }
 
     /** Private members **/

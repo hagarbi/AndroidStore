@@ -17,6 +17,7 @@ package com.soomla.store.domain.data;
 
 import android.util.Log;
 import com.soomla.store.StoreConfig;
+import com.soomla.store.data.JSONConsts;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -42,10 +43,10 @@ public abstract class VirtualItem {
 
     public VirtualItem(JSONObject jsonObject){
         try {
-            mName = jsonObject.getString("name");
-            mDescription = jsonObject.getString("description");
-            mImgFilePath = jsonObject.getString("imgFilePath");
-            mItemId = jsonObject.getString("itemId");
+            mName = jsonObject.getString(JSONConsts.ITEM_NAME);
+            mDescription = jsonObject.getString(JSONConsts.ITEM_DESCRIPTION);
+            mImgFilePath = jsonObject.getString(JSONConsts.ITEM_IMAGEFILEPATH);
+            mItemId = jsonObject.getString(JSONConsts.ITEM_ITEMID);
         } catch (JSONException e) {
             if (StoreConfig.debug){
                 Log.d(TAG, "An error occured while parsing JSON object.");
@@ -56,10 +57,10 @@ public abstract class VirtualItem {
     public JSONObject toJSONObject(){
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("name", mName);
-            jsonObject.put("description", mDescription);
-            jsonObject.put("imgFilePath", mImgFilePath);
-            jsonObject.put("itemId", mItemId);
+            jsonObject.put(JSONConsts.ITEM_NAME, mName);
+            jsonObject.put(JSONConsts.ITEM_DESCRIPTION, mDescription);
+            jsonObject.put(JSONConsts.ITEM_IMAGEFILEPATH, mImgFilePath);
+            jsonObject.put(JSONConsts.ITEM_ITEMID, mItemId);
         } catch (JSONException e) {
             if (StoreConfig.debug){
                 Log.d(TAG, "An error occured while generating JSON object.");

@@ -29,9 +29,6 @@ public class StoreConfig {
     // the Google Market public key
     public static String publicKey = "WILL BE CHANGED WHEN StoreActivity COMES TO PLAY !";
 
-    // the DB itemId of the virtual currency
-    public static final String CURRENCY_ITEM_ID = "store_currency";
-
     /*
     your personal secret that'll be used to encrypt data.
 

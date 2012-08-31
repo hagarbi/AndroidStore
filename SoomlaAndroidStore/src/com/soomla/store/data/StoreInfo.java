@@ -50,7 +50,12 @@ public class StoreInfo {
     }
 
     /**
-     * This function initializes StoreInfo using the given store assets.
+     * This function initializes StoreInfo. On first initialization, when the
+     * database doesn't have any previous version of the store metadata, StoreInfo
+     * is being loaded from the given {@link IStoreAssets}. After the first initialization,
+     * StoreInfo will be initialized from the database.
+     * NOTE: If you want to override the current StoreInfo, you'll have to bump the
+     * database version (the old database will be destroyed).
      */
     public void initialize(IStoreAssets storeAssets){
         if (storeAssets == null){
@@ -98,7 +103,7 @@ public class StoreInfo {
 
 
         // fall-back here if the json parsing fails or doesn't exist
-        mVirtualCurrency      = storeAssets.getVirtualCurrency();
+        mVirtualCurrencies    = Arrays.asList(storeAssets.getVirtualCurrencies());
         mVirtualCurrencyPacks = Arrays.asList(storeAssets.getVirtualCurrencyPacks());
         mVirtualGoods         = Arrays.asList(storeAssets.getVirtualGoods());
         mStoreBackground      = storeAssets.getStoreBackground();
@@ -153,10 +158,32 @@ public class StoreInfo {
         return good;
     }
 
+    /**
+     * Use this function if you need to know the definition of a specific virtual currency.
+     * @param itemId is the requested currency's item id.
+     * @return the definition of the virtual currency requested.
+     * @throws VirtualItemNotFoundException
+     */
+    public VirtualCurrency getVirtualCurrencyByItemId(String itemId) throws VirtualItemNotFoundException {
+        VirtualCurrency currency = null;
+        for(VirtualCurrency c : mVirtualCurrencies){
+            if (c.getItemId().equals(itemId)){
+                currency = c;
+                break;
+            }
+        }
+
+        if (currency == null){
+            throw new VirtualItemNotFoundException("itemId", itemId);
+        }
+
+        return currency;
+    }
+
     /** Getters **/
 
-    public VirtualCurrency getVirtualCurrency(){
-        return mVirtualCurrency;
+    public List<VirtualCurrency> getVirtualCurrencies(){
+        return mVirtualCurrencies;
     }
 
     public List<VirtualCurrencyPack> getCurrencyPacks() {
@@ -198,19 +225,25 @@ public class StoreInfo {
 
     private void fromJSONObject(JSONObject jsonObject){
         try {
-            mVirtualCurrency = new VirtualCurrency(jsonObject.getJSONObject("currency"));
-            mTemplate = new StoreTemplate(jsonObject.getJSONObject("template"));
-            mStoreBackground = jsonObject.getString("background");
-            mIsCurrencyStoreDisabled = jsonObject.getBoolean("isCurrencyStoreDisabled");
+            mTemplate = new StoreTemplate(jsonObject.getJSONObject(JSONConsts.STORE_TEMPLATE));
+            mStoreBackground = jsonObject.getString(JSONConsts.STORE_BACKGROUND);
+            mIsCurrencyStoreDisabled = jsonObject.getBoolean(JSONConsts.STORE_ISCURRENCYDISABLED);
 
-            JSONArray currencyPacks = jsonObject.getJSONArray("currencyPacks");
+            JSONArray virtualCurrencies = jsonObject.getJSONArray(JSONConsts.STORE_VIRTUALCURRENCIES);
+            mVirtualCurrencies = new LinkedList<VirtualCurrency>();
+            for (int i=0; i<virtualCurrencies.length(); i++){
+                JSONObject o = virtualCurrencies.getJSONObject(i);
+                mVirtualCurrencies.add(new VirtualCurrency(o));
+            }
+
+            JSONArray currencyPacks = jsonObject.getJSONArray(JSONConsts.STORE_CURRENCYPACKS);
             mVirtualCurrencyPacks = new LinkedList<VirtualCurrencyPack>();
             for (int i=0; i<currencyPacks.length(); i++){
                 JSONObject o = currencyPacks.getJSONObject(i);
                 mVirtualCurrencyPacks.add(new VirtualCurrencyPack(o));
             }
 
-            JSONArray virtualGoods = jsonObject.getJSONArray("virtualGoods");
+            JSONArray virtualGoods = jsonObject.getJSONArray(JSONConsts.STORE_VIRTUALGOODS);
             mVirtualGoods = new LinkedList<VirtualGood>();
             for (int i=0; i<virtualGoods.length(); i++){
                 JSONObject o = virtualGoods.getJSONObject(i);
@@ -224,7 +257,11 @@ public class StoreInfo {
     }
 
     private JSONObject toJSONObject(){
-        JSONObject currency = mVirtualCurrency.toJSONObject();
+
+        JSONArray virtualCurrencies = new JSONArray();
+        for(VirtualCurrency c : mVirtualCurrencies){
+            virtualCurrencies.put(c.toJSONObject());
+        }
 
         JSONArray currencyPacks = new JSONArray();
         for(VirtualCurrencyPack pack : mVirtualCurrencyPacks){
@@ -240,12 +277,12 @@ public class StoreInfo {
 
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("currency", currency);
-            jsonObject.put("currencyPacks", currencyPacks);
-            jsonObject.put("virtualGoods", virtualGoods);
-            jsonObject.put("template", template);
-            jsonObject.put("background", mStoreBackground);
-            jsonObject.put("isCurrencyStoreDisabled", mIsCurrencyStoreDisabled);
+            jsonObject.put(JSONConsts.STORE_VIRTUALCURRENCIES, virtualCurrencies);
+            jsonObject.put(JSONConsts.STORE_CURRENCYPACKS, currencyPacks);
+            jsonObject.put(JSONConsts.STORE_VIRTUALGOODS, virtualGoods);
+            jsonObject.put(JSONConsts.STORE_TEMPLATE, template);
+            jsonObject.put(JSONConsts.STORE_BACKGROUND, mStoreBackground);
+            jsonObject.put(JSONConsts.STORE_ISCURRENCYDISABLED, mIsCurrencyStoreDisabled);
         } catch (JSONException e) {
             if (StoreConfig.debug){
                 Log.d(TAG, "An error occurred while generating JSON object.");
@@ -260,7 +297,7 @@ public class StoreInfo {
     private static final String TAG = "SOOMLA StoreInfo";
     private static StoreInfo                        sInstance = null;
 
-    private VirtualCurrency                         mVirtualCurrency;
+    private List<VirtualCurrency>                   mVirtualCurrencies;
     private List<VirtualCurrencyPack>               mVirtualCurrencyPacks;
     private List<VirtualGood>                       mVirtualGoods;
     private StoreTemplate                           mTemplate;
