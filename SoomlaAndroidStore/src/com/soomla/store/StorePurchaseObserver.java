@@ -24,7 +24,6 @@ import com.soomla.store.data.StorageManager;
 import com.soomla.store.data.StoreInfo;
 import com.soomla.store.domain.data.VirtualCurrencyPack;
 import com.soomla.store.exceptions.VirtualItemNotFoundException;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -79,14 +78,13 @@ public class StorePurchaseObserver extends PurchaseObserver {
                 // we're throwing this event when on PURCHASE or REFUND !
 
                 VirtualCurrencyPack pack = StoreInfo.getInstance().getPackByGoogleProductId(productId);
-                JSONArray jsonArray = new JSONArray();
+
                 JSONObject jsonObject = new JSONObject();
                 String currencyItemId = pack.getmCurrency().getItemId();
                 jsonObject.put(currencyItemId, StorageManager.getInstance()
                         .getVirtualCurrencyStorage().getBalance(currencyItemId));
-                jsonArray.put(jsonObject);
 
-                mActivity.sendToJS("currencyBalanceChanged", "'" + jsonArray.toString() + "'");
+                mActivity.sendToJS("currencyBalanceChanged", jsonObject.toString());
 
                 StoreEventHandlers.getInstance().onVirtualCurrencyPackPurchased(pack);
             }

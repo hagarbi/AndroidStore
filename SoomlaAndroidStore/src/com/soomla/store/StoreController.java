@@ -24,7 +24,6 @@ import com.soomla.store.data.StoreInfo;
 import com.soomla.store.domain.data.VirtualCurrency;
 import com.soomla.store.domain.data.VirtualGood;
 import com.soomla.store.exceptions.VirtualItemNotFoundException;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -159,26 +158,21 @@ public class StoreController {
      */
     private void updateJSBalances(){
         try {
-            JSONArray jsonArray = new JSONArray();
+            JSONObject jsonObject = new JSONObject();
             for(VirtualCurrency virtualCurrency : StoreInfo.getInstance().getVirtualCurrencies()){
-                JSONObject jsonObject = new JSONObject();
-                    jsonObject.put(virtualCurrency.getItemId(),
-                            StorageManager.getInstance().getVirtualCurrencyStorage().getBalance(virtualCurrency.getItemId()));
-                jsonArray.put(jsonObject);
+                jsonObject.put(virtualCurrency.getItemId(),
+                        StorageManager.getInstance().getVirtualCurrencyStorage().getBalance(virtualCurrency.getItemId()));
             }
 
-            mActivity.sendToJS("currencyBalanceChanged", "'" + jsonArray.toString() + "'");
+            mActivity.sendToJS("currencyBalanceChanged", jsonObject.toString());
 
-            jsonArray = new JSONArray();
+            jsonObject = new JSONObject();
             for (VirtualGood good : StoreInfo.getInstance().getVirtualGoods()){
-                JSONObject jsonObject = new JSONObject();
                 jsonObject.put(good.getItemId(),
                         StorageManager.getInstance().getVirtualGoodsStorage().getBalance(good));
-                jsonArray.put(jsonObject);
-
             }
 
-            mActivity.sendToJS("goodsBalanceChanged", "'" + jsonArray.toString() + "'");
+            mActivity.sendToJS("goodsBalanceChanged", jsonObject.toString());
 
         } catch (JSONException e) {
             if (StoreConfig.debug){
