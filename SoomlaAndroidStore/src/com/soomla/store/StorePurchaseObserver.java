@@ -22,6 +22,7 @@ import com.soomla.billing.Consts;
 import com.soomla.billing.PurchaseObserver;
 import com.soomla.store.data.StorageManager;
 import com.soomla.store.data.StoreInfo;
+import com.soomla.store.domain.data.VirtualCurrency;
 import com.soomla.store.domain.data.VirtualCurrencyPack;
 import com.soomla.store.exceptions.VirtualItemNotFoundException;
 import org.json.JSONException;
@@ -80,9 +81,9 @@ public class StorePurchaseObserver extends PurchaseObserver {
                 VirtualCurrencyPack pack = StoreInfo.getInstance().getPackByGoogleProductId(productId);
 
                 JSONObject jsonObject = new JSONObject();
-                String currencyItemId = pack.getmCurrency().getItemId();
-                jsonObject.put(currencyItemId, StorageManager.getInstance()
-                        .getVirtualCurrencyStorage().getBalance(currencyItemId));
+                VirtualCurrency virtualCurrency = pack.getVirtualCurrency();
+                jsonObject.put(virtualCurrency.getItemId(), StorageManager.getInstance()
+                        .getVirtualCurrencyStorage().getBalance(pack.getVirtualCurrency()));
 
                 mActivity.sendToJS("currencyBalanceChanged", jsonObject.toString());
 

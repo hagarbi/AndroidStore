@@ -170,8 +170,6 @@ public class ExampleSurfStoreAssets implements IStoreAssets {
             "android.test.refunded",                        // product id in Google Market
             0.99,                                           // actual price in $$
             200,                                            // number of currencies in the pack
-            false                                           // consumable
-            ,
             CLAM_CURRENCY);
 
     public static final VirtualCurrencyPack MALIBUMEDIUMPACK_PACK = new VirtualCurrencyPack(
@@ -182,8 +180,6 @@ public class ExampleSurfStoreAssets implements IStoreAssets {
             "android.test.purchased",                       // product id in Google Market
             1.99,                                           // actual price in $$
             500,                                            // number of currencies in the pack
-            false                                           // consumable
-            ,
             CLAM_CURRENCY);
 
     public static VirtualCurrencyPack PIPELINEPUMPKINPACK_PACK = new VirtualCurrencyPack(
@@ -194,8 +190,6 @@ public class ExampleSurfStoreAssets implements IStoreAssets {
             "android.test.canceled",                        // product id in Google Market
             5.99,                                           // actual price in $$
             1500,                                           // number of currencies in the pack
-            false                                           // consumable
-            ,
             CLAM_CURRENCY);
 
     public static VirtualCurrencyPack SILVERPACK_PACK = new VirtualCurrencyPack(
@@ -206,7 +200,5 @@ public class ExampleSurfStoreAssets implements IStoreAssets {
             "android.test.item_unavailable",                // product id in Google Market
             15.99,                                          // actual price in $$
             5500,                                           // number of currencies in the pack
-            false                                           // consumable
-            ,
             CLAM_CURRENCY);
 }

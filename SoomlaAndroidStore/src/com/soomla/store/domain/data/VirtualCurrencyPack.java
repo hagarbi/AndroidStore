@@ -28,7 +28,7 @@ import java.util.Iterator;
 /**
  * This class represents a pack of the game's virtual currency.
  * For example: If you have a "Coin" as a virtual currency, you might
- * want to sell packs of "Coins". e.g. "10 Coins".
+ * want to sell packs of "Coins". e.g. "10 Coins Set" or "Super Saver Pack".
  * The currency pack usually has a google item related to it. As a developer,
  * you'll define the google item in Google's in-app purchase dashboard.
  */
@@ -47,29 +47,29 @@ public class VirtualCurrencyPack extends VirtualItem {
      * @param mCurrency is the currency associated with this pack.
      */
     public VirtualCurrencyPack(String mName, String mDescription, String mImgFilePath, String mItemId,
-                               String productId, double mCost, int mCurrencyAmout, boolean consumable, VirtualCurrency mCurrency) {
+                               String productId, double mCost, int mCurrencyAmout, VirtualCurrency mCurrency) {
         super(mName, mDescription, mImgFilePath, mItemId);
         this.mCurrency = mCurrency;
         this.mGoogleItem = new GoogleMarketItem(productId, GoogleMarketItem.Managed.UNMANAGED);
         this.mCost = mCost;
         this.mCurrencyAmount = mCurrencyAmout;
-        this.mConsumable = consumable;
     }
 
-    public VirtualCurrencyPack(JSONObject jsonObject) {
+    /** Constructor
+     *
+     * Generates an instance of {@link VirtualCurrencyPack} from a JSONObject.
+     * @param jsonObject is a JSONObject representation of the wanted {@link VirtualCurrencyPack}.
+     * @throws JSONException
+     */
+    public VirtualCurrencyPack(JSONObject jsonObject) throws JSONException {
         super(jsonObject);
         try {
             this.mGoogleItem = new GoogleMarketItem(jsonObject.getString(JSONConsts.CURRENCYPACK_PRODUCT_ID),
                     GoogleMarketItem.Managed.UNMANAGED);
             this.mCost = jsonObject.getDouble(JSONConsts.CURRENCYPACK_PRICE);
             this.mCurrencyAmount = jsonObject.getInt(JSONConsts.CURRENCYPACK_AMOUNT);
-            this.mConsumable = jsonObject.getBoolean(JSONConsts.CURRENCYPACK_CONSUMABLE);
             this.mCurrency = StoreInfo.getInstance().getVirtualCurrencyByItemId(jsonObject.getString
                     (JSONConsts.CURRENCYPACK_CURRENCYITEMID));
-        } catch (JSONException e) {
-            if (StoreConfig.debug){
-                Log.d(TAG, "An error occured while parsing JSON object.");
-            }
         } catch (VirtualItemNotFoundException e) {
             if (StoreConfig.debug){
                 Log.d(TAG, "Couldn't find the associated currency.");
@@ -77,6 +77,10 @@ public class VirtualCurrencyPack extends VirtualItem {
         }
     }
 
+    /**
+     * Converts the current {@link VirtualCurrencyPack} to a JSONObject.
+     * @return a JSONObject representation of the current {@link VirtualCurrencyPack}.
+     */
     public JSONObject toJSONObject(){
         JSONObject parentJsonObject = super.toJSONObject();
         JSONObject jsonObject = new JSONObject();
@@ -84,7 +88,6 @@ public class VirtualCurrencyPack extends VirtualItem {
             jsonObject.put(JSONConsts.CURRENCYPACK_PRICE, new Double(mCost));
             jsonObject.put(JSONConsts.CURRENCYPACK_PRODUCT_ID, mGoogleItem.getMarketId());
             jsonObject.put(JSONConsts.CURRENCYPACK_AMOUNT, new Integer(mCurrencyAmount));
-            jsonObject.put(JSONConsts.CURRENCYPACK_CONSUMABLE, mConsumable);
             jsonObject.put(JSONConsts.CURRENCYPACK_CURRENCYITEMID, mCurrency.getItemId());
 
             Iterator<?> keys = parentJsonObject.keys();
@@ -120,11 +123,7 @@ public class VirtualCurrencyPack extends VirtualItem {
         return mCurrencyAmount;
     }
 
-    public boolean isConsumable() {
-        return mConsumable;
-    }
-
-    public VirtualCurrency getmCurrency() {
+    public VirtualCurrency getVirtualCurrency() {
         return mCurrency;
     }
 
@@ -135,6 +134,5 @@ public class VirtualCurrencyPack extends VirtualItem {
     private GoogleMarketItem mGoogleItem;
     private double           mCost;
     private int              mCurrencyAmount;
-    private boolean          mConsumable;
     private VirtualCurrency  mCurrency;
 }

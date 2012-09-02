@@ -46,18 +46,22 @@ public class VirtualGood extends VirtualItem {
         this.mPriceModel = mPriceModel;
     }
 
-    public VirtualGood(JSONObject jsonObject) {
+    /** Constructor
+     *
+     * Generates an instance of {@link VirtualGood} from a JSONObject.
+     * @param jsonObject is a JSONObject representation of the wanted {@link VirtualGood}.
+     * @throws JSONException
+     */
+    public VirtualGood(JSONObject jsonObject) throws JSONException{
         super(jsonObject);
-        try {
-            this.mPriceModel = AbstractPriceModel.fromJSONObject(jsonObject.getJSONObject(JSONConsts
-                    .GOOD_PRICE_MODEL));
-        } catch (JSONException e) {
-            if (StoreConfig.debug){
-                Log.d(TAG, "An error occurred while parsing JSON object.");
-            }
-        }
+        this.mPriceModel = AbstractPriceModel.fromJSONObject(jsonObject.getJSONObject(JSONConsts
+                .GOOD_PRICE_MODEL));
     }
 
+    /**
+     * Converts the current {@link VirtualGood} to a JSONObject.
+     * @return a JSONObject representation of the current {@link VirtualGood}.
+     */
     public JSONObject toJSONObject(){
         JSONObject parentJsonObject = super.toJSONObject();
         JSONObject jsonObject = new JSONObject();
@@ -80,10 +84,20 @@ public class VirtualGood extends VirtualItem {
         return jsonObject;
     }
 
+    /**
+     * The currency value is calculated in the price model so we return the current price of the
+     * virtual good as defined in its price model.
+     * @return the current price of the virtual good according to its price model.
+     */
     public HashMap<String, Integer> getCurrencyValues(){
         return mPriceModel.getCurrentPrice(this);
     }
 
+    /**
+     * The same as the above {@link com.soomla.store.domain.data.VirtualGood#getCurrencyValues()}
+     * only here the returned value is a representation of the HashMap as a JSONObject.
+     * @return the current price of the virtual good according to its price model as a JSONObject.
+     */
     public JSONObject getCurrencyValuesAsJSONObject(){
 
         HashMap<String, Integer> currencyValue = mPriceModel.getCurrentPrice(this);

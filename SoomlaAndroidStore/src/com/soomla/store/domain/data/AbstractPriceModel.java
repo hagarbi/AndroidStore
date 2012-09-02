@@ -22,22 +22,41 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 
+/**
+ * This abstract class represents a price-model used in every {@link VirtualGood}.
+ */
 public abstract class AbstractPriceModel {
 
-    protected AbstractPriceModel(){}
-
+    /**
+     * Fetch the price of the given {@link VirtualGood} (Usually, the given virtual good will be the same as the
+     * virtual good that holds this price-model).
+     *
+     * The price of a {@link VirtualGood} is a hash that contains multiple currencies' itemIds and their needed
+     * values. If the user doesn't own at least one of the needed currency balances,
+     * he can't purchase the required {@link VirtualGood}.
+     * @param good is the virtual good to fetch the price for.
+     * @return the price of the given virtual good.
+     */
     public abstract HashMap<String, Integer> getCurrentPrice(VirtualGood good);
+
+    /**
+     * Converts the current {@link AbstractPriceModel} to a JSONObject.
+     * @return a JSONObject representation of the current {@link AbstractPriceModel}.
+     */
     public JSONObject toJSONObject() throws JSONException {
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put(JSONConsts.GOOD_PRICE_MODEL_TYPE, getType());
+        jsonObject.put(JSONConsts.GOOD_PRICE_MODEL_TYPE, mType);
 
         return jsonObject;
     }
 
-    public String getType() {
-        return mType;
-    }
-
+    /**
+     * Creates the appropriate {@link AbstractPriceModel} with the given JSONObject.
+     * The appropriate {@link AbstractPriceModel} is determined by the "type" element inside the JSONObject.
+     * @param jsonObject is a JSONObject representation of the required {@link AbstractPriceModel}.
+     * @return an implementation of {@link AbstractPriceModel}.
+     * @throws JSONException
+     */
     public static AbstractPriceModel fromJSONObject(JSONObject jsonObject) throws JSONException {
         String type = jsonObject.getString(JSONConsts.GOOD_PRICE_MODEL_TYPE);
         if (type.equals("static")){
@@ -49,10 +68,18 @@ public abstract class AbstractPriceModel {
         return null;
     }
 
+    /**
+     * Generates a JSONObject out of a given price model.
+     * @param priceModel is the required price model.
+     * @return a JSONObject representation of the given price model.
+     * @throws JSONException
+     */
     public static JSONObject priceModelToJSONObject(AbstractPriceModel priceModel) throws JSONException {
         return priceModel.toJSONObject();
     }
 
+
+    protected AbstractPriceModel(){}
 
     protected String mType = "abstract";
 }

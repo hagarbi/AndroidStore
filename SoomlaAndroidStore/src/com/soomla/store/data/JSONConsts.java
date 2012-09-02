@@ -30,7 +30,6 @@ public class JSONConsts {
     public static final String CURRENCYPACK_PRODUCT_ID  = "productId";
     public static final String CURRENCYPACK_PRICE       = "price";
     public static final String CURRENCYPACK_AMOUNT      = "amount";
-    public static final String CURRENCYPACK_CONSUMABLE  = "consumable";
     public static final String CURRENCYPACK_CURRENCYITEMID = "currency_itemId";
 
     public static final String GOOD_PRICE_MODEL         = "priceModel";

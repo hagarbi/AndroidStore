@@ -15,11 +15,12 @@
  */
 package com.soomla.store.domain.data;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
  * This is a representation of the game's virtual currency.
- * Each game usually has one instance of this class globally
+ * Each game can have multiple instances of a virtual currency, all kept in {@link com.soomla.store.data.StoreInfo};
  */
 public class VirtualCurrency extends VirtualItem {
 
@@ -35,10 +36,20 @@ public class VirtualCurrency extends VirtualItem {
         super(mName, mDescription, mImgFilePath, itemId);
     }
 
-    public VirtualCurrency(JSONObject jsonObject){
+    /** Constructor
+     *
+     * Generates an instance of {@link VirtualCurrency} from a JSONObject.
+     * @param jsonObject is a JSONObject representation of the wanted {@link VirtualCurrency}.
+     * @throws org.json.JSONException
+     */
+    public VirtualCurrency(JSONObject jsonObject) throws JSONException {
         super(jsonObject);
     }
 
+    /**
+     * Converts the current {@link VirtualCurrency} to a JSONObject.
+     * @return a JSONObject representation of the current {@link VirtualCurrency}.
+     */
     public JSONObject toJSONObject(){
         return super.toJSONObject();
     }

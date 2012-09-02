@@ -47,7 +47,7 @@ public class StoreActivity extends Activity {
                 "Loading. Please wait...", true);
 
         mPendingJSMessages = new LinkedList<String>();
-        mStoreJSInitialized = false;
+        mJSuiReady = false;
 
         mHandler = new Handler();
         mStorePurchaseObserver = new StorePurchaseObserver(mHandler, this);
@@ -85,7 +85,7 @@ public class StoreActivity extends Activity {
     public void sendToJS(String action, String data){
         final String urlToLoad = "javascript:SoomlaJS." + action + "(" + data + ")";
 
-        if (!mStoreJSInitialized){
+        if (!mJSuiReady){
             mPendingJSMessages.add(urlToLoad);
         }
         else{
@@ -116,8 +116,8 @@ public class StoreActivity extends Activity {
         }
     }
 
-    public void storeJSInitialized(){
-        mStoreJSInitialized = true;
+    public void JSuiReady(){
+        mJSuiReady = true;
     }
 
     /** Protected overridden functions **/
@@ -161,7 +161,7 @@ public class StoreActivity extends Activity {
     private WebView         mWebView;
     private Handler         mHandler;
     private Queue<String>   mPendingJSMessages;
-    private boolean         mStoreJSInitialized;
+    private boolean mJSuiReady;
     private ProgressDialog  mProgressDialog;
     private StoreController mStoreController;
 }

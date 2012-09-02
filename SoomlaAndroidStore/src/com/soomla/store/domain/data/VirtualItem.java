@@ -41,19 +41,23 @@ public abstract class VirtualItem {
         this.mItemId = mItemId;
     }
 
-    public VirtualItem(JSONObject jsonObject){
-        try {
-            mName = jsonObject.getString(JSONConsts.ITEM_NAME);
-            mDescription = jsonObject.getString(JSONConsts.ITEM_DESCRIPTION);
-            mImgFilePath = jsonObject.getString(JSONConsts.ITEM_IMAGEFILEPATH);
-            mItemId = jsonObject.getString(JSONConsts.ITEM_ITEMID);
-        } catch (JSONException e) {
-            if (StoreConfig.debug){
-                Log.d(TAG, "An error occured while parsing JSON object.");
-            }
-        }
+    /** Constructor
+     *
+     * Generates an instance of {@link VirtualItem} from a JSONObject.
+     * @param jsonObject is a JSONObject representation of the wanted {@link VirtualItem}.
+     * @throws JSONException
+     */
+    public VirtualItem(JSONObject jsonObject) throws JSONException{
+        mName = jsonObject.getString(JSONConsts.ITEM_NAME);
+        mDescription = jsonObject.getString(JSONConsts.ITEM_DESCRIPTION);
+        mImgFilePath = jsonObject.getString(JSONConsts.ITEM_IMAGEFILEPATH);
+        mItemId = jsonObject.getString(JSONConsts.ITEM_ITEMID);
     }
 
+    /**
+     * Converts the current {@link VirtualItem} to a JSONObject.
+     * @return a JSONObject representation of the current {@link VirtualItem}.
+     */
     public JSONObject toJSONObject(){
         JSONObject jsonObject = new JSONObject();
         try {

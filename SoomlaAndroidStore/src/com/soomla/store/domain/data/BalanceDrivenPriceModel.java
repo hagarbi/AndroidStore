@@ -26,17 +26,34 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
+/**
+ * This price model is a model that gives the associated virtual good a price according to its balance.
+ * The {@link BalanceDrivenPriceModel} is provided with an ArrayList of prices which its indexes is the balances. for
+ * example, the value at mCurrencyValuePerBalance[0] is the price of a specific virtual good when its balance is 0.
+ */
 public class BalanceDrivenPriceModel extends AbstractPriceModel{
 
+    /** Constructor
+     * A private constructor to prevent users from initializing this object with a default constructor.
+     */
     private BalanceDrivenPriceModel() {
         super();
+
+        mType = "balance";
     }
 
+    /** Constructor
+     * Creates an instance of {@link BalanceDrivenPriceModel} with the given ArrayList of prices-per-balance.
+     * @param mCurrencyValuePerBalance is a given ArrayList of prices-per-balance.
+     */
     public BalanceDrivenPriceModel(ArrayList<HashMap<String, Integer>> mCurrencyValuePerBalance){
         this.mCurrencyValuePerBalance = mCurrencyValuePerBalance;
         mType = "balance";
     }
 
+    /**
+     * docs in {@link AbstractPriceModel#getCurrentPrice(VirtualGood)}.
+     */
     @Override
     public HashMap<String, Integer> getCurrentPrice(VirtualGood good) {
         int balance = StorageManager.getInstance().getVirtualGoodsStorage().getBalance(good);
@@ -49,6 +66,9 @@ public class BalanceDrivenPriceModel extends AbstractPriceModel{
         return mCurrencyValuePerBalance.get(balance);
     }
 
+    /**
+     * docs in {@link AbstractPriceModel#toJSONObject()}
+     */
     @Override
     public JSONObject toJSONObject() throws JSONException {
         JSONObject parentJsonObject = super.toJSONObject();
@@ -74,6 +94,12 @@ public class BalanceDrivenPriceModel extends AbstractPriceModel{
         return jsonObject;
     }
 
+    /**
+     * Creates a {@link BalanceDrivenPriceModel} with the given JSONObject.
+     * @param jsonObject is a JSONObject representation of the required {@link BalanceDrivenPriceModel}.
+     * @return an instance of {@link BalanceDrivenPriceModel}.
+     * @throws JSONException
+     */
     public static BalanceDrivenPriceModel fromJSONObject(JSONObject jsonObject) throws JSONException {
         JSONArray valuesPerBalanceJSON = jsonObject.getJSONArray(JSONConsts.GOOD_PRICE_MODEL_VALUES);
         ArrayList <HashMap<String, Integer>> valuesPerBalance = new ArrayList<HashMap<String,
@@ -92,6 +118,9 @@ public class BalanceDrivenPriceModel extends AbstractPriceModel{
 
         return new BalanceDrivenPriceModel(valuesPerBalance);
     }
+
+
+    /** Private Members **/
 
     private ArrayList<HashMap<String, Integer>> mCurrencyValuePerBalance;
 }

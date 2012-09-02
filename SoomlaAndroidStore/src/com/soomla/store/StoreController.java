@@ -16,7 +16,6 @@
 package com.soomla.store;
 
 import android.os.Handler;
-import android.text.TextUtils;
 import android.util.Log;
 import com.soomla.billing.BillingService;
 import com.soomla.billing.Consts;
@@ -28,7 +27,9 @@ import com.soomla.store.exceptions.VirtualItemNotFoundException;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * This class is the main place to invoke store actions.
@@ -81,21 +82,36 @@ public class StoreController {
         try {
             VirtualGood good = StoreInfo.getInstance().getVirtualGoodByItemId(itemId);
 
+            // fetching currencies and amounts that the user needs in order to purchase the current
+            // {@link VirtualGood}.
             HashMap<String, Integer> currencyValues = good.getCurrencyValues();
-            String insufficientItemId = "";
+
+            // preparing list of {@link VirtualCurrency} objects.
+            List<VirtualCurrency> virtualCurrencies = new ArrayList<VirtualCurrency>();
             for (String currencyItemId : currencyValues.keySet()){
+                virtualCurrencies.add(StoreInfo.getInstance().getVirtualCurrencyByItemId(currencyItemId));
+            }
+
+            // checking if the user has enough of each of the virtual currencies in order to purchase this virtual
+            // good.
+            VirtualCurrency needMore = null;
+            for (VirtualCurrency virtualCurrency : virtualCurrencies){
                 int currencyBalance = StorageManager.getInstance().getVirtualCurrencyStorage().getBalance
-                        (currencyItemId);
-                if (currencyBalance < currencyValues.get(currencyItemId)){
-                    insufficientItemId = currencyItemId;
+                        (virtualCurrency);
+                int currencyBalanceNeeded = currencyValues.get(virtualCurrency.getItemId());
+                if (currencyBalance < currencyBalanceNeeded){
+                    needMore = virtualCurrency;
                     break;
                 }
             }
-            if (TextUtils.isEmpty(insufficientItemId)){
+
+            // if the user has enough, the virtual good is purchased. if not, a message is sent to the UI.
+            if (needMore == null){
                 StorageManager.getInstance().getVirtualGoodsStorage().add(good, 1);
-                for (String currencyItemId : currencyValues.keySet()){
-                    StorageManager.getInstance().getVirtualCurrencyStorage().remove(currencyItemId,
-                            currencyValues.get(currencyItemId));
+                for (VirtualCurrency virtualCurrency : virtualCurrencies){
+                    int currencyBalanceNeeded = currencyValues.get(virtualCurrency.getItemId());
+                    StorageManager.getInstance().getVirtualCurrencyStorage().remove(virtualCurrency,
+                            currencyBalanceNeeded);
                 }
 
                 updateContentInJS();
@@ -103,7 +119,7 @@ public class StoreController {
                 StoreEventHandlers.getInstance().onVirtualGoodPurchased(good);
             }
             else {
-                mActivity.sendToJS("insufficientFunds", "" + insufficientItemId);
+                mActivity.sendToJS("insufficientFunds", "" + needMore.getItemId());
             }
         } catch (VirtualItemNotFoundException e) {
             mActivity.sendToJS("unexpectedError", "");
@@ -125,6 +141,9 @@ public class StoreController {
         });
     }
 
+    /**
+     * This function is called when the {@link StoreActivity} is going to be destroyed.
+     */
     public void onDestroy(){
         StoreEventHandlers.getInstance().onClosingStore();
         mBillingService.unbind();
@@ -161,7 +180,7 @@ public class StoreController {
             JSONObject jsonObject = new JSONObject();
             for(VirtualCurrency virtualCurrency : StoreInfo.getInstance().getVirtualCurrencies()){
                 jsonObject.put(virtualCurrency.getItemId(),
-                        StorageManager.getInstance().getVirtualCurrencyStorage().getBalance(virtualCurrency.getItemId()));
+                        StorageManager.getInstance().getVirtualCurrencyStorage().getBalance(virtualCurrency));
             }
 
             mActivity.sendToJS("currencyBalanceChanged", jsonObject.toString());

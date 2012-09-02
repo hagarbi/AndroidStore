@@ -133,7 +133,7 @@ public class ResponseHandler {
                     // a friendly refund policy is nice for the user.
                     if (purchaseState == PurchaseState.PURCHASED || purchaseState == PurchaseState.REFUNDED) {
                         StorageManager.getInstance().getVirtualCurrencyStorage().add(
-                                pack.getmCurrency().getItemId(), pack.getCurrencyAmount());
+                                pack.getVirtualCurrency(), pack.getCurrencyAmount());
                     }
 
                     // This needs to be synchronized because the UI thread can change the

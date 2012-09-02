@@ -22,6 +22,9 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Iterator;
 
+/**
+ * This price model is a model that gives the associated virtual good a static price that's not affected by anything.
+ */
 public class StaticPriceModel extends AbstractPriceModel {
 
     private StaticPriceModel(){
@@ -30,16 +33,26 @@ public class StaticPriceModel extends AbstractPriceModel {
         mType = "static";
     }
 
+    /** Constructor
+     * Creates an instance of {@link StaticPriceModel} with the given price.
+     * @param mCurrencyValue is a given price as a HashMap.
+     */
     public StaticPriceModel(HashMap<String, Integer> mCurrencyValue){
         this.mCurrencyValue = mCurrencyValue;
         mType = "static";
     }
 
+    /**
+     * docs in {@link AbstractPriceModel#getCurrentPrice(VirtualGood)}.
+     */
     @Override
     public HashMap<String, Integer> getCurrentPrice(VirtualGood good) {
         return mCurrencyValue;
     }
 
+    /**
+     * docs in {@link AbstractPriceModel#toJSONObject()}
+     */
     @Override
     public JSONObject toJSONObject() throws JSONException {
         JSONObject parentJsonObject = super.toJSONObject();
@@ -61,6 +74,12 @@ public class StaticPriceModel extends AbstractPriceModel {
         return jsonObject;
     }
 
+    /**
+     * Creates a {@link StaticPriceModel} with the given JSONObject.
+     * @param jsonObject is a JSONObject representation of the required {@link StaticPriceModel}.
+     * @return an instance of {@link StaticPriceModel}.
+     * @throws JSONException
+     */
     public static StaticPriceModel fromJSONObject(JSONObject jsonObject) throws JSONException {
         JSONObject valuesJSONObject = jsonObject.getJSONObject(JSONConsts.GOOD_PRICE_MODEL_VALUES);
         Iterator<?> keys = valuesJSONObject.keys();
@@ -72,6 +91,9 @@ public class StaticPriceModel extends AbstractPriceModel {
 
         return new StaticPriceModel(values);
     }
+
+
+    /** Private Members **/
 
     private HashMap<String, Integer> mCurrencyValue;
 }
