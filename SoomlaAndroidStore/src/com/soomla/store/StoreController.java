@@ -97,7 +97,7 @@ public class StoreController {
                             currencyValues.get(currencyItemId));
                 }
 
-                updateJSBalances();
+                updateContentInJS();
 
                 StoreEventHandlers.getInstance().onVirtualGoodPurchased(good);
             }
@@ -140,7 +140,7 @@ public class StoreController {
         mActivity.storeJSInitialized();
         mActivity.sendToJS("initialize", StoreInfo.getInstance().getJsonString());
 
-        updateJSBalances();
+        updateContentInJS();
     }
 
     /**
@@ -154,9 +154,9 @@ public class StoreController {
     }
 
     /**
-     * Sends the virtual currency and virtual goods balances to the webview's JS.
+     * Sends the virtual currency and virtual goods updated data to the webview's JS.
      */
-    private void updateJSBalances(){
+    private void updateContentInJS(){
         try {
             JSONObject jsonObject = new JSONObject();
             for(VirtualCurrency virtualCurrency : StoreInfo.getInstance().getVirtualCurrencies()){
@@ -168,11 +168,14 @@ public class StoreController {
 
             jsonObject = new JSONObject();
             for (VirtualGood good : StoreInfo.getInstance().getVirtualGoods()){
-                jsonObject.put(good.getItemId(),
-                        StorageManager.getInstance().getVirtualGoodsStorage().getBalance(good));
+                JSONObject updatedValues = new JSONObject();
+                updatedValues.put("balance", StorageManager.getInstance().getVirtualGoodsStorage().getBalance(good));
+                updatedValues.put("price", good.getCurrencyValuesAsJSONObject());
+
+                jsonObject.put(good.getItemId(), updatedValues);
             }
 
-            mActivity.sendToJS("goodsBalanceChanged", jsonObject.toString());
+            mActivity.sendToJS("goodsUpdated", jsonObject.toString());
 
         } catch (JSONException e) {
             if (StoreConfig.debug){

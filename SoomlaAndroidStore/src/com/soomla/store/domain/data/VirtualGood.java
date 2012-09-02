@@ -84,6 +84,23 @@ public class VirtualGood extends VirtualItem {
         return mPriceModel.getCurrentPrice(this);
     }
 
+    public JSONObject getCurrencyValuesAsJSONObject(){
+
+        HashMap<String, Integer> currencyValue = mPriceModel.getCurrentPrice(this);
+        JSONObject jsonObject = new JSONObject();
+        for(String key : currencyValue.keySet()){
+            try {
+                jsonObject.put(key, currencyValue.get(key));
+            } catch (JSONException e) {
+                if (StoreConfig.debug){
+                    Log.d(TAG, "An error occurred while generating JSON object.");
+                }
+            }
+        }
+
+        return jsonObject;
+    }
+
     /** Private members **/
 
     private static final String TAG = "SOOMLA VirtualGood";
