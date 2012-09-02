@@ -16,6 +16,7 @@
 package com.soomla.store;
 
 import android.os.Handler;
+import android.text.TextUtils;
 import android.util.Log;
 import com.soomla.billing.BillingService;
 import com.soomla.billing.Consts;
@@ -81,16 +82,16 @@ public class StoreController {
             VirtualGood good = StoreInfo.getInstance().getVirtualGoodByItemId(itemId);
 
             HashMap<String, Integer> currencyValues = good.getCurrencyValues();
-            boolean hasEnoughFunds = true;
+            String insufficientItemId = "";
             for (String currencyItemId : currencyValues.keySet()){
                 int currencyBalance = StorageManager.getInstance().getVirtualCurrencyStorage().getBalance
                         (currencyItemId);
                 if (currencyBalance < currencyValues.get(currencyItemId)){
-                    hasEnoughFunds = false;
+                    insufficientItemId = currencyItemId;
                     break;
                 }
             }
-            if (hasEnoughFunds){
+            if (TextUtils.isEmpty(insufficientItemId)){
                 StorageManager.getInstance().getVirtualGoodsStorage().add(good, 1);
                 for (String currencyItemId : currencyValues.keySet()){
                     StorageManager.getInstance().getVirtualCurrencyStorage().remove(currencyItemId,
@@ -102,8 +103,7 @@ public class StoreController {
                 StoreEventHandlers.getInstance().onVirtualGoodPurchased(good);
             }
             else {
-                int balance = StorageManager.getInstance().getVirtualGoodsStorage().getBalance(good);
-                mActivity.sendToJS("insufficientFunds", "" + balance);
+                mActivity.sendToJS("insufficientFunds", "" + insufficientItemId);
             }
         } catch (VirtualItemNotFoundException e) {
             mActivity.sendToJS("unexpectedError", "");
@@ -137,7 +137,7 @@ public class StoreController {
         if (StoreConfig.debug){
             Log.d(TAG, "uiReady");
         }
-        mActivity.storeJSInitialized();
+        mActivity.JSuiReady();
         mActivity.sendToJS("initialize", StoreInfo.getInstance().getJsonString());
 
         updateContentInJS();
