@@ -38,46 +38,82 @@ public class StoreDatabase {
         mDatabaseHelper.close();
     }
 
-    public synchronized void updateVirtualCurrency(String itemId, String quantity){
+    /**
+     * Updates the balance of the virtual currency with the given itemId.
+     * @param itemId is the item id of the required virtual currency.
+     * @param balance is the required virtual currency's new balance.
+     */
+    public synchronized void updateVirtualCurrency(String itemId, String balance){
         ContentValues values = new ContentValues();
         values.put(VIRTUAL_CURRENCY_COLUMN_ITEM_ID, itemId);
-        values.put(VIRTUAL_CURRENCY_COLUMN_BALANCE, quantity);
+        values.put(VIRTUAL_CURRENCY_COLUMN_BALANCE, balance);
         mStoreDB.replace(VIRTUAL_CURRENCY_TABLE_NAME, null, values);
     }
 
+    /**
+     * Fetch all virtual currencies information from the database.
+     * @return a {@link Cursor} that represents the query response.
+     */
     public synchronized Cursor getVirtualCurrencies(){
         return mStoreDB.query(VIRTUAL_CURRENCY_TABLE_NAME, VIRTUAL_CURRENCY_COLUMNS,
                 null, null, null, null, null);
     }
 
+    /**
+     * Fetch a single virtual currency information with the given itemId.
+     * @param itemId is the required currency's item id.
+     * @return a {@link Cursor} that represents the query response.
+     */
     public synchronized Cursor getVirtualCurrency(String itemId){
         return mStoreDB.query(VIRTUAL_CURRENCY_TABLE_NAME, VIRTUAL_CURRENCY_COLUMNS,
                 VIRTUAL_CURRENCY_COLUMN_ITEM_ID +  " = '" + itemId + "'", null, null, null, null);
     }
 
-    public synchronized void updateVirtualGood(String itemId, String quantity){
+    /**
+     * Updates the balance of the virtual good with the given itemId.
+     * @param itemId is the item id of the required virtual good.
+     * @param balance is the required virtual good's new balance.
+     */
+    public synchronized void updateVirtualGood(String itemId, String balance){
         ContentValues values = new ContentValues();
         values.put(VIRTUAL_GOODS_COLUMN_ITEM_ID, itemId);
-        values.put(VIRTUAL_GOODS_COLUMN_BALANCE, quantity);
+        values.put(VIRTUAL_GOODS_COLUMN_BALANCE, balance);
         mStoreDB.replace(VIRTUAL_GOODS_TABLE_NAME, null, values);
     }
 
+    /**
+     * Fetch all virtual goods information from database.
+     * @return a {@link Cursor} that represents the query response.
+     */
     public synchronized Cursor getVirtualGoods(){
         return mStoreDB.query(VIRTUAL_GOODS_TABLE_NAME, VIRTUAL_GOODS_COLUMNS,
                 null, null, null, null, null);
     }
 
+    /**
+     * Fetch a single virtual good information with the given itemId.
+     * @param itemId is the required good's item id.
+     * @return a {@link Cursor} that represents the query response.
+     */
     public synchronized Cursor getVirtualGood(String itemId){
         return mStoreDB.query(VIRTUAL_GOODS_TABLE_NAME, VIRTUAL_GOODS_COLUMNS,
                 VIRTUAL_GOODS_COLUMN_ITEM_ID + "='" + itemId + "'", null, null, null, null);
     }
 
+    /**
+     * Overwrites the current metadata information with a new one.
+     * @param metadata is the new meta-data information.
+     */
     public synchronized void setMetaData(String metadata){
         ContentValues values = new ContentValues();
         values.put(METADATA_COLUMN_VALUE, metadata);
         mStoreDB.replace(METADATA_TABLE_NAME, null, values);
     }
 
+    /**
+     * Fetch the meta data information.
+     * @return the meta-data information.
+     */
     public synchronized Cursor getMetaData(){
         return mStoreDB.query(METADATA_TABLE_NAME, METADATA_COLUMNS,
                 null, null, null, null, null);
@@ -98,6 +134,9 @@ public class StoreDatabase {
             createPurchaseTable(sqLiteDatabase);
         }
 
+        /**
+         * On database upgrade we just want to delete the meta-data information. We must keep the balances.
+         */
         @Override
         public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
             // TODO: implement this !!
@@ -121,11 +160,6 @@ public class StoreDatabase {
         }
     }
 
-    private static final String TAG = "StoreDatabase";
-
-    private static final String DATABASE_NAME               = "store.db";
-    private static final int    DATABASE_VERSION            = 2;
-
     // Virtual Currency Table
     private static final String VIRTUAL_CURRENCY_TABLE_NAME     = "virtual_currency";
     public static final String VIRTUAL_CURRENCY_COLUMN_BALANCE  = "balance";
@@ -148,6 +182,13 @@ public class StoreDatabase {
     private static final String[] METADATA_COLUMNS = {
             METADATA_COLUMN_VALUE
     };
+
+
+    /** Private Members**/
+
+    private static final String TAG = "StoreDatabase";
+    private static final String DATABASE_NAME               = "store.db";
+    private static final int    DATABASE_VERSION            = 1;
 
     private SQLiteDatabase mStoreDB;
     private DatabaseHelper mDatabaseHelper;

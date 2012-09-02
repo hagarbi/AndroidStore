@@ -22,7 +22,7 @@ import com.soomla.store.StoreConfig;
 import com.soomla.store.domain.data.VirtualGood;
 
 /**
- * This is the storage for the virtual goods.
+ * This class provide basic storage operations on VirtualGoods.
  */
 public class VirtualGoodsStorage {
 
@@ -32,8 +32,14 @@ public class VirtualGoodsStorage {
     public VirtualGoodsStorage() {
     }
 
-    /** Getters **/
 
+    /** Public functions **/
+
+    /**
+     * Fetch the balance of the given virtual good.
+     * @param virtualGood is the required virtual good.
+     * @return the balance of the required virtual currency.
+     */
     public int getBalance(VirtualGood virtualGood){
         if (StoreConfig.debug){
             Log.d(TAG, "trying to fetch balance for virtual good with itemId: " + virtualGood.getItemId());
@@ -75,10 +81,11 @@ public class VirtualGoodsStorage {
         return 0;
 	}
 
-    /** Public functions **/
+
 
     /**
     * Adds the given amount of goods to the storage.
+    * @param virtualGood is the required virtual good.
     * @param amount is the amount of goods to add.
     */
     public int add(VirtualGood virtualGood, int amount){

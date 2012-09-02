@@ -34,10 +34,11 @@ import java.util.*;
 
 /**
  * This class holds the store's meta data including:
- * - Virtual Currency definition
+ * - Virtual Currencies definitions
  * - Virtual Currency Packs definitions
  * - Virtual Goods definitions
  * - Store UI Template
+ * - more ...
  */
 public class StoreInfo {
 
@@ -102,7 +103,8 @@ public class StoreInfo {
         }
 
 
-        // fall-back here if the json parsing fails or doesn't exist
+        /// fall-back here if the json parsing fails or doesn't exist, we load the store from the given
+        // {@link IStoreAssets}.
         mVirtualCurrencies    = Arrays.asList(storeAssets.getVirtualCurrencies());
         mVirtualCurrencyPacks = Arrays.asList(storeAssets.getVirtualCurrencyPacks());
         mVirtualGoods         = Arrays.asList(storeAssets.getVirtualGoods());
@@ -256,6 +258,10 @@ public class StoreInfo {
         }
     }
 
+    /**
+     * Converts StoreInfo to a JSONObject.
+     * @return a JSONObject representation of the StoreInfo.
+     */
     private JSONObject toJSONObject(){
 
         JSONArray virtualCurrencies = new JSONArray();

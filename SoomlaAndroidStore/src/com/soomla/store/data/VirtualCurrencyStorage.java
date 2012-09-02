@@ -20,9 +20,10 @@ import android.database.Cursor;
 import android.util.Log;
 import com.soomla.billing.util.AESObfuscator;
 import com.soomla.store.StoreConfig;
+import com.soomla.store.domain.data.VirtualCurrency;
 
 /**
- * This is the storage for the virtual currency.
+ * This class provide basic storage operations on VirtualCurrencies.
  */
 public class VirtualCurrencyStorage {
 
@@ -32,13 +33,19 @@ public class VirtualCurrencyStorage {
     public VirtualCurrencyStorage() {
     }
 
-    /** Getters **/
+    /** Public functions **/
 
-    public int getBalance(String itemId){
+    /**
+     * Fetch the balance of the given virtual currency.
+     * @param virtualCurrency is the required virtual currency.
+     * @return the balance of the required virtual currency.
+     */
+    public int getBalance(VirtualCurrency virtualCurrency){
         if (StoreConfig.debug){
             Log.d(TAG, "trying to fetch balance for virtual currency");
         }
 
+        String itemId = virtualCurrency.getItemId();
         if (StorageManager.getObfuscator() != null){
             itemId = StorageManager.getObfuscator().obfuscateString(itemId);
         }
@@ -75,20 +82,20 @@ public class VirtualCurrencyStorage {
         return 0;
     }
 
-    /** Public functions **/
-
     /**
      * Adds the given amount of currency to the storage.
+     * @param virtualCurrency is the required virtual currency.
      * @param amount is the amount of currency to add.
      * @return the new balance after adding amount.
      */
-    public int add(String itemId, int amount){
+    public int add(VirtualCurrency virtualCurrency, int amount){
         if (StoreConfig.debug){
             Log.d(TAG, "adding " + amount + " currencies.");
         }
 
-        int balance = getBalance(itemId);
+        int balance = getBalance(virtualCurrency);
         String quantityStr = "" + (balance + amount);
+        String itemId = virtualCurrency.getItemId();
         if (StorageManager.getObfuscator() != null){
             quantityStr = StorageManager.getObfuscator().obfuscateString(quantityStr);
             itemId      = StorageManager.getObfuscator().obfuscateString(itemId);
@@ -100,14 +107,16 @@ public class VirtualCurrencyStorage {
 
     /**
      * Removes the given amount of currency from the storage.
+     * @param virtualCurrency is the required virtual currency.
      * @param amount is the amount of currency to remove.
      */
-    public int remove(String itemId, int amount){
+    public int remove(VirtualCurrency virtualCurrency, int amount){
         if (StoreConfig.debug){
             Log.d(TAG, "removing " + amount + " currencies.");
         }
 
-        int quantity = getBalance(itemId) - amount;
+        String itemId = virtualCurrency.getItemId();
+        int quantity = getBalance(virtualCurrency) - amount;
         quantity = quantity > 0 ? quantity : 0;
         String quantityStr = "" + quantity;
         if (StorageManager.getObfuscator() != null){
@@ -120,5 +129,6 @@ public class VirtualCurrencyStorage {
     }
 
     /** Private members **/
+
     private static final String TAG = "SOOMLA VirtualCurrencyStorage";
 }
