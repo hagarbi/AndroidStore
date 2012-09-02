@@ -1,11 +1,10 @@
 package com.soomla.store.example;
 
 import com.soomla.store.IStoreAssets;
-import com.soomla.store.domain.data.VirtualCurrency;
-import com.soomla.store.domain.data.VirtualCurrencyPack;
-import com.soomla.store.domain.data.VirtualGood;
+import com.soomla.store.domain.data.*;
 import com.soomla.store.domain.ui.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class ExampleSurfStoreAssets implements IStoreAssets {
@@ -74,20 +73,24 @@ public class ExampleSurfStoreAssets implements IStoreAssets {
             "Rip Curl Shortboard",                          // name
             "Shred small waves with this super-fast board", // description
             "img/examples/surf/blue-surfboard.png",         // image file path
-            RIPCURLSHORTBOARD_PRICE,                        // currency value
+            new StaticPriceModel(RIPCURLSHORTBOARD_PRICE),// currency value
             "blue_surfboard"                                // item id
     );
 
     private static final HashMap<String, Integer> BILLABONGVINTAGELONGBOARD_PRICE =
             new HashMap<String, Integer>();
+    private static final ArrayList<HashMap<String, Integer>> BILLABONGVINTAGELONGBOARD_PRICE_LIST =
+            new ArrayList<HashMap<String, Integer>>();
     static {
         BILLABONGVINTAGELONGBOARD_PRICE.put(CLAM_CURRENCT_ITEM_ID, 150);
+        BILLABONGVINTAGELONGBOARD_PRICE_LIST.add(RIPCURLSHORTBOARD_PRICE);
+        BILLABONGVINTAGELONGBOARD_PRICE_LIST.add(BILLABONGVINTAGELONGBOARD_PRICE);
     }
     public static final VirtualGood BILLABONGVINTAGELONGBOARD_GOOD = new VirtualGood(
             "Billanbog Vintage Longboard",                  // name
             "Slowly hang five through low power surf",      // description
             "img/examples/surf/girl-surfboard-th.png",      // image file path
-            BILLABONGVINTAGELONGBOARD_PRICE,                // currency value
+            new BalanceDrivenPriceModel(BILLABONGVINTAGELONGBOARD_PRICE_LIST),// currency value
             "girl_surfboard_th"                             // item id
     );
 
@@ -100,7 +103,7 @@ public class ExampleSurfStoreAssets implements IStoreAssets {
             "Keel Fish",                                    // name
             "Carve slow waves with this ever-riding board", // description
             "img/examples/surf/keelfish.png",               // image file path
-            KEELFISH_PRICE,                                 // currency value
+            new StaticPriceModel(KEELFISH_PRICE),           // currency value
             "keelfish"                                      // item id
     );
 
@@ -113,7 +116,7 @@ public class ExampleSurfStoreAssets implements IStoreAssets {
             "Picasso Peeler",                               // name
             "The master of surreal off-the-lip maneuvers",  // description
             "img/examples/surf/picasso-peeler.png",         // image file path
-            PICASSOPEELER_PRICE,                            // currency value
+            new StaticPriceModel(PICASSOPEELER_PRICE),      // currency value
             "picasso_peeler"                                // item id
     );
 
@@ -126,7 +129,7 @@ public class ExampleSurfStoreAssets implements IStoreAssets {
             "Reef Shredder",                                // name
             "A mean paddling machine for the deep reefs",   // description
             "img/examples/surf/reef-shredder.png",          // image file path
-            REEFSHREDDER_PRICE,                             // currency value
+            new StaticPriceModel(REEFSHREDDER_PRICE),       // currency value
             "reef_shredder"                                 // item id
     );
 
@@ -139,7 +142,7 @@ public class ExampleSurfStoreAssets implements IStoreAssets {
             "Sixties Gun",                                  // name
             "Ride Venice-style with this time machine",     // description
             "img/examples/surf/sixties-gun.png",            // image file path
-            SIXTIESGUN_PRICE,                               // currency value
+            new StaticPriceModel(SIXTIESGUN_PRICE),         // currency value
             "sixties_gun"                                   // item id
     );
 
@@ -152,7 +155,7 @@ public class ExampleSurfStoreAssets implements IStoreAssets {
             "Traditional Fish",                             // name
             "The all around conditions board of choice",    // description
             "img/examples/surf/traditional-fish.png",       // image file path
-            TRADITIONALFISH_PRICE,                          // currency value
+            new StaticPriceModel(TRADITIONALFISH_PRICE),    // currency value
             "traditional_fish"                              // item id
     );
 

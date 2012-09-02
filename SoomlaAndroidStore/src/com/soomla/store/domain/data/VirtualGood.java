@@ -26,7 +26,8 @@ import java.util.Iterator;
 
 /**
  * This is a representation of the application's virtual good.
- * Virtual goods are bought with {@link VirtualCurrency} hence the {@link VirtualGood#mCurrencyValue}
+ * Virtual goods are bought with one or more {@link VirtualCurrency}. The price
+ * is determined by the {@link VirtualGood#mPriceModel}
  */
 public class VirtualGood extends VirtualItem {
 
@@ -37,29 +38,22 @@ public class VirtualGood extends VirtualItem {
      *                       in the store in the description section.
      * @param mImgFilePath is the path to the image that corresponds to the virtual good.
      * @param mItemId is the id of the virtual good.
-     * @param mCurrencyValue is a hash with the a currency's itemId and the amount needed from it to purchase this
-     *                       virtual good.
+     * @param mPriceModel is the way the price of the current virtual good is calculated.
      */
-    public VirtualGood(String mName, String mDescription, String mImgFilePath, HashMap<String, Integer> mCurrencyValue,
+    public VirtualGood(String mName, String mDescription, String mImgFilePath, AbstractPriceModel mPriceModel,
             String mItemId) {
         super(mName, mDescription, mImgFilePath, mItemId);
-        this.mCurrencyValue = mCurrencyValue;
+        this.mPriceModel = mPriceModel;
     }
 
     public VirtualGood(JSONObject jsonObject) {
         super(jsonObject);
         try {
-            JSONObject currencyValues = jsonObject.getJSONObject(JSONConsts.GOOD_CURRENCY_VALUE);
-            Iterator<?> keys = currencyValues.keys();
-            this.mCurrencyValue = new HashMap<String, Integer>();
-            while(keys.hasNext())
-            {
-                String key = (String)keys.next();
-                this.mCurrencyValue.put(key, currencyValues.getInt(key));
-            }
+            this.mPriceModel = AbstractPriceModel.fromJSONObject(jsonObject.getJSONObject(JSONConsts
+                    .GOOD_PRICE_MODEL));
         } catch (JSONException e) {
             if (StoreConfig.debug){
-                Log.d(TAG, "An error occured while parsing JSON object.");
+                Log.d(TAG, "An error occurred while parsing JSON object.");
             }
         }
     }
@@ -68,52 +62,31 @@ public class VirtualGood extends VirtualItem {
         JSONObject parentJsonObject = super.toJSONObject();
         JSONObject jsonObject = new JSONObject();
         try {
-            JSONObject currencyValues = new JSONObject();
-            for(String key : mCurrencyValue.keySet()){
-                currencyValues.put(key, mCurrencyValue.get(key));
-            }
-            jsonObject.put(JSONConsts.GOOD_CURRENCY_VALUE, currencyValues);
-
             Iterator<?> keys = parentJsonObject.keys();
             while(keys.hasNext())
             {
                 String key = (String)keys.next();
                 jsonObject.put(key, parentJsonObject.get(key));
             }
+
+            JSONObject priceModelObject = AbstractPriceModel.priceModelToJSONObject(mPriceModel);
+            jsonObject.put(JSONConsts.GOOD_PRICE_MODEL, priceModelObject);
         } catch (JSONException e) {
             if (StoreConfig.debug){
-                Log.d(TAG, "An error occured while generating JSON object.");
+                Log.d(TAG, "An error occurred while generating JSON object.");
             }
         }
 
         return jsonObject;
     }
 
-    /** Getters **/
-
-    /**
-     * Get the amount of currency need to purchase this virtual good by the currency itemId.
-     * @param currencyItemId is the itemId of the currency in question.
-     * @return the amount of currency needed to purchase this virtual good.
-     */
-    public int getCurrencyValue(String currencyItemId){
-        if (!mCurrencyValue.containsKey(currencyItemId)){
-            return 0;
-        }
-        return mCurrencyValue.get(currencyItemId);
-    }
-
-    /**
-     * Get the entire hash that represents the price of this virtual good.
-     * @return the entire hash that represents the price of this virtual good.
-     */
     public HashMap<String, Integer> getCurrencyValues(){
-        return mCurrencyValue;
+        return mPriceModel.getCurrentPrice(this);
     }
 
     /** Private members **/
 
     private static final String TAG = "SOOMLA VirtualGood";
 
-    private HashMap<String, Integer> mCurrencyValue;
+    private AbstractPriceModel mPriceModel;
 }
