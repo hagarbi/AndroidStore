@@ -35,7 +35,7 @@ public class JSONConsts {
 
     public static final String GOOD_PRICE_MODEL         = "priceModel";
     public static final String GOOD_PRICE_MODEL_VALUES  = "values";
-    public static final String GOOD_PRICE_MODEL_TYPE    = "values";
+    public static final String GOOD_PRICE_MODEL_TYPE    = "type";
 
     public static final String ITEM_NAME                = "name";
     public static final String ITEM_DESCRIPTION         = "description";
