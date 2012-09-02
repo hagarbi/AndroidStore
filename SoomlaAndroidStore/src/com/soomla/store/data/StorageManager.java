@@ -38,6 +38,15 @@ public class StorageManager {
         return sInstance;
     }
 
+    /**
+     * Initialized the {@link StorageManager} with the given Context and {@link IStoreAssets}.
+     * You have to initialize the {@link StorageManager} before you open the store activity.
+     * This initializer also initializes the {@link StoreInfo}.
+     * @param context is the application context. {@link StorageManager} uses the context to let {@link
+     * StoreDatabase} know where to save the DB file and to provide {@link AESObfuscator} with parts of information
+     * to create the encryption secret.
+     * @param storeAssets is the representation of the current application's store.
+     */
     public void initialize(Context context,
                            IStoreAssets storeAssets){
         if (StoreConfig.debug){
@@ -53,10 +62,12 @@ public class StorageManager {
 
         mVirtualCurrencyStorage =   new VirtualCurrencyStorage();
         mVirtualGoodsStorage =      new VirtualGoodsStorage();
-        mMarketPurchaseStorage =    new MarketPurchaseStorage();
 
         StoreInfo.getInstance().initialize(storeAssets);
     }
+
+
+    /** Getters **/
 
     public VirtualCurrencyStorage getVirtualCurrencyStorage(){
         return mVirtualCurrencyStorage;
@@ -64,10 +75,6 @@ public class StorageManager {
 
     public VirtualGoodsStorage getVirtualGoodsStorage(){
         return mVirtualGoodsStorage;
-    }
-
-    public MarketPurchaseStorage getMarketPurchaseStorage() {
-        return mMarketPurchaseStorage;
     }
 
     public static AESObfuscator getObfuscator(){
@@ -85,7 +92,6 @@ public class StorageManager {
 
     private VirtualGoodsStorage     mVirtualGoodsStorage;
     private VirtualCurrencyStorage  mVirtualCurrencyStorage;
-    private MarketPurchaseStorage   mMarketPurchaseStorage;
     private static StorageManager   sInstance;
 
     private static AESObfuscator    sObfuscator;

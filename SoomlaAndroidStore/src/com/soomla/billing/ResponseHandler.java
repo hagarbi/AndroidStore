@@ -126,10 +126,6 @@ public class ResponseHandler {
             @Override
             public void run() {
                 try {
-                    // adding a record to history
-                    StorageManager.getInstance().getMarketPurchaseStorage().add(
-                        purchaseState, productId, orderId, purchaseTime, developerPayload);
-
                     VirtualCurrencyPack pack = StoreInfo.getInstance().getPackByGoogleProductId(productId);
 
                     // updating the currency balance
