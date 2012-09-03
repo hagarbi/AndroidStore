@@ -75,7 +75,7 @@ Contribution
 
 We want you!
 
-Fork -> Clone -> Implement -> Test -> Pull-Request. We have great respect for contribution.
+Fork -> Clone -> Implement -> Test -> Pull-Request. We have great RESPECT for contributors.
 
 SOOMLA, Elsewhere ...
 ---
