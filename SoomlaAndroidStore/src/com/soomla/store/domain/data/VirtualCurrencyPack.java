@@ -42,16 +42,16 @@ public class VirtualCurrencyPack extends VirtualItem {
      * @param mImgFilePath is the path to the image that corresponds to the currency pack.
      * @param mItemId is the id of the virtual currency pack.
      * @param productId is the product id on Google Market..
-     * @param mCost is the actual $$ cost of the virtual currency pack.
+     * @param mPrice is the actual $$ cost of the virtual currency pack.
      * @param mCurrencyAmout is the amount of currency in the pack.
      * @param mCurrency is the currency associated with this pack.
      */
     public VirtualCurrencyPack(String mName, String mDescription, String mImgFilePath, String mItemId,
-                               String productId, double mCost, int mCurrencyAmout, VirtualCurrency mCurrency) {
+                               String productId, double mPrice, int mCurrencyAmout, VirtualCurrency mCurrency) {
         super(mName, mDescription, mImgFilePath, mItemId);
         this.mCurrency = mCurrency;
         this.mGoogleItem = new GoogleMarketItem(productId, GoogleMarketItem.Managed.UNMANAGED);
-        this.mCost = mCost;
+        this.mPrice = mPrice;
         this.mCurrencyAmount = mCurrencyAmout;
     }
 
@@ -66,7 +66,7 @@ public class VirtualCurrencyPack extends VirtualItem {
         try {
             this.mGoogleItem = new GoogleMarketItem(jsonObject.getString(JSONConsts.CURRENCYPACK_PRODUCT_ID),
                     GoogleMarketItem.Managed.UNMANAGED);
-            this.mCost = jsonObject.getDouble(JSONConsts.CURRENCYPACK_PRICE);
+            this.mPrice = jsonObject.getDouble(JSONConsts.CURRENCYPACK_PRICE);
             this.mCurrencyAmount = jsonObject.getInt(JSONConsts.CURRENCYPACK_AMOUNT);
             this.mCurrency = StoreInfo.getInstance().getVirtualCurrencyByItemId(jsonObject.getString
                     (JSONConsts.CURRENCYPACK_CURRENCYITEMID));
@@ -85,7 +85,7 @@ public class VirtualCurrencyPack extends VirtualItem {
         JSONObject parentJsonObject = super.toJSONObject();
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put(JSONConsts.CURRENCYPACK_PRICE, new Double(mCost));
+            jsonObject.put(JSONConsts.CURRENCYPACK_PRICE, new Double(mPrice));
             jsonObject.put(JSONConsts.CURRENCYPACK_PRODUCT_ID, mGoogleItem.getMarketId());
             jsonObject.put(JSONConsts.CURRENCYPACK_AMOUNT, new Integer(mCurrencyAmount));
             jsonObject.put(JSONConsts.CURRENCYPACK_CURRENCYITEMID, mCurrency.getItemId());
@@ -115,8 +115,8 @@ public class VirtualCurrencyPack extends VirtualItem {
         return mGoogleItem.getMarketId();
     }
 
-    public double getCost() {
-        return mCost;
+    public double getPrice() {
+        return mPrice;
     }
 
     public int getCurrencyAmount() {
@@ -132,7 +132,7 @@ public class VirtualCurrencyPack extends VirtualItem {
     private static final String TAG = "SOOMLA VirtualCurrencyPack";
 
     private GoogleMarketItem mGoogleItem;
-    private double           mCost;
+    private double           mPrice;
     private int              mCurrencyAmount;
     private VirtualCurrency  mCurrency;
 }

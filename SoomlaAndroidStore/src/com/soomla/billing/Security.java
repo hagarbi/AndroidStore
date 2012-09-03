@@ -123,7 +123,8 @@ public class Security {
         }
 
         boolean verified = false;
-        if (!StoreConfig.debug) {
+        // TODO: check this out... we might not want to verify when debugging.
+//        if (!StoreConfig.debug) {
             if (TextUtils.isEmpty(signature)) {
                 Log.w(TAG, "Empty signature. Stopping verification.");
                 return null;
@@ -134,7 +135,7 @@ public class Security {
                 Log.w(TAG, "signature does not match data.");
                 return null;
             }
-        }
+//        }
 
         JSONObject jObject;
         JSONArray jTransactionsArray = null;
