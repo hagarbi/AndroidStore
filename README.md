@@ -34,7 +34,7 @@ Getting Started (Using source code)
 
         <activity android:name="com.soomla.store.StoreActivity" />
 
-3. Create your own implementation of IStoreAssets in order to describe the UI template, your store's art and meta-data. Initialize StoreInfo with the class you just created:
+3. Create your own implementation of IStoreAssets in order to describe the UI template, your store's art and meta-data. Initialize StorageManager with the class you just created:
 
  `StorageManager.getInstance().initialize(getApplicationContext(), new YourStoreAssetsImplementation());`
 
