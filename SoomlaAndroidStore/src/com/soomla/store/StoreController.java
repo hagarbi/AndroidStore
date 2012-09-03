@@ -119,7 +119,7 @@ public class StoreController {
                 StoreEventHandlers.getInstance().onVirtualGoodPurchased(good);
             }
             else {
-                mActivity.sendToJS("insufficientFunds", "" + needMore.getItemId());
+                mActivity.sendToJS("insufficientFunds", "'" + needMore.getItemId() + "'");
             }
         } catch (VirtualItemNotFoundException e) {
             mActivity.sendToJS("unexpectedError", "");
