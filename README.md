@@ -36,7 +36,7 @@ Getting Started (Using source code)
 
 3. Create your own implementation of IStoreAssets in order to describe the UI template, your store's art and meta-data. Initialize StoreInfo with the class you just created:
 
- `StoreInfo.getInstance().initialize(new YourStoreAssetsImplementation());`
+ `StorageManager.getInstance().initialize(getApplicationContext(), new YourStoreAssetsImplementation());`
 
 4. Decide where in your code you want to open the store and put this code there. This loads the store's activity in order to let the user purchase virtual items.:
 
