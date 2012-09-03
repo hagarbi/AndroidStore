@@ -8,7 +8,7 @@ The Android store is a Java project that works seamlessly with Google Play's in-
 
 Getting Started (Using source code)
 ---
-* Before doing anything, SOOMLA recommends that your read [Android In-app Billing](http://developer.android.com/guide/google/play/billing/index.html).
+* Before doing anything, SOOMLA recommends that you go through [Android In-app Billing](http://developer.android.com/guide/google/play/billing/index.html).
 
 1. Clone SOOMLA-Android-Store and its submodules (notice the '--recursive' that clones submodules). Copy all files from SoomlaAndroidStore's subfolders to their equivallent folders in your Android project (And link the jars from 'libs' folder):
 
