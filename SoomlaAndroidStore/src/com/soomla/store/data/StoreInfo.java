@@ -139,6 +139,28 @@ public class StoreInfo {
     }
 
     /**
+     * Use this function if you need to know the definition of a specific virtual currency pack.
+     * @param itemId is the requested pack's item id.
+     * @return the definition of the virtual pack requested.
+     * @throws VirtualItemNotFoundException
+     */
+    public VirtualCurrencyPack getPackByItemId(String itemId) throws VirtualItemNotFoundException {
+        VirtualCurrencyPack pack = null;
+        for(VirtualCurrencyPack p : mVirtualCurrencyPacks){
+            if (p.getItemId().equals(itemId)){
+                pack = p;
+                break;
+            }
+        }
+
+        if (pack == null){
+            throw new VirtualItemNotFoundException("itemId", itemId);
+        }
+
+        return pack;
+    }
+
+    /**
      * Use this function if you need to know the definition of a specific virtual good.
      * @param itemId is the requested good's item id.
      * @return the definition of the virtual good requested.
