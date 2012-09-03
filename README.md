@@ -8,7 +8,7 @@ The Android store is a Java project that works seamlessly with Google Play's in-
 
 Getting Started (Using source code)
 ---
-* Before doing anything, SOOMLA recommends that your read [Android In-app Billing](http://developer.android.com/guide/google/play/billing/index.html).
+* Before doing anything, SOOMLA recommends that you go through [Android In-app Billing](http://developer.android.com/guide/google/play/billing/index.html).
 
 1. Clone SOOMLA-Android-Store and its submodules (notice the '--recursive' that clones submodules). Copy all files from SoomlaAndroidStore's subfolders to their equivallent folders in your Android project (And link the jars from 'libs' folder):
 
@@ -34,9 +34,9 @@ Getting Started (Using source code)
 
         <activity android:name="com.soomla.store.StoreActivity" />
 
-3. Create your own implementation of IStoreAssets in order to describe the UI template, your store's art and meta-data. Initialize StoreInfo with the class you just created:
+3. Create your own implementation of IStoreAssets in order to describe the UI template, your store's art and meta-data. Initialize StorageManager with the class you just created:
 
- `StoreInfo.getInstance().initialize(new YourStoreAssetsImplementation());`
+ `StorageManager.getInstance().initialize(getApplicationContext(), new YourStoreAssetsImplementation());`
 
 4. Decide where in your code you want to open the store and put this code there. This loads the store's activity in order to let the user purchase virtual items.:
 
