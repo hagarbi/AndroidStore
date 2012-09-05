@@ -6,6 +6,9 @@ SOOMLA-Android-Store
 ---
 The Android store is a Java project that works seamlessly with Google Play's in-app purchasing API. SOOMLA-Android-Store is tightly coupled with Soomla-Storefront to provide you with the store's UI. All you need to do is let it know your specific game's assets and you're good to go.
 
+
+Check out our [Wiki] (https://github.com/refaelos/Soomla-Android-Store/wiki) for more information about the project and how to use it better.
+
 Getting Started (Using source code)
 ---
 * Before doing anything, SOOMLA recommends that you go through [Android In-app Billing](http://developer.android.com/guide/google/play/billing/index.html).
@@ -72,7 +75,7 @@ Contribution
 
 We want you!
 
-Fork -> Clone -> implement -> Test -> Pull-Request. We have great respect for contribution.
+Fork -> Clone -> Implement -> Test -> Pull-Request. We have great RESPECT for contributors.
 
 SOOMLA, Elsewhere ...
 ---
