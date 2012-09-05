@@ -305,12 +305,12 @@ public class StoreInfo {
 
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put(JSONConsts.STORE_VIRTUALCURRENCIES, virtualCurrencies);
-            jsonObject.put(JSONConsts.STORE_CURRENCYPACKS, currencyPacks);
-            jsonObject.put(JSONConsts.STORE_VIRTUALGOODS, virtualGoods);
             jsonObject.put(JSONConsts.STORE_TEMPLATE, template);
             jsonObject.put(JSONConsts.STORE_BACKGROUND, mStoreBackground);
+            jsonObject.put(JSONConsts.STORE_VIRTUALCURRENCIES, virtualCurrencies);
             jsonObject.put(JSONConsts.STORE_ISCURRENCYDISABLED, mIsCurrencyStoreDisabled);
+            jsonObject.put(JSONConsts.STORE_VIRTUALGOODS, virtualGoods);
+            jsonObject.put(JSONConsts.STORE_CURRENCYPACKS, currencyPacks);
         } catch (JSONException e) {
             if (StoreConfig.debug){
                 Log.d(TAG, "An error occurred while generating JSON object.");
