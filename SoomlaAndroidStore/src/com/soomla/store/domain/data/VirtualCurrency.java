@@ -22,7 +22,7 @@ import org.json.JSONObject;
  * This is a representation of the game's virtual currency.
  * Each game can have multiple instances of a virtual currency, all kept in {@link com.soomla.store.data.StoreInfo};
  */
-public class VirtualCurrency extends VirtualItem {
+public class VirtualCurrency extends AbstractVirtualItem {
 
     /** Constructor
      *

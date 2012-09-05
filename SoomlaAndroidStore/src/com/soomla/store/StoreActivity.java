@@ -161,7 +161,7 @@ public class StoreActivity extends Activity {
     private WebView         mWebView;
     private Handler         mHandler;
     private Queue<String>   mPendingJSMessages;
-    private boolean mJSuiReady;
+    private boolean         mJSuiReady;
     private ProgressDialog  mProgressDialog;
     private StoreController mStoreController;
 }

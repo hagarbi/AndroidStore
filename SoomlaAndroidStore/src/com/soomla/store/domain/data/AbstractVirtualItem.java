@@ -24,7 +24,7 @@ import org.json.JSONObject;
 /**
  * This class is the parent of all virtual items in the application.
  */
-public abstract class VirtualItem {
+public abstract class AbstractVirtualItem {
 
     /** Constructor
      *
@@ -34,7 +34,7 @@ public abstract class VirtualItem {
      * @param mImgFilePath is the path to the image that corresponds to the item.
      * @param mItemId is the id of the virtual item.
      */
-    public VirtualItem(String mName, String mDescription, String mImgFilePath, String mItemId) {
+    public AbstractVirtualItem(String mName, String mDescription, String mImgFilePath, String mItemId) {
         this.mName = mName;
         this.mDescription = mDescription;
         this.mImgFilePath = mImgFilePath;
@@ -43,11 +43,11 @@ public abstract class VirtualItem {
 
     /** Constructor
      *
-     * Generates an instance of {@link VirtualItem} from a JSONObject.
-     * @param jsonObject is a JSONObject representation of the wanted {@link VirtualItem}.
+     * Generates an instance of {@link AbstractVirtualItem} from a JSONObject.
+     * @param jsonObject is a JSONObject representation of the wanted {@link AbstractVirtualItem}.
      * @throws JSONException
      */
-    public VirtualItem(JSONObject jsonObject) throws JSONException{
+    public AbstractVirtualItem(JSONObject jsonObject) throws JSONException{
         mName = jsonObject.getString(JSONConsts.ITEM_NAME);
         mDescription = jsonObject.getString(JSONConsts.ITEM_DESCRIPTION);
         mImgFilePath = jsonObject.getString(JSONConsts.ITEM_IMAGEFILEPATH);
@@ -55,8 +55,8 @@ public abstract class VirtualItem {
     }
 
     /**
-     * Converts the current {@link VirtualItem} to a JSONObject.
-     * @return a JSONObject representation of the current {@link VirtualItem}.
+     * Converts the current {@link AbstractVirtualItem} to a JSONObject.
+     * @return a JSONObject representation of the current {@link AbstractVirtualItem}.
      */
     public JSONObject toJSONObject(){
         JSONObject jsonObject = new JSONObject();
@@ -94,7 +94,7 @@ public abstract class VirtualItem {
 
     /** Private members **/
 
-    private static final String TAG = "SOOMLA VirtualItem";
+    private static final String TAG = "SOOMLA AbstractVirtualItem";
 
     private String mName;
     private String mDescription;

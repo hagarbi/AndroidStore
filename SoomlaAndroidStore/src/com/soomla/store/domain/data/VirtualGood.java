@@ -29,7 +29,7 @@ import java.util.Iterator;
  * Virtual goods are bought with one or more {@link VirtualCurrency}. The price
  * is determined by the {@link VirtualGood#mPriceModel}
  */
-public class VirtualGood extends VirtualItem {
+public class VirtualGood extends AbstractVirtualItem {
 
     /** Constructor
      *

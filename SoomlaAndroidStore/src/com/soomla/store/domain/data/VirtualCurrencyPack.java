@@ -32,7 +32,7 @@ import java.util.Iterator;
  * The currency pack usually has a google item related to it. As a developer,
  * you'll define the google item in Google's in-app purchase dashboard.
  */
-public class VirtualCurrencyPack extends VirtualItem {
+public class VirtualCurrencyPack extends AbstractVirtualItem {
 
     /** Constructor
      *
