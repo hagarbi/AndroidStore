@@ -3,6 +3,7 @@ package com.soomla.store.example;
 import android.content.Context;
 import android.widget.Toast;
 import com.soomla.store.IStoreEventHandler;
+import com.soomla.store.StoreConfig;
 import com.soomla.store.domain.data.VirtualCurrencyPack;
 import com.soomla.store.domain.data.VirtualGood;
 
@@ -17,45 +18,45 @@ public class ExampleEventHandler implements IStoreEventHandler {
 
     @Override
     public void onVirtualCurrencyPackPurchased(VirtualCurrencyPack pack) {
-        Toast toast = Toast.makeText(mContext, pack.getName() + " was just purchased", 5000);
-        toast.show();
+        showToastIfDebug(pack.getName() + " was just purchased");
     }
 
     @Override
     public void onVirtualGoodPurchased(VirtualGood good) {
-        Toast toast = Toast.makeText(mContext, good.getName() + " was just purchased", 5000);
-        toast.show();
+        showToastIfDebug(good.getName() + " was just purchased");
     }
 
     @Override
     public void onBillingSupported() {
-        Toast toast = Toast.makeText(mContext, "Billing is supported", 5000);
-        toast.show();
+        showToastIfDebug("Billing is supported");
     }
 
     @Override
     public void onBillingNotSupported() {
-        Toast toast = Toast.makeText(mContext, "Billing is not supported", 5000);
-        toast.show();
+        showToastIfDebug("Billing is not supported");
     }
 
     @Override
     public void onMarketPurchaseProcessStarted() {
-        Toast toast = Toast.makeText(mContext, "Market purchase started", 5000);
-        toast.show();
+        showToastIfDebug("Market purchase started");
     }
 
     @Override
     public void onGoodsPurchaseProcessStarted() {
-        Toast toast = Toast.makeText(mContext, "Goods purchase started", 5000);
-        toast.show();
+        showToastIfDebug("Goods purchase started");
     }
 
     @Override
     public void onClosingStore() {
         mActivity.robotBackHome();
 
-        Toast toast = Toast.makeText(mContext, "Going to close store", 5000);
-        toast.show();
+        showToastIfDebug("Going to close store");
+    }
+
+    private void showToastIfDebug(String msg) {
+        if (StoreConfig.debug){
+            Toast toast = Toast.makeText(mContext, msg, 5000);
+            toast.show();
+        }
     }
 }

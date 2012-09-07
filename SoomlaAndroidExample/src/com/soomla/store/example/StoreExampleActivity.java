@@ -40,7 +40,7 @@ public class StoreExampleActivity extends Activity {
          */
 
         StorageManager.getInstance().initialize(getApplicationContext(),
-                new ExampleSurfStoreAssets());
+                new ExampleMuffinRushAssets());
         StoreEventHandlers.getInstance().addEventHandler(
                 new ExampleEventHandler(getApplicationContext(), this));
 
