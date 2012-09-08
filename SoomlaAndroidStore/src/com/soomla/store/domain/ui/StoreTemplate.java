@@ -27,16 +27,13 @@ public class StoreTemplate {
 
     /** Constructor
      *
-     * @param mName is the template name.
      * @param mElements is the various elements in the templates.
      * @param mProperties is the template's properties.
      * @param orientationLandscape determines the screen orientation.
      */
-    public StoreTemplate(String mName,
-                         StoreTemplateElements mElements,
+    public StoreTemplate(StoreTemplateElements mElements,
                          StoreTemplateProperties mProperties,
                          boolean orientationLandscape) {
-        this.mName = mName;
         this.mElements = mElements;
         this.mProperties = mProperties;
         this.mOrientationLandscape = orientationLandscape;
@@ -49,7 +46,6 @@ public class StoreTemplate {
      * @throws JSONException
      */
     public StoreTemplate(JSONObject jsonObject) throws JSONException {
-        mName = jsonObject.getString("name");
         mElements = new StoreTemplateElements(jsonObject.getJSONObject("elements"));
         mProperties = new StoreTemplateProperties(jsonObject.getJSONObject("properties"));
         mOrientationLandscape = jsonObject.getBoolean("orientationLandscape");
@@ -62,7 +58,6 @@ public class StoreTemplate {
     public JSONObject toJSONObject(){
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("name", mName);
             jsonObject.put("elements", mElements.toJSONObject());
             jsonObject.put("properties", mProperties.toJSONObject());
             jsonObject.put("orientationLandscape", mOrientationLandscape);
@@ -75,18 +70,6 @@ public class StoreTemplate {
         return jsonObject;
     }
 
-    public String getName() {
-        return mName;
-    }
-
-    public StoreTemplateElements getElements() {
-        return mElements;
-    }
-
-    public StoreTemplateProperties getProperties() {
-        return mProperties;
-    }
-
     public boolean isOrientationLandscape() {
         return mOrientationLandscape;
     }
@@ -94,7 +77,6 @@ public class StoreTemplate {
 
     private static final String TAG = "SOOMLA StoreTemplate";
 
-    private String                  mName;
     private StoreTemplateElements   mElements;
     private StoreTemplateProperties mProperties;
     private boolean                 mOrientationLandscape;

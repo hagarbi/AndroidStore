@@ -21,11 +21,26 @@ package com.soomla.store.data;
 public class JSONConsts {
 
     public static final String STORE_TEMPLATE           = "template";
+    public static final String STORE_THEME              = "theme";
     public static final String STORE_BACKGROUND         = "background";
     public static final String STORE_ISCURRENCYDISABLED = "isCurrencyStoreDisabled";
     public static final String STORE_VIRTUALCURRENCIES  = "virtualCurrencies";
     public static final String STORE_CURRENCYPACKS      = "currencyPacks";
     public static final String STORE_VIRTUALGOODS       = "virtualGoods";
+
+    public static final String STORE_THEME_NAME         = "name";
+    public static final String STORE_THEME_TEMPLATE     = "template";
+    public static final String STORE_THEME_GOODSVIEW    = "virtualGoodsView";
+    public static final String STORE_THEME_CURRENCYPACKSVIEW= "currencyPacksView";
+    public static final String STORE_THEME_MODALDIALOG  = "modalDialog";
+
+    public static final String STORE_MODALDIALOG_TEMPLATE= "template";
+
+    public static final String STORE_VIEW_TYPE          = "type";
+    public static final String STORE_VIEW_ITEM          = "item";
+
+    public static final String STORE_VIEWITEM_TYPE      = "type";
+    public static final String STORE_VIEWITEM_TEMPLATE  = "template";
 
     public static final String CURRENCYPACK_PRODUCT_ID  = "productId";
     public static final String CURRENCYPACK_PRICE       = "price";
@@ -42,3 +57,4 @@ public class JSONConsts {
     public static final String ITEM_ITEMID              = "itemId";
 
 }
+

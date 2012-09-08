@@ -19,6 +19,7 @@ import com.soomla.store.domain.data.VirtualCurrency;
 import com.soomla.store.domain.data.VirtualCurrencyPack;
 import com.soomla.store.domain.data.VirtualGood;
 import com.soomla.store.domain.ui.StoreTemplate;
+import com.soomla.store.domain.ui.StoreTheme;
 
 /**
  * This interface represents a single game's metadata.
@@ -31,6 +32,12 @@ public interface IStoreAssets {
      * @return your chosen template.
      */
     StoreTemplate getStoreTemplate();
+
+    /**
+     * The theme for the selected template
+     * @return your chosen theme.
+     */
+    StoreTheme getStoreTheme();
 
     /**
      * A path to the image that you want to use as your store background.

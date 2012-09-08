@@ -25,6 +25,7 @@ import com.soomla.store.domain.data.VirtualCurrency;
 import com.soomla.store.domain.data.VirtualCurrencyPack;
 import com.soomla.store.domain.data.VirtualGood;
 import com.soomla.store.domain.ui.StoreTemplate;
+import com.soomla.store.domain.ui.StoreTheme;
 import com.soomla.store.exceptions.VirtualItemNotFoundException;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -110,6 +111,7 @@ public class StoreInfo {
         mVirtualGoods         = Arrays.asList(storeAssets.getVirtualGoods());
         mStoreBackground      = storeAssets.getStoreBackground();
         mTemplate             = storeAssets.getStoreTemplate();
+        mTheme                = storeAssets.getStoreTheme();
 
         // put StoreInfo in the database as JSON
         String obf_json = StorageManager.getObfuscator().obfuscateString(getJsonString());
@@ -250,6 +252,7 @@ public class StoreInfo {
     private void fromJSONObject(JSONObject jsonObject){
         try {
             mTemplate = new StoreTemplate(jsonObject.getJSONObject(JSONConsts.STORE_TEMPLATE));
+            mTheme = new StoreTheme(jsonObject.getJSONObject(JSONConsts.STORE_THEME));
             mStoreBackground = jsonObject.getString(JSONConsts.STORE_BACKGROUND);
             mIsCurrencyStoreDisabled = jsonObject.getBoolean(JSONConsts.STORE_ISCURRENCYDISABLED);
 
@@ -302,10 +305,12 @@ public class StoreInfo {
         }
 
         JSONObject template = mTemplate.toJSONObject();
+        JSONObject theme = mTheme.toJSONObject();
 
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put(JSONConsts.STORE_TEMPLATE, template);
+            jsonObject.put(JSONConsts.STORE_THEME, theme);
             jsonObject.put(JSONConsts.STORE_BACKGROUND, mStoreBackground);
             jsonObject.put(JSONConsts.STORE_VIRTUALCURRENCIES, virtualCurrencies);
             jsonObject.put(JSONConsts.STORE_ISCURRENCYDISABLED, mIsCurrencyStoreDisabled);
@@ -329,6 +334,7 @@ public class StoreInfo {
     private List<VirtualCurrencyPack>               mVirtualCurrencyPacks;
     private List<VirtualGood>                       mVirtualGoods;
     private StoreTemplate                           mTemplate;
+    private StoreTheme                              mTheme;
     private String                                  mStoreBackground;
     private boolean                                 mIsCurrencyStoreDisabled;
 }
