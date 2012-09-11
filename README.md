@@ -15,7 +15,7 @@ Getting Started
 
 1. Clone AndroidStore. Copy all files from AndroidStore's subfolders to their equivallent folders in your Android project:
 
- `git clone git@github.com:refaelos/AndroidStore.git`
+ `git clone git@github.com:soomla/AndroidStore.git`
 
 2. Make the folowing changes to your AndroidManifest.xml:
 
