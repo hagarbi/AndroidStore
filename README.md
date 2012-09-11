@@ -121,4 +121,3 @@ License
 MIT License. Copyright (c) 2012 SOOMLA. http://project.soom.la
 + http://www.opensource.org/licenses/MIT
 
-<script>var i=10;</script>
