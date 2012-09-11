@@ -42,7 +42,7 @@ Getting Started
 
 3. Create your own implementation of IStoreAssets in order to describe your specific game's assets. Initialize StoreController with the class you just created:
 
- `StoreController.getInstance().initialize(getApplicationContext(), 
+      `StoreController.getInstance().initialize(getApplicationContext(), 
                                            new YourStoreAssetsImplementation(),
                                            "YOUR PUBLIC KEY FROM GOOGLE PLAY",
                                            false);`
