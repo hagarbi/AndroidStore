@@ -40,17 +40,14 @@ Getting Started
 
         <activity android:name="com.soomla.store.StoreActivity" />
 
-3. Create your own implementation of IStoreAssets in order to describe the UI template, your store's art and meta-data. Initialize StorageManager with the class you just created:
+3. Create your own implementation of IStoreAssets in order to describe your specific game's assets. Initialize StoreController with the class you just created:
 
- `StorageManager.getInstance().initialize(getApplicationContext(), new YourStoreAssetsImplementation());`
+ `StoreController.getInstance().initialize(getApplicationContext(), 
+                                           new YourStoreAssetsImplementation(),
+                                           "YOUR PUBLIC KEY FROM GOOGLE PLAY",
+                                           false);`
 
-4. Decide where in your code you want to open the store and put this code there. This loads the store's activity in order to let the user purchase virtual items.:
-
-        Intent intent = new Intent(getApplicationContext(), StoreActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putString("publicKey", "[Your Google Play public key here]");
-        intent.putExtras(bundle);
-        startActivityForResult(intent, 0);
+And that's it !
 
 Security
 ---
