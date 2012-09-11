@@ -1,57 +1,86 @@
 Welcome to The SOOMLA Project
 ---
-The SOOMLA Project is a series of open-source projects that aims to help game developers get better in-app purchasing stores for their games. The open-source platform-specific projects include everything a game developer needs, from storage of virtual items to purchasing mechanisms with the various devices' native stores. As and optional (an currently experimental) part of our open-source projects you also get the store's layout which you can customize with your own game's assets.
+The SOOMLA Project is a series of open-source projects that aims to help game developers get better in-app purchasing stores for their games. The open-source platform-specific projects include everything a game developer needs, from storage of virtual items to purchasing mechanisms with the various devices' native stores. As an optional (and currently EXPERIMENTAL) part of our open-source projects you also get the store's layout which you can customize with your own game's assets.
 
-* All you need to do is let it know your specific game's assets and you're good to go.
-* and its submodules (notice the '--recursive' that clones submodules)
-
-SOOMLA-Android-Store
+AndroidStore
 ---
 The Android store is a Java project that works seamlessly with Google Play's in-app purchasing API.
 
 
-Check out our [Wiki] (https://github.com/refaelos/Soomla-Android-Store/wiki) for more information about the project and how to use it better.
+Check out our [Wiki] (https://github.com/refaelos/AndroidStore/wiki) for more information about the project and how to use it better.
 
 Getting Started
 ---
 * Before doing anything, SOOMLA recommends that you go through [Android In-app Billing](http://developer.android.com/guide/google/play/billing/index.html).
 
-1. Clone SOOMLA-Android-Store. Copy all files from SoomlaAndroidStore's subfolders to their equivallent folders in your Android project:
+1. Clone AndroidStore. Copy all files from AndroidStore's subfolders to their equivallent folders in your Android project:
 
- `git clone git@github.com:refaelos/Soomla-Android-Store.git`
+ `git clone git@github.com:refaelos/AndroidStore.git`
 
 2. Make the folowing changes to your AndroidManifest.xml:
 
   Add the following permission:
 
- `<uses-permission android:name="com.android.vending.BILLING" />`
+    ```xml
+    <uses-permission android:name="com.android.vending.BILLING" />
+    ```
 
   Add the following code to your 'application' element:
 
-        <service android:name="com.soomla.billing.BillingService" />
+    ```xml
+    <service android:name="com.soomla.billing.BillingService" />
 
-        <receiver android:name="com.soomla.billing.BillingReceiver">
-            <intent-filter>
-                <action android:name="com.android.vending.billing.IN_APP_NOTIFY" />
-                <action android:name="com.android.vending.billing.RESPONSE_CODE" />
-                <action android:name="com.android.vending.billing.PURCHASE_STATE_CHANGED" />
-            </intent-filter>
-        </receiver>
+    <receiver android:name="com.soomla.billing.BillingReceiver">
+        <intent-filter>
+            <action android:name="com.android.vending.billing.IN_APP_NOTIFY" />
+            <action android:name="com.android.vending.billing.RESPONSE_CODE" />
+            <action android:name="com.android.vending.billing.PURCHASE_STATE_CHANGED" />
+        </intent-filter>
+    </receiver>
+    <activity android:name="com.soomla.store.StoreActivity" />
+    ```
+    
+3. Create your own implementation of _IStoreAssets_ in order to describe your specific game's assets. Initialize _StoreController_ with the class you just created:
 
-        <activity android:name="com.soomla.store.StoreActivity" />
+      ```Java
+       StoreController.getInstance().initialize(getApplicationContext(), 
+                                           new YourStoreAssetsImplementation(),
+                                           "YOUR PUBLIC KEY FROM GOOGLE PLAY",
+                                           false);
+      ```
 
-3. Create your own implementation of IStoreAssets in order to describe the UI template, your store's art and meta-data. Initialize StorageManager with the class you just created:
+And that's it ! You have Storage and in-app purchesing capabilities... ALL-IN-ONE.
 
- `StorageManager.getInstance().initialize(getApplicationContext(), new YourStoreAssetsImplementation());`
+Storage & Meta-Data
+---
 
-4. Decide where in your code you want to open the store and put this code there. This loads the store's activity in order to let the user purchase virtual items.:
+When you initialize _StoreController_, it automatically initializes two other classed: StorageManager and StoreInfo. _StorageManager_ is the father of all stoaage related instances in your game. Use it to access tha balances of virtual currencies and virtual goods (ususally, using their itemIds). _StoreInfo_ is the mother of all meta data information about your specific game. It is initialized with your implementation of IStoreAssets and you can use it to retrieve information about your specific game.
 
-        Intent intent = new Intent(getApplicationContext(), StoreActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putString("publicKey", "[Your Google Play public key here]");
-        intent.putExtras(bundle);
-        startActivityForResult(intent, 0);
+The on-device storage is encrypted and kept in a SQLite database. SOOMLA is preparing a cloud-based storage service that'll allow this SQLite to be synced to a cloud-based repository that you'll define. Stay tuned... this is just one of the goodies we prepare for you.
 
+**Example Usages**
+
+* Add 10 coins to the virtual currency with itemId "currency_coin":
+
+    ```Java
+    VirtualCurrency coin = StoreInfo.getInstance().getVirtualCurrencyByItemId("currency_coin");
+    StorageManager.getInstance().getVirtualCurrencyStorage().add(coin, 10);
+    ```
+    
+* Remove 10 virtual goods with itemId "green_hat":
+
+    ```Java
+    VirtualGood greenHat = StoreInfo.getInstance().getVirtualGoodByItemId("green_hat");
+    StorageManager.getInstance().getVirtualGoodsStorage().remove(greenHat, 10);
+    ```
+    
+* Get the current balance of green hats (virtual goods with itemId "green_hat"):
+
+    ```Java
+    VirtualGood greenHat = StoreInfo.getInstance().getVirtualGoodByItemId("green_hat");
+    int greenHatsBalance = StorageManager.getInstance().getVirtualGoodsStorage().getBalance(greenHat);
+    ```
+    
 Security
 ---
 
