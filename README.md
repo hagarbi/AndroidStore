@@ -24,22 +24,25 @@ Getting Started
 
   Add the following permission:
 
- `<uses-permission android:name="com.android.vending.BILLING" />`
+    ```xml
+    <uses-permission android:name="com.android.vending.BILLING" />
+    ```
 
   Add the following code to your 'application' element:
 
-        <service android:name="com.soomla.billing.BillingService" />
+    ```xml
+    <service android:name="com.soomla.billing.BillingService" />
 
-        <receiver android:name="com.soomla.billing.BillingReceiver">
-            <intent-filter>
-                <action android:name="com.android.vending.billing.IN_APP_NOTIFY" />
-                <action android:name="com.android.vending.billing.RESPONSE_CODE" />
-                <action android:name="com.android.vending.billing.PURCHASE_STATE_CHANGED" />
-            </intent-filter>
-        </receiver>
-
-        <activity android:name="com.soomla.store.StoreActivity" />
-
+    <receiver android:name="com.soomla.billing.BillingReceiver">
+        <intent-filter>
+            <action android:name="com.android.vending.billing.IN_APP_NOTIFY" />
+            <action android:name="com.android.vending.billing.RESPONSE_CODE" />
+            <action android:name="com.android.vending.billing.PURCHASE_STATE_CHANGED" />
+        </intent-filter>
+    </receiver>
+    <activity android:name="com.soomla.store.StoreActivity" />
+    ```
+    
 3. Create your own implementation of _IStoreAssets_ in order to describe your specific game's assets. Initialize _StoreController_ with the class you just created:
 
       ```Java
