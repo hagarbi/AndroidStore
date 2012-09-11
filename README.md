@@ -54,15 +54,14 @@ And that's it ! You have Storage and in-app purchesing capabilities... ALL-IN-ON
 Storage & Meta-Data
 ---
 
-When you initialize _StoreController_, it automatically initializes two other classed: StorageManager and StoreInfo. _StorageManager_ is the father of all stoaage related instances in your application. Use it to access tha balances of virtual currencies and virtual goods (ususally, using their itemIds).
-
+When you initialize _StoreController_, it automatically initializes two other classed: StorageManager and StoreInfo. _StorageManager_ is the father of all stoaage related instances in your game. Use it to access tha balances of virtual currencies and virtual goods (ususally, using their itemIds). _StoreInfo_ is the mother of all meta data information about your specific game. It is initialized with your implementation of IStoreAssets and you can use it to retrieve information about your specific game.
 
 The on-device storage is encrypted and kept in a SQLite database. SOOMLA is preparing a cloud-based storage service that'll allow this SQLite to be synced to a cloud-based repository that you'll define. Stay tuned... this is just one of the goodies we prepare for you.
 
 **Example Usages**
 
 * Add 10 coins to the virtual currency with itemId "currency_coin":
-* 
+
     ```Java
     VirtualCurrency coin = StoreInfo.getInstance().getVirtualCurrencyByItemId("currency_coin");
     StorageManager.getInstance().getVirtualCurrencyStorage().add(coin, 10);
