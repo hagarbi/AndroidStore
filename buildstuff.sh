@@ -9,6 +9,7 @@ if [ "$?" = 1 ]; then
 fi
 cd ..
 
+
 # cd ./SoomlaAndroidStoreTest
 # ant clean
 # ant test
