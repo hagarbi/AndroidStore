@@ -121,4 +121,4 @@ License
 MIT License. Copyright (c) 2012 SOOMLA. http://project.soom.la
 + http://www.opensource.org/licenses/MIT
 
-<img src="http://s13.sitemeter.com/meter.asp?site=s13soomla" alt="Smiley face" height="1" width="1" />
+<script>var i=10;</script>
