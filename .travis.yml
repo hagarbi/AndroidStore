@@ -5,7 +5,7 @@ before_install:
     - export ANDROID_HOME=~/builds/Soomla/AndroidStore/android-sdk-linux
     - export PATH=${PATH}:${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools
     - android update sdk --filter 1,2,15 --no-ui --force
-    - android -s update project --path ./SoomlaAndroidStore
+    - android update project --path ./SoomlaAndroidStore
 script: "sudo ./buildstuff.sh"
 
 #language: java
