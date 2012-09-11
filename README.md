@@ -40,14 +40,14 @@ Getting Started
 
         <activity android:name="com.soomla.store.StoreActivity" />
 
-3. Create your own implementation of IStoreAssets in order to describe your specific game's assets. Initialize StoreController with the class you just created:
+3. Create your own implementation of _IStoreAssets_ in order to describe your specific game's assets. Initialize _StoreController_ with the class you just created:
 
-      `StoreController.getInstance().initialize(getApplicationContext(), 
+      ```StoreController.getInstance().initialize(getApplicationContext(), 
                                            new YourStoreAssetsImplementation(),
                                            "YOUR PUBLIC KEY FROM GOOGLE PLAY",
-                                           false);`
+                                           false);```
 
-And that's it !
+And that's it ! You have Storage and in-app purchesing capabilities... ALL-IN-ONE.
 
 Security
 ---
