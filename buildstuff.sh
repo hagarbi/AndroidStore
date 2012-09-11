@@ -10,7 +10,7 @@ fi
 cd ..
 
 
-
+#dfacv
 
 # cd ./SoomlaAndroidStoreTest
 # ant clean
