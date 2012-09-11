@@ -1,39 +1,14 @@
 package com.soomla.store.example;
 
 import com.soomla.store.IStoreAssets;
-import com.soomla.store.domain.data.*;
-import com.soomla.store.domain.ui.*;
+import com.soomla.store.domain.data.StaticPriceModel;
+import com.soomla.store.domain.data.VirtualCurrency;
+import com.soomla.store.domain.data.VirtualCurrencyPack;
+import com.soomla.store.domain.data.VirtualGood;
 
 import java.util.HashMap;
 
-public class ExampleMuffinRushAssets implements IStoreAssets {
-
-    @Override
-    public StoreTemplate getStoreTemplate(){
-        return new StoreTemplate(
-            new StoreTemplateElements(
-                    new StoreTitleElement("Store"),
-                    new StoreBuyMoreElement("More coins", "themes/muffinRush/img/GetMore.png")
-            ),
-            new StoreTemplateProperties(3),
-            false
-        );
-    }
-
-    @Override
-    public StoreTheme getStoreTheme() {
-        return new StoreTheme(
-                new StoreView("Components.CollectionListView", new StoreViewItem("Components.ListItemView", "item")),
-                new StoreView("Components.CollectionListView", new StoreViewItem("Components.ListItemView", "currencyPack")),
-                new StoreModalDialog("modalDialog"),
-                "template", "muffinRush"
-        );
-    }
-
-    @Override
-    public String getStoreBackground() {
-        return "themes/muffinRush/img/Bg_Wall.png";
-    }
+public class MuffinRushAssets implements IStoreAssets {
 
     @Override
     public VirtualCurrency[] getVirtualCurrencies(){
@@ -60,7 +35,11 @@ public class ExampleMuffinRushAssets implements IStoreAssets {
 
     /** Static Final members **/
 
-    public static final String MUFFIN_CURRENCT_ITEM_ID = "currency_muffin";
+    public static final String MUFFIN_CURRENCT_ITEM_ID      = "currency_muffin";
+    public static final String TENMUFF_PACK_PRODUCT_ID      = "android.test.refunded";
+    public static final String FIFTYMUFF_PACK_PRODUCT_ID    = "android.test.canceled";
+    public static final String FORTYMUFF_PACK_PRODUCT_ID    = "android.test.purchased";
+    public static final String THOUSANDMUFF_PACK_PRODUCT_ID = "android.test.item_unavailable";
 
     /** Virtual Currencies **/
     public static final VirtualCurrency MUFFIN_CURRENCY = new VirtualCurrency(
@@ -79,7 +58,7 @@ public class ExampleMuffinRushAssets implements IStoreAssets {
     public static final VirtualGood MUFFINCAKE_GOOD = new VirtualGood(
             "Fruit Cake",                                   // name
             "Customers buy a double portion on each purchase of this cake", // description
-            "themes/muffinRush/img/items/fruit_cake.png",     // image file path
+            "themes/muffinRush/img/items/fruit_cake.png",   // image file path
             new StaticPriceModel(MUFFINCAKE_PRICE),         // currency value
             "fruit_cake"                                    // item id
     );
@@ -92,7 +71,7 @@ public class ExampleMuffinRushAssets implements IStoreAssets {
     public static final VirtualGood PAVLOVA_GOOD = new VirtualGood(
             "Pavlova",                                      // name
             "Gives customers a sugar rush and they call their friends",      // description
-            "themes/muffinRush/img/items/pavlova.png",        // image file path
+            "themes/muffinRush/img/items/pavlova.png",      // image file path
             new StaticPriceModel(PAVLOVA_PRICE),            // currency value
             "pavlova"                                       // item id
     );
@@ -104,8 +83,8 @@ public class ExampleMuffinRushAssets implements IStoreAssets {
     }
     public static final VirtualGood CHOCLATECAKE_GOOD = new VirtualGood(
             "Chocolate Cake",                               // name
-            "A classic cake to maximize customer satisfaction",  // description
-            "themes/muffinRush/img/items/chocolate_cake.png", // image file path
+            "A classic cake to maximize customer satisfaction",// description
+            "themes/muffinRush/img/items/chocolate_cake.png",// image file path
             new StaticPriceModel(CHOCLATECAKE_PRICE),       // currency value
             "chocolate_cake"                                // item id
     );
@@ -118,7 +97,7 @@ public class ExampleMuffinRushAssets implements IStoreAssets {
     public static final VirtualGood CREAMCUP_GOOD = new VirtualGood(
             "Cream Cup",                                    // name
             "Increase bakery reputation with this original pastry",   // description
-            "themes/muffinRush/img/items/cream_cup.png",      // image file path
+            "themes/muffinRush/img/items/cream_cup.png",    // image file path
             new StaticPriceModel(CREAMCUP_PRICE),           // currency value
             "cream_cup"                                     // item id
     );
@@ -130,7 +109,7 @@ public class ExampleMuffinRushAssets implements IStoreAssets {
             " (refund test)",                               // description
             "themes/muffinRush/img/currencyPacks/muffins01.png",// image file path
             "muffins_10",                                   // item id
-            "android.test.refunded",                        // product id in Google Market
+            TENMUFF_PACK_PRODUCT_ID,                        // product id in Google Market
             0.99,                                           // actual price in $$
             10,                                             // number of currencies in the pack
             MUFFIN_CURRENCY);
@@ -140,7 +119,7 @@ public class ExampleMuffinRushAssets implements IStoreAssets {
             " (canceled test)",                             // description
             "themes/muffinRush/img/currencyPacks/muffins02.png",// image file path
             "muffins_50",                                   // item id
-            "android.test.canceled",                        // product id in Google Market
+            FIFTYMUFF_PACK_PRODUCT_ID,                      // product id in Google Market
             1.99,                                           // actual price in $$
             50,                                             // number of currencies in the pack
             MUFFIN_CURRENCY);
@@ -150,7 +129,7 @@ public class ExampleMuffinRushAssets implements IStoreAssets {
             "ONLY THIS WORKS IN THIS EXAMPLE (purchase test)",// description
             "themes/muffinRush/img/currencyPacks/muffins03.png",// image file path
             "muffins_400",                                  // item id
-            "android.test.purchased",                       // product id in Google Market
+            FORTYMUFF_PACK_PRODUCT_ID,                      // product id in Google Market
             4.99,                                           // actual price in $$
             400,                                            // number of currencies in the pack
             MUFFIN_CURRENCY);
@@ -160,7 +139,7 @@ public class ExampleMuffinRushAssets implements IStoreAssets {
             " (item_unavailable test)",                     // description
             "themes/muffinRush/img/currencyPacks/muffins04.png",// image file path
             "muffins_1000",                                 // item id
-            "android.test.item_unavailable",                // product id in Google Market
+            THOUSANDMUFF_PACK_PRODUCT_ID,                   // product id in Google Market
             8.99,                                           // actual price in $$
             1000,                                           // number of currencies in the pack
             MUFFIN_CURRENCY);

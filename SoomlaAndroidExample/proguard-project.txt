@@ -90,8 +90,8 @@
     public static <fields>;
 }
 
--keep public class com.soomla.store.ui.StoreJS
--keepclassmembers class com.soomla.store.ui.StoreJS {
+-keep public class com.soomla.store.storefront.StorefrontJS
+-keepclassmembers class com.soomla.store.storefront.StorefrontJS {
     <methods>;
 }
 

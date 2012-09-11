@@ -24,22 +24,20 @@ import com.soomla.store.StoreConfig;
 import com.soomla.store.domain.data.VirtualCurrency;
 import com.soomla.store.domain.data.VirtualCurrencyPack;
 import com.soomla.store.domain.data.VirtualGood;
-import com.soomla.store.domain.ui.StoreTemplate;
-import com.soomla.store.domain.ui.StoreTheme;
 import com.soomla.store.exceptions.VirtualItemNotFoundException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * This class holds the store's meta data including:
  * - Virtual Currencies definitions
  * - Virtual Currency Packs definitions
  * - Virtual Goods definitions
- * - Store UI Template
- * - more ...
  */
 public class StoreInfo {
 
@@ -71,13 +69,13 @@ public class StoreInfo {
             mVirtualCurrencies    = Arrays.asList(storeAssets.getVirtualCurrencies());
             mVirtualCurrencyPacks = Arrays.asList(storeAssets.getVirtualCurrencyPacks());
             mVirtualGoods         = Arrays.asList(storeAssets.getVirtualGoods());
-            mStoreBackground      = storeAssets.getStoreBackground();
-            mTemplate             = storeAssets.getStoreTemplate();
-            mTheme                = storeAssets.getStoreTheme();
 
             // put StoreInfo in the database as JSON
-            String obf_json = StorageManager.getObfuscator().obfuscateString(getJsonString());
-            StorageManager.getDatabase().setMetaData(obf_json);
+            String store_json = toJSONObject().toString();
+            if (StorageManager.getObfuscator() != null){
+                store_json = StorageManager.getObfuscator().obfuscateString(store_json);
+            }
+            StorageManager.getDatabase().setStoreInfo(store_json);
         }
     }
 
@@ -85,18 +83,18 @@ public class StoreInfo {
         // first, trying to load StoreInfo from the local DB.
         Cursor cursor = StorageManager.getDatabase().getMetaData();
         if (cursor != null) {
-            String metadata_json = "";
+            String storejson = "";
             try {
-                int metadateVal = cursor.getColumnIndexOrThrow(
-                        StoreDatabase.METADATA_COLUMN_VALUE);
+                int storeVal = cursor.getColumnIndexOrThrow(
+                        StoreDatabase.METADATA_COLUMN_STOREINFO);
                 if (cursor.moveToNext()) {
-                    metadata_json = cursor.getString(metadateVal);
+                    storejson = cursor.getString(storeVal);
                     if (StorageManager.getObfuscator() != null){
-                        metadata_json = StorageManager.getObfuscator().unobfuscateToString(metadata_json);
+                        storejson = StorageManager.getObfuscator().unobfuscateToString(storejson);
                     }
 
                     if (StoreConfig.debug){
-                        Log.d(TAG, "the metadata json (from DB) is " + metadata_json);
+                        Log.d(TAG, "the metadata json (from DB) is " + storejson);
                     }
                 }
             } catch (AESObfuscator.ValidationException e) {
@@ -105,16 +103,16 @@ public class StoreInfo {
                 cursor.close();
             }
 
-            if (!TextUtils.isEmpty(metadata_json)){
+            if (!TextUtils.isEmpty(storejson)){
                 try {
-                    fromJSONObject(new JSONObject(metadata_json));
+                    fromJSONObject(new JSONObject(storejson));
 
                     // everything went well... StoreInfo is initialized from the local DB.
                     // it's ok to return now.
                     return true;
                 } catch (JSONException e) {
                     if (StoreConfig.debug){
-                        Log.d(TAG, "Can't parse metadata json: " + metadata_json);
+                        Log.d(TAG, "Can't parse metadata json: " + storejson);
                     }
                 }
             }
@@ -224,42 +222,12 @@ public class StoreInfo {
         return mVirtualGoods;
     }
 
-    public StoreTemplate getTemplate() {
-        return mTemplate;
-    }
-
-    public String getStoreBackground() {
-        return mStoreBackground;
-    }
-
-    public boolean isIsCurrencyStoreDisabled() {
-        return mIsCurrencyStoreDisabled;
-    }
-
-    /**
-     * Use this function to get a json representation of StoreInfo.
-     * @return a json representation of StoreInfo.
-     */
-    public String getJsonString(){
-        String json = toJSONObject().toString();
-        if (StoreConfig.debug){
-            Log.d(TAG, "generated json: " + json);
-        }
-        return json;
-    }
-
-
     /** Private functions **/
 
     private StoreInfo() { }
 
     private void fromJSONObject(JSONObject jsonObject){
         try {
-            mTemplate = new StoreTemplate(jsonObject.getJSONObject(JSONConsts.STORE_TEMPLATE));
-            mTheme = new StoreTheme(jsonObject.getJSONObject(JSONConsts.STORE_THEME));
-            mStoreBackground = jsonObject.getString(JSONConsts.STORE_BACKGROUND);
-            mIsCurrencyStoreDisabled = jsonObject.getBoolean(JSONConsts.STORE_ISCURRENCYDISABLED);
-
             JSONArray virtualCurrencies = jsonObject.getJSONArray(JSONConsts.STORE_VIRTUALCURRENCIES);
             mVirtualCurrencies = new LinkedList<VirtualCurrency>();
             for (int i=0; i<virtualCurrencies.length(); i++){
@@ -291,7 +259,7 @@ public class StoreInfo {
      * Converts StoreInfo to a JSONObject.
      * @return a JSONObject representation of the StoreInfo.
      */
-    private JSONObject toJSONObject(){
+    public JSONObject toJSONObject(){
 
         JSONArray virtualCurrencies = new JSONArray();
         for(VirtualCurrency c : mVirtualCurrencies){
@@ -308,16 +276,9 @@ public class StoreInfo {
             virtualGoods.put(good.toJSONObject());
         }
 
-        JSONObject template = mTemplate.toJSONObject();
-        JSONObject theme = mTheme.toJSONObject();
-
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put(JSONConsts.STORE_TEMPLATE, template);
-            jsonObject.put(JSONConsts.STORE_THEME, theme);
-            jsonObject.put(JSONConsts.STORE_BACKGROUND, mStoreBackground);
             jsonObject.put(JSONConsts.STORE_VIRTUALCURRENCIES, virtualCurrencies);
-            jsonObject.put(JSONConsts.STORE_ISCURRENCYDISABLED, mIsCurrencyStoreDisabled);
             jsonObject.put(JSONConsts.STORE_VIRTUALGOODS, virtualGoods);
             jsonObject.put(JSONConsts.STORE_CURRENCYPACKS, currencyPacks);
         } catch (JSONException e) {
@@ -337,8 +298,4 @@ public class StoreInfo {
     private List<VirtualCurrency>                   mVirtualCurrencies;
     private List<VirtualCurrencyPack>               mVirtualCurrencyPacks;
     private List<VirtualGood>                       mVirtualGoods;
-    private StoreTemplate                           mTemplate;
-    private StoreTheme                              mTheme;
-    private String                                  mStoreBackground;
-    private boolean                                 mIsCurrencyStoreDisabled;
 }

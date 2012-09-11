@@ -13,41 +13,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.soomla.store.ui;
+package com.soomla.store.storefront;
 
 import android.os.Handler;
 import android.util.Log;
-import com.soomla.store.IStoreEventHandler;
 import com.soomla.store.StoreConfig;
 import com.soomla.store.StoreController;
-import com.soomla.store.StoreEventHandlers;
 import com.soomla.store.data.StorageManager;
 import com.soomla.store.data.StoreInfo;
+import com.soomla.store.data.StorefrontInfo;
 import com.soomla.store.domain.data.VirtualCurrency;
-import com.soomla.store.domain.data.VirtualCurrencyPack;
 import com.soomla.store.domain.data.VirtualGood;
 import com.soomla.store.exceptions.InsufficientFundsException;
 import com.soomla.store.exceptions.VirtualItemNotFoundException;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Iterator;
+
 /**
  * This class is the main place to invoke store actions.
  * SOOMLA's android sdk uses this class as an interface between the
  * webview's JS and the native code.
  */
-public class StoreJS implements IStoreEventHandler{
+public class StorefrontJS{
 
     /** Constructor
      *
      * @param mHandler is a Handler used to post messages to the UI thread.
-     * @param mActivity is the main {@link com.soomla.store.ui.StoreActivity}.
+     * @param mActivity is the main {@link StorefrontActivity}.
      */
-    public StoreJS(Handler mHandler, StoreActivity mActivity) {
+    public StorefrontJS(Handler mHandler, StorefrontActivity mActivity) {
         this.mHandler = mHandler;
         this.mActivity = mActivity;
-
-        StoreEventHandlers.getInstance().addEventHandler(this);
     }
 
     /**
@@ -102,14 +100,30 @@ public class StoreJS implements IStoreEventHandler{
     }
 
     /**
-     * The store's ui is ready to receive calls.
+     * The store's storefront is ready to receive calls.
      */
     public void uiReady(){
         if (StoreConfig.debug){
             Log.d(TAG, "uiReady");
         }
         mActivity.JSuiReady();
-        mActivity.sendToJS("initialize", StoreInfo.getInstance().getJsonString());
+
+        try {
+            JSONObject storeJSONObject = StoreInfo.getInstance().toJSONObject();
+            JSONObject storefrontJSONObject = StorefrontInfo.getInstance().toJSONObject();
+            Iterator<?> keys = storefrontJSONObject.keys();
+            while(keys.hasNext())
+            {
+                String key = (String)keys.next();
+                storeJSONObject.put(key, storefrontJSONObject.get(key));
+
+            }
+            mActivity.sendToJS("initialize", storeJSONObject.toString());
+        } catch (JSONException e) {
+            if (StoreConfig.debug){
+                Log.d(TAG, "can't generate/parse json object to initialize store.");
+            }
+        }
 
         updateContentInJS();
     }
@@ -127,7 +141,7 @@ public class StoreJS implements IStoreEventHandler{
     /**
      * Sends the virtual currency and virtual goods updated data to the webview's JS.
      */
-    private void updateContentInJS(){
+    public void updateContentInJS(){
         try {
             JSONObject jsonObject = new JSONObject();
             for(VirtualCurrency virtualCurrency : StoreInfo.getInstance().getVirtualCurrencies()){
@@ -155,65 +169,11 @@ public class StoreJS implements IStoreEventHandler{
         }
     }
 
-    @Override
-    public void onVirtualCurrencyPackPurchased(VirtualCurrencyPack pack) {
-        try {
-            JSONObject jsonObject = new JSONObject();
-            VirtualCurrency virtualCurrency = pack.getVirtualCurrency();
-            jsonObject.put(virtualCurrency.getItemId(), StorageManager.getInstance()
-                    .getVirtualCurrencyStorage().getBalance(pack.getVirtualCurrency()));
-
-            mActivity.sendToJS("currencyBalanceChanged", jsonObject.toString());
-        } catch (JSONException e) {
-            Log.e(TAG, "couldn't generate json to return balance.");
-        }
-    }
-
-    @Override
-    public void onVirtualGoodPurchased(VirtualGood good) {
-        updateContentInJS();
-    }
-
-    @Override
-    public void onBillingSupported() {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public void onBillingNotSupported() {
-        mActivity.sendToJS("disableCurrencyStore", "");
-    }
-
-    @Override
-    public void onMarketPurchaseProcessStarted() {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public void onGoodsPurchaseProcessStarted() {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    @Override
-    public void onClosingStore() {
-        StoreEventHandlers.getInstance().removeEventHandler(this);
-    }
-
-    @Override
-    public void onUnexpectedErrorInStore() {
-        mActivity.sendToJS("unexpectedError", "");
-    }
-
-    @Override
-    public void onOpeningStore() {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
 
     /** Private members **/
 
-    private static final String TAG = "SOOMLA StoreJS";
+    private static final String TAG = "SOOMLA StorefrontJS";
 
-    private Handler         mHandler;
-    private StoreActivity   mActivity;
+    private Handler            mHandler;
+    private StorefrontActivity mActivity;
 }

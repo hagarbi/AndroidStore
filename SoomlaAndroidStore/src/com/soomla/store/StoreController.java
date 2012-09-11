@@ -40,20 +40,20 @@ import java.util.List;
  * buy virtual goods, and get events on whatever happens.
  *
  * This is the only class you need to initialize in order to use the SOOMLA SDK. If you use the UI,
- * you'll need to also use {@link com.soomla.store.ui.StoreActivity}.
+ * you'll need to also use {@link com.soomla.store.storefront.StorefrontActivity}.
  *
  * In addition to initializing this class, you'll also have to call
  * {@link StoreController#storeOpening(android.app.Activity, android.os.Handler)} and
  * {@link com.soomla.store.StoreController#storeClosing()} when you open the store window or close it. These two
  * calls initializes important components that support billing and storage information (see implementation below).
- * IMPORTANT: if you use the SOOMLA ui (SOOMLA Storefront), than DON'T call these 2 functions.
+ * IMPORTANT: if you use the SOOMLA storefront (SOOMLA Storefront), than DON'T call these 2 functions.
  *
  */
 public class StoreController extends PurchaseObserver {
 
     /**
      * If you're using SOOMLA's UI, You have to initialize the {@link StoreController} before you
-     * open the {@link com.soomla.store.ui.StoreActivity}.
+     * open the {@link com.soomla.store.storefront.StorefrontActivity}.
      * This initializer also initializes {@link StorageManager} and {@link StoreInfo}.
      * @param context is used to initialize {@link StorageManager}
      * @param storeAssets is the definition of your application specific assets.

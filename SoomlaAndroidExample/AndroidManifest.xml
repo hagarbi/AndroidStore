@@ -22,7 +22,7 @@
         </receiver>
 
         <activity
-                android:name="com.soomla.store.ui.StoreActivity" />
+                android:name="com.soomla.store.storefront.StorefrontActivity" />
 
         <activity android:name="StoreExampleActivity"
                   android:label="@string/app_name">

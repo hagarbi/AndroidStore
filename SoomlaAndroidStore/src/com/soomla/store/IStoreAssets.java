@@ -18,8 +18,6 @@ package com.soomla.store;
 import com.soomla.store.domain.data.VirtualCurrency;
 import com.soomla.store.domain.data.VirtualCurrencyPack;
 import com.soomla.store.domain.data.VirtualGood;
-import com.soomla.store.domain.ui.StoreTemplate;
-import com.soomla.store.domain.ui.StoreTheme;
 
 /**
  * This interface represents a single game's metadata.
@@ -27,24 +25,6 @@ import com.soomla.store.domain.ui.StoreTheme;
  * upon initialization.
  */
 public interface IStoreAssets {
-    /**
-     * The template that you chose to use for your store's.
-     * @return your chosen template.
-     */
-    StoreTemplate getStoreTemplate();
-
-    /**
-     * The theme for the selected template
-     * @return your chosen theme.
-     */
-    StoreTheme getStoreTheme();
-
-    /**
-     * A path to the image that you want to use as your store background.
-     * @return a path to an image file.
-     */
-    String getStoreBackground();
-
     /**
      * A representation of your game's virtual currency.
      * @return a representation of your game's virtual currency.

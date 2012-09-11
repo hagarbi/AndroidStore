@@ -101,12 +101,22 @@ public class StoreDatabase {
     }
 
     /**
-     * Overwrites the current metadata information with a new one.
-     * @param metadata is the new meta-data information.
+     * Overwrites the current storeinfo information with a new one.
+     * @param storeinfo is the new store information.
      */
-    public synchronized void setMetaData(String metadata){
+    public synchronized void setStoreInfo(String storeinfo){
         ContentValues values = new ContentValues();
-        values.put(METADATA_COLUMN_VALUE, metadata);
+        values.put(METADATA_COLUMN_STOREINFO, storeinfo);
+        mStoreDB.replace(METADATA_TABLE_NAME, null, values);
+    }
+
+    /**
+     * Overwrites the current storefrontinfo information with a new one.
+     * @param storefrontinfo is the new storefront information.
+     */
+    public synchronized void setStorefrontInfo(String storefrontinfo){
+        ContentValues values = new ContentValues();
+        values.put(METADATA_COLUMN_STOREFRONTINFO, storefrontinfo);
         mStoreDB.replace(METADATA_TABLE_NAME, null, values);
     }
 
@@ -139,8 +149,6 @@ public class StoreDatabase {
          */
         @Override
         public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-            // TODO: implement this !!
-
             sqLiteDatabase.execSQL("drop table " + METADATA_TABLE_NAME);
 
             createPurchaseTable(sqLiteDatabase);
@@ -156,7 +164,8 @@ public class StoreDatabase {
                     VIRTUAL_GOODS_COLUMN_BALANCE + " TEXT)");
 
             sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS " + METADATA_TABLE_NAME + "(" +
-                    METADATA_COLUMN_VALUE + " TEXT PRIMARY KEY)");
+                    METADATA_COLUMN_STOREINFO + " TEXT, " +
+                    METADATA_COLUMN_STOREFRONTINFO + " TEXT)");
         }
     }
 
@@ -177,10 +186,11 @@ public class StoreDatabase {
     };
 
     // Store Meta-Data Table
-    private static final String METADATA_TABLE_NAME       = "metadata";
-    public static final String METADATA_COLUMN_VALUE      = "value";
+    private static final String METADATA_TABLE_NAME             = "metadata";
+    public static final String METADATA_COLUMN_STOREINFO        = "store_info";
+    public static final String METADATA_COLUMN_STOREFRONTINFO   = "storefront_info";
     private static final String[] METADATA_COLUMNS = {
-            METADATA_COLUMN_VALUE
+            METADATA_COLUMN_STOREINFO, METADATA_COLUMN_STOREFRONTINFO
     };
 
 

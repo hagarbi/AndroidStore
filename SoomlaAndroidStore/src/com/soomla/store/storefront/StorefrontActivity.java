@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.soomla.store.ui;
+package com.soomla.store.storefront;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -26,21 +26,23 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import com.soomla.store.StoreConfig;
 import com.soomla.store.StoreController;
-import com.soomla.store.data.StoreInfo;
+import com.soomla.store.data.StorefrontInfo;
 
 import java.util.LinkedList;
 import java.util.Queue;
 
-public class StoreActivity extends Activity {
+public class StorefrontActivity extends Activity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setRequestedOrientation(StoreInfo.getInstance().getTemplate().isOrientationLandscape() ?
+        StorefrontController.getInstance().registerStorefrontActivity(this);
+
+        setRequestedOrientation(StorefrontInfo.getInstance().getTemplate().isOrientationLandscape() ?
                 ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE :
                 ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        mProgressDialog = ProgressDialog.show(StoreActivity.this, "",
+        mProgressDialog = ProgressDialog.show(StorefrontActivity.this, "",
                 "Loading. Please wait...", true);
 
         mPendingJSMessages = new LinkedList<String>();
@@ -48,7 +50,7 @@ public class StoreActivity extends Activity {
 
         mHandler = new Handler();
 
-        StoreJS mStoreJS = new StoreJS(mHandler, this);
+        mStoreJS = new StorefrontJS(mHandler, this);
         StoreController.getInstance().storeOpening(this, mHandler);
 
         /* Setting up the store WebView */
@@ -139,12 +141,17 @@ public class StoreActivity extends Activity {
         super.onDestroy();
     }
 
+    public StorefrontJS getStoreJS() {
+        return mStoreJS;
+    }
+
     /** Private members **/
-    private static String TAG = "SOOMLA StoreActivity";
+    private static String TAG = "SOOMLA StorefrontActivity";
 
     private WebView         mWebView;
     private Handler         mHandler;
     private Queue<String>   mPendingJSMessages;
     private boolean         mJSuiReady;
     private ProgressDialog  mProgressDialog;
+    private StorefrontJS    mStoreJS;
 }
