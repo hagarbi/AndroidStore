@@ -9,6 +9,7 @@ before_install:
     - android update project --path ./SoomlaAndroidStore --target "HTC OpenSense SDK, Android API 15, revision 2"
 #script: "sudo ./buildstuff.sh"
 
+
 #language: java
 #before_install:
   # download the latest android sdk and unzip
