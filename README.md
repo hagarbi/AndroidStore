@@ -2,20 +2,20 @@ Welcome to The SOOMLA Project
 ---
 The SOOMLA Project is a series of open-source projects that aims to help game developers get better in-app purchasing stores for their games. The open-source platform-specific projects include everything a game developer needs, from storage of virtual items to purchasing mechanisms with the various devices' native stores. As an optional (and currently EXPERIMENTAL) part of our open-source projects you also get the store's layout which you can customize with your own game's assets.
 
-SOOMLA-Android-Store
+AndroidStore
 ---
 The Android store is a Java project that works seamlessly with Google Play's in-app purchasing API.
 
 
-Check out our [Wiki] (https://github.com/refaelos/Soomla-Android-Store/wiki) for more information about the project and how to use it better.
+Check out our [Wiki] (https://github.com/refaelos/AndroidStore/wiki) for more information about the project and how to use it better.
 
 Getting Started
 ---
 * Before doing anything, SOOMLA recommends that you go through [Android In-app Billing](http://developer.android.com/guide/google/play/billing/index.html).
 
-1. Clone SOOMLA-Android-Store. Copy all files from SoomlaAndroidStore's subfolders to their equivallent folders in your Android project:
+1. Clone AndroidStore. Copy all files from AndroidStore's subfolders to their equivallent folders in your Android project:
 
- `git clone git@github.com:refaelos/Soomla-Android-Store.git`
+ `git clone git@github.com:refaelos/AndroidStore.git`
 
 2. Make the folowing changes to your AndroidManifest.xml:
 
