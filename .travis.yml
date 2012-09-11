@@ -4,7 +4,7 @@ before_install:
     - tar -zxf android-sdk_r18-linux.tgz
     - export ANDROID_HOME=~/builds/Soomla/AndroidStore/android-sdk-linux
     - export PATH=${PATH}:${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools
-    - android update sdk --filter 1,2,15 --no-ui --force
+    - android update sdk --filter 1,2,android-15 --no-ui --force
     - android update project --path ./SoomlaAndroidStore --target "android-15"
 #script: "sudo ./buildstuff.sh"
 
