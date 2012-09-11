@@ -1,21 +1,24 @@
 Welcome to The SOOMLA Project
 ---
-The SOOMLA Project is a series of open-source projects that aims to help game developers get better in-app purchasing stores for their games. The open-source platform-specific projects include everything a game developer needs, from storage of virtual items to purchasing mechanisms with the various devices' native stores. As part of our open-source projects you also get the store's layout which you can customize with your own game's assets.
+The SOOMLA Project is a series of open-source projects that aims to help game developers get better in-app purchasing stores for their games. The open-source platform-specific projects include everything a game developer needs, from storage of virtual items to purchasing mechanisms with the various devices' native stores. As and optional (an currently experimental) part of our open-source projects you also get the store's layout which you can customize with your own game's assets.
+
+* All you need to do is let it know your specific game's assets and you're good to go.
+* and its submodules (notice the '--recursive' that clones submodules)
 
 SOOMLA-Android-Store
 ---
-The Android store is a Java project that works seamlessly with Google Play's in-app purchasing API. SOOMLA-Android-Store is tightly coupled with Soomla-Storefront to provide you with the store's UI. All you need to do is let it know your specific game's assets and you're good to go.
+The Android store is a Java project that works seamlessly with Google Play's in-app purchasing API.
 
 
 Check out our [Wiki] (https://github.com/refaelos/Soomla-Android-Store/wiki) for more information about the project and how to use it better.
 
-Getting Started (Using source code)
+Getting Started
 ---
 * Before doing anything, SOOMLA recommends that you go through [Android In-app Billing](http://developer.android.com/guide/google/play/billing/index.html).
 
-1. Clone SOOMLA-Android-Store and its submodules (notice the '--recursive' that clones submodules). Copy all files from SoomlaAndroidStore's subfolders to their equivallent folders in your Android project (And link the jars from 'libs' folder):
+1. Clone SOOMLA-Android-Store. Copy all files from SoomlaAndroidStore's subfolders to their equivallent folders in your Android project:
 
- `git clone --recursive git@github.com:refaelos/Soomla-Android-Store.git`
+ `git clone git@github.com:refaelos/Soomla-Android-Store.git`
 
 2. Make the folowing changes to your AndroidManifest.xml:
 
