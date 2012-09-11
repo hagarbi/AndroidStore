@@ -3,6 +3,7 @@ before_script:
     - sudo wget -q http://dl.google.com/android/android-sdk_r18-linux.tgz 
     - sudo tar xzvf android-sdk_r18-linux.tgz > /dev/null
     - sudo android-sdk-linux/tools/android -s update sdk --filter android-15,platform-tool --no-ui
+    - android-sdk-linux/tools/android list targets
     - sudo android-sdk-linux/tools/android -s update project --path ./SoomlaAndroidStore --target "android-15"
 #    - sudo android-sdk-linux/tools/android -s update test-project --path ./SoomlaAndroidStoreTest -m ../SoomlaAndroidStore
     - sudo chmod -R 777 ./*
