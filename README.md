@@ -60,7 +60,7 @@ When you initialize _StoreController_, it automatically initializes StorageManag
 The on-device storage is encrypted and kept in a SQLite database. SOOMLA is preparing a cloud-based storage service that'll allow this SQLite to be synced to a cloud-based repository that you'll define. Stay tuned... this is just one of the goodies we prepare for you.
 
 Example Usages
---
+----
 
 Security
 ---
