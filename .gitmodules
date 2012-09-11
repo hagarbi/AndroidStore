@@ -1,9 +1,9 @@
-#[submodule "SoomlaAndroidStore/assets/soomla_ui"]
-#	path = SoomlaAndroidStore/assets/soomla_ui
-#	url = git@github.com:gurdotan/Soomla-Storefront.git
-#[submodule "SoomlaAndroidStoreTest/assets/soomla_ui"]
-#	path = SoomlaAndroidStoreTest/assets/soomla_ui
-#	url = git@github.com:gurdotan/Soomla-Storefront.git
-#[submodule "SoomlaAndroidExample/assets/soomla_ui"]
-#	path = SoomlaAndroidExample/assets/soomla_ui
-#	url = git@github.com:gurdotan/Soomla-Storefront.git
+[submodule "SoomlaAndroidStore/assets/soomla_ui"]
+	path = SoomlaAndroidStore/assets/soomla_ui
+	url = git@github.com:gurdotan/Soomla-Storefront.git
+[submodule "SoomlaAndroidStoreTest/assets/soomla_ui"]
+	path = SoomlaAndroidStoreTest/assets/soomla_ui
+	url = git@github.com:gurdotan/Soomla-Storefront.git
+[submodule "SoomlaAndroidExample/assets/soomla_ui"]
+	path = SoomlaAndroidExample/assets/soomla_ui
+	url = git@github.com:gurdotan/Soomla-Storefront.git
