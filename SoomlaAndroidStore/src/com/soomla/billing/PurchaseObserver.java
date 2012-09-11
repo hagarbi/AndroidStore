@@ -32,7 +32,7 @@ import com.soomla.billing.Consts.ResponseCode;
 import java.lang.reflect.Method;
 
 /**
- * An interface for observing changes related to purchases. The main application
+ * An interface for observing changes related to purchases. {@link com.soomla.store.StoreController}
  * extends this class and registers an instance of that derived class with
  * {@link ResponseHandler}.
  *
@@ -40,12 +40,6 @@ import java.lang.reflect.Method;
  *
  */
 public abstract class PurchaseObserver {
-
-    public PurchaseObserver(Activity activity, Handler handler) {
-        mActivity = activity;
-        mHandler = handler;
-        initCompatibilityLayer();
-    }
 
     /**
      * This is the callback that is invoked when Android Market responds to the
@@ -154,7 +148,6 @@ public abstract class PurchaseObserver {
         });
     }
 
-
     /** Private functions **/
 
     private void initCompatibilityLayer() {
@@ -174,12 +167,20 @@ public abstract class PurchaseObserver {
 
     /** -------------------------------------------------- **/
 
+    /** Protected Functions **/
+
+    protected void initialize(Activity activity, Handler handler){
+        mActivity = activity;
+        mHandler = handler;
+        initCompatibilityLayer();
+    }
+
 
     /** Private members **/
 
     private static final String TAG = "SOOMLA PurchaseObserver";
-    private final Activity mActivity;
-    private final Handler mHandler;
+    private Activity mActivity;
+    private Handler mHandler;
     private Method mStartIntentSender;
     private Object[] mStartIntentSenderArgs = new Object[5];
 }

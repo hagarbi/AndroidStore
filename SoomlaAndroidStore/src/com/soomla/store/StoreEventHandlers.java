@@ -15,6 +15,7 @@
  */
 package com.soomla.store;
 
+import com.soomla.billing.Consts;
 import com.soomla.store.domain.data.VirtualCurrencyPack;
 import com.soomla.store.domain.data.VirtualGood;
 
@@ -31,7 +32,7 @@ public class StoreEventHandlers {
      * A currency pack was just purchased.
      * @param pack is the pack that was just purchased.
      */
-    public void onVirtualCurrencyPackPurchased(VirtualCurrencyPack pack){
+    public void onVirtualCurrencyPackPurchased(VirtualCurrencyPack pack, Consts.PurchaseState purchaseState){
         for(IStoreEventHandler handler : mEventHandlers){
             handler.onVirtualCurrencyPackPurchased(pack);
         }
@@ -93,6 +94,21 @@ public class StoreEventHandlers {
         }
     }
 
+    /**
+     * Going to open the store.
+     */
+    public void onOpeningStore(){
+        for(IStoreEventHandler handler : mEventHandlers){
+            handler.onOpeningStore();
+        }
+    }
+
+    public void onUnexpectedErrorInStore(){
+        for(IStoreEventHandler handler : mEventHandlers){
+            handler.onUnexpectedErrorInStore();
+        }
+    }
+
 
     /**
      * Adds an event handler to the list of handlers.
@@ -100,6 +116,14 @@ public class StoreEventHandlers {
      */
     public void addEventHandler(IStoreEventHandler eventHandler){
         mEventHandlers.add(eventHandler);
+    }
+
+    /**
+     * Removes an event handler from the list of handlers.
+     * @param eventHandler is the event handler to remove.
+     */
+    public void removeEventHandler(IStoreEventHandler eventHandler){
+        mEventHandlers.remove(eventHandler);
     }
 
     public static StoreEventHandlers getInstance(){

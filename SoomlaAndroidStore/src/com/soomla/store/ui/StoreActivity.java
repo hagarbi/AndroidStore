@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.soomla.store;
+package com.soomla.store.ui;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -24,7 +24,8 @@ import android.util.Log;
 import android.webkit.ConsoleMessage;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
-import com.soomla.billing.ResponseHandler;
+import com.soomla.store.StoreConfig;
+import com.soomla.store.StoreController;
 import com.soomla.store.data.StoreInfo;
 
 import java.util.LinkedList;
@@ -36,10 +37,6 @@ public class StoreActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Bundle bundle = getIntent().getExtras();
-        StoreConfig.debug        = bundle.getBoolean("debug");
-        StoreConfig.publicKey    = bundle.getString("publicKey");
-
         setRequestedOrientation(StoreInfo.getInstance().getTemplate().isOrientationLandscape() ?
                 ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE :
                 ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -50,15 +47,14 @@ public class StoreActivity extends Activity {
         mJSuiReady = false;
 
         mHandler = new Handler();
-        mStorePurchaseObserver = new StorePurchaseObserver(mHandler, this);
-        ResponseHandler.register(mStorePurchaseObserver);
 
-        mStoreController = new StoreController(mHandler, this);
+        StoreJS mStoreJS = new StoreJS(mHandler, this);
+        StoreController.getInstance().storeOpening(this, mHandler);
 
         /* Setting up the store WebView */
         mWebView = new WebView(this);
         mWebView.getSettings().setJavaScriptEnabled(true);
-        mWebView.addJavascriptInterface(mStoreController, "SoomlaNative");
+        mWebView.addJavascriptInterface(mStoreJS, "SoomlaNative");
 
         mWebView.setWebChromeClient(new WebChromeClient() {
             public boolean onConsoleMessage(ConsoleMessage cm) {
@@ -128,16 +124,6 @@ public class StoreActivity extends Activity {
     @Override
     protected void onStart() {
         super.onStart();
-        ResponseHandler.register(mStorePurchaseObserver);
-    }
-
-    /**
-     * Called when this activity is no longer visible.
-     */
-    @Override
-    protected void onStop() {
-        super.onStop();
-        ResponseHandler.unregister(mStorePurchaseObserver);
     }
 
     /**
@@ -145,7 +131,7 @@ public class StoreActivity extends Activity {
      */
     @Override
     protected void onDestroy() {
-        mStoreController.onDestroy();
+        StoreController.getInstance().storeClosing();
 
         mWebView.destroy();
         mWebView = null;
@@ -156,12 +142,9 @@ public class StoreActivity extends Activity {
     /** Private members **/
     private static String TAG = "SOOMLA StoreActivity";
 
-    private StorePurchaseObserver mStorePurchaseObserver;
-
     private WebView         mWebView;
     private Handler         mHandler;
     private Queue<String>   mPendingJSMessages;
     private boolean         mJSuiReady;
     private ProgressDialog  mProgressDialog;
-    private StoreController mStoreController;
 }

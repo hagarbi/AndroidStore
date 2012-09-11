@@ -27,7 +27,7 @@ public class StoreConfig {
     public static byte[] obfuscationSalt = new byte[] { 64, -54, -113, -47, 98, -52, 87, -102, -65, -127, 89, 51, -11, -35, 30, 77, -45, 75, -26, 3 };
 
     // the Google Market public key
-    public static String publicKey = "WILL BE CHANGED WHEN StoreActivity COMES TO PLAY !";
+    public static String publicKey = "WILL BE CHANGED WHEN YOU INITIALIZE StoreController !";
 
     /*
     your personal secret that'll be used to encrypt data.

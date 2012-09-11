@@ -15,199 +15,263 @@
  */
 package com.soomla.store;
 
+import android.app.Activity;
+import android.content.Context;
 import android.os.Handler;
 import android.util.Log;
 import com.soomla.billing.BillingService;
 import com.soomla.billing.Consts;
+import com.soomla.billing.PurchaseObserver;
+import com.soomla.billing.ResponseHandler;
 import com.soomla.store.data.StorageManager;
 import com.soomla.store.data.StoreInfo;
 import com.soomla.store.domain.data.VirtualCurrency;
+import com.soomla.store.domain.data.VirtualCurrencyPack;
 import com.soomla.store.domain.data.VirtualGood;
+import com.soomla.store.exceptions.InsufficientFundsException;
 import com.soomla.store.exceptions.VirtualItemNotFoundException;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 /**
- * This class is the main place to invoke store actions.
- * SOOMLA's android sdk uses this class as an interface between the
- * webview's JS and the native code.
+ * This class is where all the important stuff happens. You can use it to purchase products from Google Play,
+ * buy virtual goods, and get events on whatever happens.
+ *
+ * This is the only class you need to initialize in order to use the SOOMLA SDK. If you use the UI,
+ * you'll need to also use {@link com.soomla.store.ui.StoreActivity}.
+ *
+ * In addition to initializing this class, you'll also have to call
+ * {@link StoreController#storeOpening(android.app.Activity, android.os.Handler)} and
+ * {@link com.soomla.store.StoreController#storeClosing()} when you open the store window or close it. These two
+ * calls initializes important components that support billing and storage information (see implementation below).
+ * IMPORTANT: if you use the SOOMLA ui (SOOMLA Storefront), than DON'T call these 2 functions.
+ *
  */
-public class StoreController {
+public class StoreController extends PurchaseObserver {
 
-    /** Constructor
-     *
-     * @param mHandler is a Handler used to post messages to the UI thread.
-     * @param mActivity is the main {@link StoreActivity}.
+    /**
+     * If you're using SOOMLA's UI, You have to initialize the {@link StoreController} before you
+     * open the {@link com.soomla.store.ui.StoreActivity}.
+     * This initializer also initializes {@link StorageManager} and {@link StoreInfo}.
+     * @param context is used to initialize {@link StorageManager}
+     * @param storeAssets is the definition of your application specific assets.
+     * @param publicKey is your public key from Google Play.
+     * @param debugMode is determining weather you're on debug mode or not (duh !!!).
      */
-    public StoreController(Handler mHandler,
-                           StoreActivity mActivity) {
-        this.mHandler = mHandler;
-        this.mActivity = mActivity;
+    public void initialize(Context context,
+                           IStoreAssets storeAssets,
+                           String publicKey,
+                           boolean debugMode){
 
+        StoreConfig.publicKey = publicKey;
+        StoreConfig.debug = debugMode;
+
+        StorageManager.getInstance().initialize(context);
+        StoreInfo.getInstance().initialize(storeAssets);
+    }
+
+    /**
+     * Start a currency pack purchase process (with Google Play)
+     * @param productId is the product id of the required currency pack.
+     */
+    public void buyCurrencyPack(String productId){
+        StoreEventHandlers.getInstance().onMarketPurchaseProcessStarted();
+        mBillingService.requestPurchase(productId, Consts.ITEM_TYPE_INAPP, "");
+    }
+
+    /**
+     * Start a virtual goods purchase process.
+     * @param itemId is the item id of the required virtual good.
+     * @throws InsufficientFundsException
+     * @throws VirtualItemNotFoundException
+     */
+    public void buyVirtualGood(String itemId) throws InsufficientFundsException, VirtualItemNotFoundException{
+        StoreEventHandlers.getInstance().onGoodsPurchaseProcessStarted();
+        VirtualGood good = StoreInfo.getInstance().getVirtualGoodByItemId(itemId);
+
+        // fetching currencies and amounts that the user needs in order to purchase the current
+        // {@link VirtualGood}.
+        HashMap<String, Integer> currencyValues = good.getCurrencyValues();
+
+        // preparing list of {@link VirtualCurrency} objects.
+        List<VirtualCurrency> virtualCurrencies = new ArrayList<VirtualCurrency>();
+        for (String currencyItemId : currencyValues.keySet()){
+            virtualCurrencies.add(StoreInfo.getInstance().getVirtualCurrencyByItemId(currencyItemId));
+        }
+
+        // checking if the user has enough of each of the virtual currencies in order to purchase this virtual
+        // good.
+        VirtualCurrency needMore = null;
+        for (VirtualCurrency virtualCurrency : virtualCurrencies){
+            int currencyBalance = StorageManager.getInstance().getVirtualCurrencyStorage().getBalance
+                    (virtualCurrency);
+            int currencyBalanceNeeded = currencyValues.get(virtualCurrency.getItemId());
+            if (currencyBalance < currencyBalanceNeeded){
+                needMore = virtualCurrency;
+                break;
+            }
+        }
+
+        // if the user has enough, the virtual good is purchased.
+        if (needMore == null){
+            StorageManager.getInstance().getVirtualGoodsStorage().add(good, 1);
+            for (VirtualCurrency virtualCurrency : virtualCurrencies){
+                int currencyBalanceNeeded = currencyValues.get(virtualCurrency.getItemId());
+                StorageManager.getInstance().getVirtualCurrencyStorage().remove(virtualCurrency,
+                        currencyBalanceNeeded);
+            }
+
+            StoreEventHandlers.getInstance().onVirtualGoodPurchased(good);
+        }
+        else {
+            throw new InsufficientFundsException(needMore.getItemId());
+        }
+    }
+
+    /**
+     * Call this function when you open the actual store window
+     * @param activity is the activity being opened (or the activity that contains the store)/
+     * @param handler is a handler to post UI thread messages on.
+     */
+    public void storeOpening(Activity activity, Handler handler){
+        initialize(activity, handler);
+
+        StoreInfo.getInstance().initializeFromDB();
 
         /* Billing */
 
         mBillingService = new BillingService();
-        mBillingService.setContext(mActivity.getApplicationContext());
+        mBillingService.setContext(activity.getApplicationContext());
 
         if (!mBillingService.checkBillingSupported(Consts.ITEM_TYPE_INAPP)){
             if (StoreConfig.debug){
                 Log.d(TAG, "There's no connectivity with the billing service.");
             }
         }
+
+        ResponseHandler.register(this);
+
+        StoreEventHandlers.getInstance().onOpeningStore();
     }
 
     /**
-     * The user wants to buy a virtual currency pack.
-     * @param productId is the product id of the pack.
+     * Call this function when you close the actual store window.
      */
-    public void wantsToBuyCurrencyPacks(String productId){
-        Log.d(TAG, "wantsToBuyCurrencyPacks " + productId);
-
-        StoreEventHandlers.getInstance().onMarketPurchaseProcessStarted();
-        mBillingService.requestPurchase(productId, Consts.ITEM_TYPE_INAPP, "");
-    }
-
-    /**
-     * The user wants to buy a virtual good.
-     * @param itemId is the item id of the virtual good.
-     */
-    public void wantsToBuyVirtualGoods(String itemId) {
-        Log.d(TAG, "wantsToBuyVirtualGoods " + itemId);
-        StoreEventHandlers.getInstance().onGoodsPurchaseProcessStarted();
-        try {
-            VirtualGood good = StoreInfo.getInstance().getVirtualGoodByItemId(itemId);
-
-            // fetching currencies and amounts that the user needs in order to purchase the current
-            // {@link VirtualGood}.
-            HashMap<String, Integer> currencyValues = good.getCurrencyValues();
-
-            // preparing list of {@link VirtualCurrency} objects.
-            List<VirtualCurrency> virtualCurrencies = new ArrayList<VirtualCurrency>();
-            for (String currencyItemId : currencyValues.keySet()){
-                virtualCurrencies.add(StoreInfo.getInstance().getVirtualCurrencyByItemId(currencyItemId));
-            }
-
-            // checking if the user has enough of each of the virtual currencies in order to purchase this virtual
-            // good.
-            VirtualCurrency needMore = null;
-            for (VirtualCurrency virtualCurrency : virtualCurrencies){
-                int currencyBalance = StorageManager.getInstance().getVirtualCurrencyStorage().getBalance
-                        (virtualCurrency);
-                int currencyBalanceNeeded = currencyValues.get(virtualCurrency.getItemId());
-                if (currencyBalance < currencyBalanceNeeded){
-                    needMore = virtualCurrency;
-                    break;
-                }
-            }
-
-            // if the user has enough, the virtual good is purchased. if not, a message is sent to the UI.
-            if (needMore == null){
-                StorageManager.getInstance().getVirtualGoodsStorage().add(good, 1);
-                for (VirtualCurrency virtualCurrency : virtualCurrencies){
-                    int currencyBalanceNeeded = currencyValues.get(virtualCurrency.getItemId());
-                    StorageManager.getInstance().getVirtualCurrencyStorage().remove(virtualCurrency,
-                            currencyBalanceNeeded);
-                }
-
-                updateContentInJS();
-
-                StoreEventHandlers.getInstance().onVirtualGoodPurchased(good);
-            }
-            else {
-                mActivity.sendToJS("insufficientFunds", "'" + needMore.getItemId() + "'");
-            }
-        } catch (VirtualItemNotFoundException e) {
-            mActivity.sendToJS("unexpectedError", "");
-            Log.e(TAG, "Couldn't find a VirtualGood with itemId: " + itemId + ". Purchase is cancelled.");
-        }
-    }
-
-    /**
-     * The user wants to leave the store.
-     * Clicked on "close" button.
-     */
-    public void wantsToLeaveStore(){
-        Log.d(TAG, "wantsToLeaveStore");
-        mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                mActivity.finish();
-            }
-        });
-    }
-
-    /**
-     * This function is called when the {@link StoreActivity} is going to be destroyed.
-     */
-    public void onDestroy(){
+    public void storeClosing(){
         StoreEventHandlers.getInstance().onClosingStore();
+
         mBillingService.unbind();
+        ResponseHandler.unregister(this);
     }
 
+
+    /** PurchaseObserver overridden functions**/
+
     /**
-     * The store's ui is ready to receive calls.
+     * docs in {@link PurchaseObserver#onBillingSupported(boolean supported, String type)}.
      */
-    public void uiReady(){
-        if (StoreConfig.debug){
-            Log.d(TAG, "uiReady");
+    @Override
+    public void onBillingSupported(boolean supported, String type) {
+        if (type == null || type.equals(Consts.ITEM_TYPE_INAPP)) {
+            if (supported) {
+                if (StoreConfig.debug){
+                    Log.d(TAG, "billing is supported !");
+                }
+                StoreEventHandlers.getInstance().onBillingSupported();
+            } else {
+                // purchase is not supported. just send a message to JS to disable the "get more ..." button.
+
+                if (StoreConfig.debug){
+                    Log.d(TAG, "billing is not supported !");
+                }
+
+                StoreEventHandlers.getInstance().onBillingNotSupported();
+            }
+        } else if (type.equals(Consts.ITEM_TYPE_SUBSCRIPTION)) {
+            // subscription is not supported
+            // Soomla doesn't support subscriptions yet. doing nothing here ...
+        } else {
+            // subscription is not supported
+            // Soomla doesn't support subscriptions yet. doing nothing here ...
         }
-        mActivity.JSuiReady();
-        mActivity.sendToJS("initialize", StoreInfo.getInstance().getJsonString());
-
-        updateContentInJS();
     }
 
     /**
-     * The store is initialized.
+     * docs in {@link PurchaseObserver#onPurchaseStateChange(com.soomla.billing.Consts.PurchaseState, String, long, String)}.
      */
-    public void storeInitialized(){
-        if (StoreConfig.debug){
-            Log.d(TAG, "storeInitialized");
-        }
-        mActivity.loadWebView();
-    }
-
-    /**
-     * Sends the virtual currency and virtual goods updated data to the webview's JS.
-     */
-    private void updateContentInJS(){
+    @Override
+    public void onPurchaseStateChange(Consts.PurchaseState purchaseState, String productId, long purchaseTime, String developerPayload) {
         try {
-            JSONObject jsonObject = new JSONObject();
-            for(VirtualCurrency virtualCurrency : StoreInfo.getInstance().getVirtualCurrencies()){
-                jsonObject.put(virtualCurrency.getItemId(),
-                        StorageManager.getInstance().getVirtualCurrencyStorage().getBalance(virtualCurrency));
+
+            if (purchaseState == Consts.PurchaseState.PURCHASED ||
+                    purchaseState == Consts.PurchaseState.REFUNDED) {
+
+                // we're throwing this event when on PURCHASE or REFUND !
+
+                VirtualCurrencyPack pack = StoreInfo.getInstance().getPackByGoogleProductId(productId);
+                StoreEventHandlers.getInstance().onVirtualCurrencyPackPurchased(pack, purchaseState);
             }
 
-            mActivity.sendToJS("currencyBalanceChanged", jsonObject.toString());
-
-            jsonObject = new JSONObject();
-            for (VirtualGood good : StoreInfo.getInstance().getVirtualGoods()){
-                JSONObject updatedValues = new JSONObject();
-                updatedValues.put("balance", StorageManager.getInstance().getVirtualGoodsStorage().getBalance(good));
-                updatedValues.put("price", good.getCurrencyValuesAsJSONObject());
-
-                jsonObject.put(good.getItemId(), updatedValues);
-            }
-
-            mActivity.sendToJS("goodsUpdated", jsonObject.toString());
-
-        } catch (JSONException e) {
-            if (StoreConfig.debug){
-                Log.d(TAG, "couldn't generate json to send balances");
-            }
+        } catch (VirtualItemNotFoundException e) {
+            StoreEventHandlers.getInstance().onUnexpectedErrorInStore();
+            Log.e(TAG, "ERROR : Couldn't find VirtualCurrencyPack with productId: " + productId);
         }
     }
 
-    /** Private members **/
+    /**
+     * docs in {@link PurchaseObserver#onRequestPurchaseResponse(com.soomla.billing.BillingService.RequestPurchase, com.soomla.billing.Consts.ResponseCode)}.
+     */
+    @Override
+    public void onRequestPurchaseResponse(BillingService.RequestPurchase request, Consts.ResponseCode responseCode) {
+        if (responseCode == Consts.ResponseCode.RESULT_OK) {
+            // purchase was sent to server
+        } else if (responseCode == Consts.ResponseCode.RESULT_USER_CANCELED) {
+
+            // purchase canceled by user... doing nothing for now.
+
+        } else {
+            // purchase failed !
+
+            StoreEventHandlers.getInstance().onUnexpectedErrorInStore();
+            Log.e(TAG, "ERROR : Purchase failed for productId: " + request.mProductId);
+        }
+    }
+
+    /**
+     * docs in {@link PurchaseObserver#onRestoreTransactionsResponse(com.soomla.billing.BillingService.RestoreTransactions, com.soomla.billing.Consts.ResponseCode)}.
+     */
+    @Override
+    public void onRestoreTransactionsResponse(BillingService.RestoreTransactions request, Consts.ResponseCode responseCode) {
+        // THIS IS FOR MANAGED ITEMS. SOOMLA DOESN'T SUPPORT MANAGED ITEMS.
+
+        if (responseCode == Consts.ResponseCode.RESULT_OK) {
+            // RestoreTransaction succeeded !
+        } else {
+            // RestoreTransaction error !
+        }
+    }
+
+    /** Singleton **/
+
+    private static StoreController sInstance = null;
+
+    public static StoreController getInstance(){
+        if (sInstance == null){
+            sInstance = new StoreController();
+        }
+
+        return sInstance;
+    }
+
+    private StoreController() {
+    }
+
+
+    /** Private Members**/
 
     private static final String TAG = "SOOMLA StoreController";
 
     private BillingService mBillingService;
-    private Handler        mHandler;
-    private StoreActivity  mActivity;
 }

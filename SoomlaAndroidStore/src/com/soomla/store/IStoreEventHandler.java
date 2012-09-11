@@ -32,4 +32,6 @@ public interface IStoreEventHandler {
     void onMarketPurchaseProcessStarted();
     void onGoodsPurchaseProcessStarted();
     void onClosingStore();
+    void onUnexpectedErrorInStore();
+    void onOpeningStore();
 }

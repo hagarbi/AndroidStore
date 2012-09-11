@@ -19,14 +19,14 @@ import android.content.Context;
 import android.provider.Settings;
 import android.util.Log;
 import com.soomla.billing.util.AESObfuscator;
-import com.soomla.store.IStoreAssets;
 import com.soomla.store.StoreConfig;
 
 /**
  * This is the place where all the relevant storage classes are created.
  * This is a singleton class and you can call it from your application in order
- * to get he instances of the Virtual goods/currency storage. You will usually
- * need the storage in order to get/set the amounts of virtual goods/currency.
+ * to get the instances of the Virtual goods/currency storages.
+ *
+ * You will usually need the storage in order to get/set the amounts of virtual goods/currency.
  */
 public class StorageManager {
 
@@ -39,16 +39,13 @@ public class StorageManager {
     }
 
     /**
-     * Initialized the {@link StorageManager} with the given Context and {@link IStoreAssets}.
-     * You have to initialize the {@link StorageManager} before you open the store activity.
-     * This initializer also initializes the {@link StoreInfo}.
+     * {@link StorageManager} is initizlized by {@link com.soomla.store.StoreController} right after the latter is
+     * initialized buy your application.
      * @param context is the application context. {@link StorageManager} uses the context to let {@link
      * StoreDatabase} know where to save the DB file and to provide {@link AESObfuscator} with parts of information
      * to create the encryption secret.
-     * @param storeAssets is the representation of the current application's store.
      */
-    public void initialize(Context context,
-                           IStoreAssets storeAssets){
+    public void initialize(Context context){
         if (StoreConfig.debug){
             Log.d(TAG, "initializing StorageManager");
         }
@@ -62,8 +59,6 @@ public class StorageManager {
 
         mVirtualCurrencyStorage =   new VirtualCurrencyStorage();
         mVirtualGoodsStorage =      new VirtualGoodsStorage();
-
-        StoreInfo.getInstance().initialize(storeAssets);
     }
 
 

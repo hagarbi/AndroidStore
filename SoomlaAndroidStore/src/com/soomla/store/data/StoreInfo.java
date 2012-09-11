@@ -65,6 +65,23 @@ public class StoreInfo {
             return;
         }
 
+        if (!initializeFromDB()){
+            /// fall-back here if the json parsing fails or doesn't exist, we load the store from the given
+            // {@link IStoreAssets}.
+            mVirtualCurrencies    = Arrays.asList(storeAssets.getVirtualCurrencies());
+            mVirtualCurrencyPacks = Arrays.asList(storeAssets.getVirtualCurrencyPacks());
+            mVirtualGoods         = Arrays.asList(storeAssets.getVirtualGoods());
+            mStoreBackground      = storeAssets.getStoreBackground();
+            mTemplate             = storeAssets.getStoreTemplate();
+            mTheme                = storeAssets.getStoreTheme();
+
+            // put StoreInfo in the database as JSON
+            String obf_json = StorageManager.getObfuscator().obfuscateString(getJsonString());
+            StorageManager.getDatabase().setMetaData(obf_json);
+        }
+    }
+
+    public boolean initializeFromDB() {
         // first, trying to load StoreInfo from the local DB.
         Cursor cursor = StorageManager.getDatabase().getMetaData();
         if (cursor != null) {
@@ -94,7 +111,7 @@ public class StoreInfo {
 
                     // everything went well... StoreInfo is initialized from the local DB.
                     // it's ok to return now.
-                    return;
+                    return true;
                 } catch (JSONException e) {
                     if (StoreConfig.debug){
                         Log.d(TAG, "Can't parse metadata json: " + metadata_json);
@@ -102,20 +119,7 @@ public class StoreInfo {
                 }
             }
         }
-
-
-        /// fall-back here if the json parsing fails or doesn't exist, we load the store from the given
-        // {@link IStoreAssets}.
-        mVirtualCurrencies    = Arrays.asList(storeAssets.getVirtualCurrencies());
-        mVirtualCurrencyPacks = Arrays.asList(storeAssets.getVirtualCurrencyPacks());
-        mVirtualGoods         = Arrays.asList(storeAssets.getVirtualGoods());
-        mStoreBackground      = storeAssets.getStoreBackground();
-        mTemplate             = storeAssets.getStoreTemplate();
-        mTheme                = storeAssets.getStoreTheme();
-
-        // put StoreInfo in the database as JSON
-        String obf_json = StorageManager.getObfuscator().obfuscateString(getJsonString());
-        StorageManager.getDatabase().setMetaData(obf_json);
+        return false;
     }
 
     /**

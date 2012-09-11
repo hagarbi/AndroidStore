@@ -53,6 +53,16 @@ public class ExampleEventHandler implements IStoreEventHandler {
         showToastIfDebug("Going to close store");
     }
 
+    @Override
+    public void onUnexpectedErrorInStore() {
+        showToastIfDebug("Unexpected error occurred !");
+    }
+
+    @Override
+    public void onOpeningStore() {
+        showToastIfDebug("Store is opening");
+    }
+
     private void showToastIfDebug(String msg) {
         if (StoreConfig.debug){
             Toast toast = Toast.makeText(mContext, msg, 5000);
