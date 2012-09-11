@@ -7,7 +7,7 @@ AndroidStore
 The Android store is a Java project that works seamlessly with Google Play's in-app purchasing API.
 
 
-Check out our [Wiki] (https://github.com/soomla/AndroidStore/wiki) for more information about the project and how to use it better.
+Check out our [Wiki] (https://github.com/Soomla/AndroidStore/wiki) for more information about the project and how to use it better.
 
 Getting Started
 ---
