@@ -4,14 +4,14 @@ before_install:
     - tar -zxf android-sdk_r18-linux.tgz
     - export ANDROID_HOME=~/builds/Soomla/AndroidStore/android-sdk-linux
     - export PATH=${PATH}:${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools
-    - android list
     - sudo android update sdk --filter 1,2,3 --no-ui --force
     - android list
     - android update project --path ./SoomlaAndroidStore --target "HTC OpenSense SDK, Android API 15, revision 2"
 #script: "sudo ./buildstuff.sh"
 
 
-# adf
+
+
 
 #language: java
 #before_install:

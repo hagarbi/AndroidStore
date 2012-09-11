@@ -1,4 +1,3 @@
-[![Build Status](https://secure.travis-ci.org/Soomla/AndroidStore.png)](http://travis-ci.org/Soomla/AndroidStore)
 
 Welcome to The SOOMLA Project
 ---
