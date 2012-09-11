@@ -2,9 +2,6 @@ Welcome to The SOOMLA Project
 ---
 The SOOMLA Project is a series of open-source projects that aims to help game developers get better in-app purchasing stores for their games. The open-source platform-specific projects include everything a game developer needs, from storage of virtual items to purchasing mechanisms with the various devices' native stores. As and optional (an currently experimental) part of our open-source projects you also get the store's layout which you can customize with your own game's assets.
 
-* All you need to do is let it know your specific game's assets and you're good to go.
-* and its submodules (notice the '--recursive' that clones submodules)
-
 SOOMLA-Android-Store
 ---
 The Android store is a Java project that works seamlessly with Google Play's in-app purchasing API.
@@ -53,6 +50,12 @@ Getting Started
       ```
 
 And that's it ! You have Storage and in-app purchesing capabilities... ALL-IN-ONE.
+
+Storage
+---
+
+When you initialize _StoreController_, it automatically initializes StorageManager. This class is the father of all stoaage related instances in your application. Use it to access tha balances of virtual currencies, virtual goods and virtual currency packs (ususally, using their itemIds).
+
 
 Security
 ---
