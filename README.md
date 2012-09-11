@@ -1,3 +1,5 @@
+[![Build Status](https://secure.travis-ci.org/Soomla/AndroidStore.png)](http://travis-ci.org/Soomla/AndroidStore)
+
 Welcome to The SOOMLA Project
 ---
 The SOOMLA Project is a series of open-source projects that aims to help game developers get better in-app purchasing stores for their games. The open-source platform-specific projects include everything a game developer needs, from storage of virtual items to purchasing mechanisms with the various devices' native stores. As an optional (and currently EXPERIMENTAL) part of our open-source projects you also get the store's layout which you can customize with your own game's assets.
