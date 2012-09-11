@@ -66,8 +66,21 @@ The on-device storage is encrypted and kept in a SQLite database. SOOMLA is prep
     VirtualCurrency coin = StoreInfo.getInstance().getVirtualCurrencyByItemId("currency_coin");
     StorageManager.getInstance().getVirtualCurrencyStorage().add(coin, 10);
     ```
+    
+* Remove 10 virtual goods with itemId "green_hat":
 
+    ```Java
+    VirtualGood greenHat = StoreInfo.getInstance().getVirtualGoodByItemId("green_hat");
+    StorageManager.getInstance().getVirtualGoodsStorage().remove(greenHat, 10);
+    ```
+    
+* Get the current balance of green hats (virtual goods with itemId "green_hat"):
 
+    ```Java
+    VirtualGood greenHat = StoreInfo.getInstance().getVirtualGoodByItemId("green_hat");
+    StorageManager.getInstance().getVirtualGoodsStorage().getBalance(greenHat);
+    ```
+    
 Security
 ---
 
