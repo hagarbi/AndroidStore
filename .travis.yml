@@ -11,8 +11,6 @@ before_install:
 
 
 
-
-
 #language: java
 #before_install:
   # download the latest android sdk and unzip
